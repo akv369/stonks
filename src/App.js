@@ -3,32 +3,55 @@ import {Route, Switch} from "react-router-dom";
 import './App.css';
 import loginScreen from './views/login/loginScreen';
 import watchList from './views/watchList/watchList';
-import allStocks from './views/allStocks/allStocks';
 import dashboard from './views/dashboard/dashboard';
+import allStocks from './views/allStocks/allStocks';
 import orders from './views/orders/orders';
+import stock from './views/stock/stock';
+import order from './views/order/order';
 import home from './views/home/home';
+import { connect } from 'react-redux';
+import * as actionTypes from './store/actions';
 //const axios = require('axios');
 
-class App extends Component{/*
-  componentDidMount() {
+class App extends Component{
+  componentDidMount() {/*
     axios.get('http://localhost:1111/l')
     //axios.get('https://api.twelvedata.com/time_series?symbol=AAPL&interval=5min&apikey=d609067766fb4ac9bcd8a24d328d7a13')
      .then(response => {
        console.log(response.data);
-    })
-  }*/
+    })*/
+    console.log(this.props.currentUser);
+  }
   render(){
+    let option = this.props.currentUser!==null ?
+    <Switch>
+      <Route path="/orders" component={orders} />
+      <Route path="/dashboard" component={dashboard} />
+      <Route path="/stocks" component={allStocks} />
+      <Route path="/watchlist" component={watchList} />
+      <Route path="/stock" component={stock} />
+      <Route path="/order" component={order} />
+      <Route path="/login" component={loginScreen} />
+      <Route path="/" component={home} />
+    </Switch>
+    :
+    <Switch>
+      <Route path="/" component={loginScreen} />
+    </Switch>;
     return (
-      <Switch>
-        <Route path="/orders" component={orders} />
-        <Route path="/dashboard" component={dashboard} />
-        <Route path="/stocks" component={allStocks} />
-        <Route path="/watchlist" component={watchList} />
-        <Route path="/login" component={loginScreen} />
-        <Route path="/" component={home} />
-      </Switch>
+      <div>{option}</div>
     );
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+      currentUser: state.SET_USER.currentUser
+  }
+};
+
+const mapDispatchToProps = dispatch => {
+  return null;
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

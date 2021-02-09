@@ -1,8 +1,8 @@
 import {React, Component} from 'react';
 
 import Navbar from '../../components/header/header';
-import OrderFilter from '../../components/orderFilter/orderFilter';
-import OrderList from '../../components/cards/orderList/orderList';
+import OrderDetails from '../../components/cards/orderInfo/orderDetails';
+import OrderStatus from '../../components/cards/orderInfo/orderStatus';
 
 import {Col, Container, Row} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -15,14 +15,16 @@ class orders extends Component{
         return (
             <div>
                 <Navbar/>
-                <Container>
-                    <h2 className="m-3">Your Orders</h2>
+                <Container className="mt-5">
+                    <h2 className="m-3">Order #1354861</h2>
                     <Row className="mt-4">
-                        <Col sm={3}>
-                            <OrderFilter/>
+                        <Col>
+                            <OrderDetails/>
                         </Col>
-                        <Col sm={{offset:1}}>
-                            <OrderList/>
+                    </Row>
+                    <Row>
+                        <Col sm={{offset:3}} className="mt-5">
+                            <OrderStatus/>
                         </Col>
                     </Row>
                 </Container>
