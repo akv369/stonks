@@ -1,6 +1,5 @@
 import {React, Component} from 'react';
 
-import { Card, Nav, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class beySellPanel extends Component{
@@ -35,7 +34,7 @@ class beySellPanel extends Component{
                                 06:35 PM IST | 07 February 2021
                             </span>
                             <span className="m-1 float-right">
-                                Order ID: 1354861
+                                Order ID: {this.props.orderID}
                             </span>
                         </div>
                         <div className="m-1">
@@ -45,6 +44,9 @@ class beySellPanel extends Component{
                         <div className="ml-4 text-muted" style={{fontSize:"0.8rem"}}>
                             <span className="m-1">
                                 06:35 PM IST | 07 February 2021
+                            </span>
+                            <span className="m-1 float-right">
+                                Total Amount: $12,421.25
                             </span>
                         </div>
                     </div>

@@ -1,12 +1,9 @@
 import {React, Component} from 'react';
 
-import { Card, Nav, Button, Badge, Form, Row, Col } from 'react-bootstrap';
+import { Card, Nav, Button, Form, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class beySellPanel extends Component{
-    componentDidMount() {
-       console.log('Buy Sell Panel');
-    }
     render(){
         return (
             <div style={{width:"300px"}} className="shadow-sm">
@@ -22,7 +19,7 @@ class beySellPanel extends Component{
                         </Nav>
                     </Card.Header>
                     <Card.Body>
-                        <Card.Title className="mb-4">Company Name</Card.Title>
+                        <Card.Title className="mb-4">{this.props.companyName}</Card.Title>
                         <Card.Text>
                             <div className="m-2">
                                 <Form>

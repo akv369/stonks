@@ -9,7 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 class watchList extends Component{
     componentDidMount() {
-       console.log('response.data');
+        console.log('hi');
     }
     render(){
         return (

@@ -1,6 +1,6 @@
 import {React, Component} from 'react';
 
-import { Card, Pagination, Row, Col } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import StockList from '../cards/stockList/listCard';

@@ -10,7 +10,6 @@ import stock from './views/stock/stock';
 import order from './views/order/order';
 import home from './views/home/home';
 import { connect } from 'react-redux';
-import * as actionTypes from './store/actions';
 //const axios = require('axios');
 
 class App extends Component{
@@ -20,7 +19,6 @@ class App extends Component{
      .then(response => {
        console.log(response.data);
     })*/
-    console.log(this.props.currentUser);
   }
   render(){
     let option = this.props.currentUser!==null ?
@@ -29,8 +27,8 @@ class App extends Component{
       <Route path="/dashboard" component={dashboard} />
       <Route path="/stocks" component={allStocks} />
       <Route path="/watchlist" component={watchList} />
-      <Route path="/stock" component={stock} />
-      <Route path="/order" component={order} />
+      <Route path="/stock/:stockName" component={stock} />
+      <Route path="/order/:orderID" component={order} />
       <Route path="/login" component={loginScreen} />
       <Route path="/" component={home} />
     </Switch>

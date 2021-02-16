@@ -1,6 +1,6 @@
 import {React, Component} from 'react';
 
-import { Card, Col, ListGroup, Row } from 'react-bootstrap';
+import {Col, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class orderList extends Component{

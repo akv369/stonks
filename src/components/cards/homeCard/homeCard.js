@@ -1,17 +1,14 @@
 import {React, Component} from 'react';
 
-import { Card, CardDeck } from 'react-bootstrap';
+import { Card} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class homeCard extends Component{
-    componentDidMount() {
-       console.log('Home Card');
-    }
     render(){
-        let cardWidth= this.props.category==='index'?'21rem':'12rem';
+        let cardWidth= this.props.category==='index'?'21.5rem':this.props.category==='news'?'21rem':'33rem';
         return (
             <div>
-                    <Card style={{ width: cardWidth }} className="shadow">
+                    <Card style={{ width: cardWidth }} className="shadow-sm">
                         <Card.Body>
                             <Card.Title>Reliance Industries</Card.Title>
                             <Card.Subtitle className="mb-2 text-muted">RIL</Card.Subtitle>

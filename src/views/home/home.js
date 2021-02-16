@@ -8,9 +8,6 @@ import {CardDeck, Container, Badge, Row, Col} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class home extends Component{
-    componentDidMount() {
-        console.log('this.props.currentUser');
-    }
     render(){
         return (
             <div>
@@ -39,22 +36,16 @@ class home extends Component{
                                 <h2><Link to="/stocks"><Badge pill variant="info">All Stocks</Badge></Link></h2>
                             </Col>
                         </Row>
-                    <h4 className="mt-sm-4 mb-sm-3">Top Gainers</h4>
-                    <CardDeck>
-                        <HomeCard category="stock"/>
-                        <HomeCard category="stock"/>
-                        <HomeCard category="stock"/>
-                        <HomeCard category="stock"/>
-                        <HomeCard category="stock"/>
-                    </CardDeck>
-                    <h4 className="mt-sm-4 mb-sm-3">Top Losers</h4>
-                    <CardDeck>
-                        <HomeCard category="stock"/>
-                        <HomeCard category="stock"/>
-                        <HomeCard category="stock"/>
-                        <HomeCard category="stock"/>
-                        <HomeCard category="stock"/>
-                    </CardDeck>
+                    <Row>
+                        <Col>
+                            <h4 className="mt-sm-4 mb-sm-3">Top Gainer</h4>
+                            <HomeCard/>
+                        </Col>
+                        <Col>
+                            <h4 className="mt-sm-4 mb-sm-3">Top Loser</h4>
+                            <HomeCard/>
+                        </Col>
+                    </Row>
                     <h4 className="mt-sm-5 mb-sm-3">{' '}</h4>
                 </Container>
             </div>

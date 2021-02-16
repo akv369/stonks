@@ -1,6 +1,6 @@
 import {React, Component} from 'react';
 
-import { Card, Col, ListGroup, Row } from 'react-bootstrap';
+import { Card, Col, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class listCard extends Component{
@@ -12,7 +12,7 @@ class listCard extends Component{
             <div>
                 <Card className="shadow-sm">
                     <Card.Header className="font-weight-bold">
-                        Indian Railways Finance Corporation |
+                        Company Name |
                         <span className="text-danger"> Sell</span>
                         <span className="float-right">475 shares</span>
                     </Card.Header>
