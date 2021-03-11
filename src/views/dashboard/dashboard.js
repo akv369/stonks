@@ -14,8 +14,8 @@ class dashboard extends Component{
     render(){
         return (
             <div>
-                <Navbar/>
                 <Container>
+                    <Navbar/>
                     <Row className="mt-sm-5">
                         <Col sm={8}>
                             <Card className="shadow-sm">

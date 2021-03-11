@@ -22,7 +22,12 @@ class home extends Component{
                     <h4 className="mt-sm-4 mb-sm-3">Explore Stocks</h4>
                         <Row>
                             <Col className="d-inline"> 
-                                <h5 className="d-inline mt-sm-5 mr-1"><Badge pill variant="info">Banking</Badge>{' '}</h5>
+                                <h5 className="d-inline mt-sm-5 mr-1">
+                                    <Link to="/stocks">
+                                        <Badge pill variant="info">Banking</Badge>
+                                    </Link>
+                                    {' '}
+                                </h5>
                                 <h5 className="d-inline mt-sm-5 mr-1"><Badge pill variant="info">Energy</Badge>{' '}</h5>
                                 <h5 className="d-inline mt-sm-5 mr-1"><Badge pill variant="info">Technology</Badge>{' '}</h5>
                                 <h5 className="d-inline mt-sm-5 mr-1"><Badge pill variant="info">Healthcare</Badge>{' '}</h5>

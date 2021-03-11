@@ -1,4 +1,5 @@
 import {React, Component} from 'react';
+import axios from '../../axios-base';
 import html2canvas from 'html2canvas'
 import jsPdf from 'jspdf'
 
@@ -12,6 +13,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 class order extends Component{
     state={orderID:'',print:false}
     componentDidMount() {
+        axios.get('/order/' +this.props.match.params.orderID) 
+        .then(response => {
+            console.log(response.data);
+        })
         this.setState({orderID:this.props.match.params.orderID});
     }
     render(){

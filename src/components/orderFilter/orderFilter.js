@@ -16,7 +16,7 @@ class orderFilter extends Component{
                             <h6 className="font-weight-bold float-left mt-2">
                                 Filters
                             </h6>
-                            <Badge pill variant="primary" className="float-right mt-2">
+                            <Badge pill variant="info" className="float-right mt-2">
                                 Apply Filters
                             </Badge>
                         </ListGroup.Item>

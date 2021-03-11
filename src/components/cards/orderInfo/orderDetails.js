@@ -24,7 +24,7 @@ class listCard extends Component{
                                     <span className="">Market</span>
                                 </Col>
                                 <Col sm={4}>
-                                    <span className="ml-3 text-muted font-weight-bold">Type: </span>
+                                    <span className="ml-3 text-muted font-weight-bold">Sub-Type: </span>
                                     <span className="">Delivery</span>
                                 </Col>
                                 <Col sm={4}>

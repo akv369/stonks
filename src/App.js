@@ -1,6 +1,11 @@
 import {React, Component} from 'react';
 import {Route, Switch} from "react-router-dom";
+import { connect } from 'react-redux';
+
 import './App.css';
+import Axios from './axios-base';
+import * as actionTypes from './store/actions';
+
 import loginScreen from './views/login/loginScreen';
 import watchList from './views/watchList/watchList';
 import dashboard from './views/dashboard/dashboard';
@@ -9,27 +14,33 @@ import orders from './views/orders/orders';
 import stock from './views/stock/stock';
 import order from './views/order/order';
 import home from './views/home/home';
-import { connect } from 'react-redux';
-//const axios = require('axios');
 
 class App extends Component{
-  componentDidMount() {/*
-    axios.get('http://localhost:1111/l')
-    //axios.get('https://api.twelvedata.com/time_series?symbol=AAPL&interval=5min&apikey=d609067766fb4ac9bcd8a24d328d7a13')
-     .then(response => {
-       console.log(response.data);
-    })*/
+  state={
+    loading:true,
+    user:null
+  }
+  componentDidMount(){
+    Axios.get('/getUser')
+    .then(response=>{
+      this.props.setUser(response.data);
+      this.setState({user:response.data,loading:false});
+    })
   }
   render(){
-    let option = this.props.currentUser!==null ?
+    let option = this.state.user!==null ?
     <Switch>
       <Route path="/orders" component={orders} />
       <Route path="/dashboard" component={dashboard} />
       <Route path="/stocks" component={allStocks} />
       <Route path="/watchlist" component={watchList} />
-      <Route path="/stock/:stockName" component={stock} />
+      <Route path="/stock/:stockID" component={stock} />
       <Route path="/order/:orderID" component={order} />
-      <Route path="/login" component={loginScreen} />
+      <Route path="/" component={home} />
+    </Switch>
+    :
+    this.state.loading===true ?
+    <Switch>
       <Route path="/" component={home} />
     </Switch>
     :
@@ -49,7 +60,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return null;
+  return {
+    setUser: (user) => dispatch({type: actionTypes.SET_USER, currentUser: user})
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

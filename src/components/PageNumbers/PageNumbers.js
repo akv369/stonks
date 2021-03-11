@@ -1,29 +1,51 @@
 import {React, Component} from 'react';
+import {connect} from 'react-redux'
 
-import { Pagination } from 'react-bootstrap';
+import * as actionTypes from '../../store/actions'
+
+import Pagination from 'react-bootstrap-4-pagination';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-class stocksFilter extends Component{
-    componentDidMount() {
-       console.log('response.data');
-    }
+class pagination extends Component{
     render(){
+        const currentPage=this.props.pageDetails.currentPage;
+        const lastPage=this.props.pageDetails.lastPage;
+        const handleChange = (page) => {
+            const pageDetails={
+                currentPage: page,
+                lastPage: lastPage,
+                stockPerPage: this.props.pageDetails.stockPerPage
+            }
+            this.props.setPagination(pageDetails)
+        }
+        const pageConfig = {
+            totalPages: lastPage,
+            currentPage: currentPage,
+            showMax: 5,
+            threeDots: true,
+            prevNext: true,
+            onClick: function (page) {
+                handleChange(page);
+           }
+        };
         return (
-            <div className="mt-5 ml-5 pt-5 pl-5">
-                <Pagination>
-                    <Pagination.First disabled/>
-                    <Pagination.Prev disabled/>
-                    <Pagination.Item active>{1}</Pagination.Item>
-                    <Pagination.Item>{2}</Pagination.Item>
-                    <Pagination.Item>{3}</Pagination.Item>
-                    <Pagination.Ellipsis />
-                    <Pagination.Item>{20}</Pagination.Item>
-                    <Pagination.Next />
-                    <Pagination.Last />
-                </Pagination>
+            <div className="mt-3">
+                <Pagination {...pageConfig}/>
             </div>
         );
     }
 }
 
-export default stocksFilter;
+const mapStateToProps = state => {
+    return {
+        pageDetails: state.SET_PAGE_DETAILS.pageDetails
+    }
+  };
+  
+  const mapDispatchToProps = dispatch => {
+    return {
+        setPagination: (pageDetails) => dispatch({type: actionTypes.SET_PAGE_DETAILS, pageDetails: pageDetails})
+    };
+  };
+  
+  export default connect(mapStateToProps, mapDispatchToProps)(pagination);

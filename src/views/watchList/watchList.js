@@ -1,7 +1,7 @@
 import {React, Component} from 'react';
 
 import Navbar from '../../components/header/header';
-import ListCard from '../../components/cards/stockList/listCard';
+import ListCard from '../../components/cards/watchlist/listCard';
 import BuySellPanel from '../../components/buySellPanel/buySellPanel';
 
 import {Card, Container, ListGroup, Row, Col} from 'react-bootstrap';
@@ -9,7 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 class watchList extends Component{
     componentDidMount() {
-        console.log('hi');
+        console.log('wl');
     }
     render(){
         return (
@@ -25,16 +25,24 @@ class watchList extends Component{
                                     <ListGroup variant="flush">
                                         <ListGroup.Item>
                                             <Row>
-                                                <Col sm={3}>
+                                                <Col sm={4}>
                                                     Company Name
                                                 </Col>
-                                                <Col sm={5}>{' '}
-                                                </Col>
-                                                <Col sm={2}>
+                                                <Col sm={2} style={{fontSize:"0.86rem"}}>
                                                     CMP
                                                 </Col>
-                                                <Col sm={2}>
-                                                    Returns
+                                                <Col sm={3} style={{fontSize:"0.86rem"}}>
+                                                    Market Capitalization
+                                                </Col>
+                                                <Col sm={3}>
+                                                    <Row>
+                                                        <Col sm={6}>
+                                                            ROE%
+                                                        </Col>
+                                                        <Col sm={6}>
+                                                            P/E
+                                                        </Col>
+                                                    </Row>
                                                 </Col>
                                             </Row>
                                         </ListGroup.Item>

@@ -8,10 +8,7 @@ import PageNumbers from '../../components/PageNumbers/PageNumbers';
 import {Container, ListGroup, Row, Col} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-class watchList extends Component{
-    componentDidMount() {
-       console.log('response.data');
-    }
+class allStocks extends Component{
     render(){
         return (
             <div>
@@ -21,19 +18,30 @@ class watchList extends Component{
                         <Col sm={3}>
                             <StocksFilter />
                         </Col>
-                        <Col sm={8}>                         
+                        <Col sm={9}>                         
                             <ListGroup variant="flush" className="mb-1">
                                 <ListGroup.Item>
                                     <Row>
-                                        <Col sm={3}>
-                                            Company Name
-                                        </Col>
-                                        <Col sm={5}>{' '}</Col>
                                         <Col sm={2}>
-                                            CMP
+                                            Name
                                         </Col>
                                         <Col sm={2}>
-                                            Returns
+                                            200 Days Moving Avg.
+                                        </Col>
+                                        <Col sm={2}>
+                                            52 Weeks High
+                                        </Col>
+                                        <Col sm={2}>
+                                            52 Weeks Low
+                                        </Col>
+                                        <Col sm={2}>
+                                            Market Capitalization
+                                        </Col>
+                                        <Col sm={1}>
+                                            ROE%
+                                        </Col>
+                                        <Col sm={1}>
+                                            P/E
                                         </Col>
                                     </Row>
                                 </ListGroup.Item>
@@ -48,4 +56,4 @@ class watchList extends Component{
     }
 }
 
-export default watchList;
+export default allStocks;

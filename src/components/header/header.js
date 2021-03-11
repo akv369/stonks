@@ -1,39 +1,49 @@
 import {React, Component} from 'react';
+import firebase from '../../firebase';
+import { connect } from 'react-redux';
+import * as actionTypes from '../../store/actions';
+import Axios from '../../axios-base';
+import imgPath from '../../data/logo.png'
 
 import { Container, Navbar, Nav, Form, Button, FormControl, Image } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import axios from 'axios';
 
 import SearchSuggestions from './searchSuggestions';
 
 class header extends Component{
     state = {
         query: '',
-        results: [],
-        alphaAPI: '&apikey=OR7C580Y9LGTY7ZE'
+        nameArr: [],
+        codeArr: []
     }
-    
-    getInfo = () => {
-        if(this.state.query.length>2){
-        let path= 'https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=' + this.state.query + this.state.alphaAPI;
-        axios.get(path).then(
-            response => {
-                this.setState({
-                    results: response.data
-                })
-            }
-        );
-        }
-        else this.setState({results: []})
-    }
-    
     handleSearch = (event) => {
         this.setState({ query: event.target.value }, () => {
-            if (this.state.query && this.state.query.length > 1)
-              this.getInfo()
+            if (this.state.query && this.state.query.length > 2){
+                Axios.get('/search/'+ this.state.query).then(
+                    response => {
+                        this.setState({
+                            nameArr: response.data.nameArr,
+                            codeArr: response.data.codeArr
+                        })
+                    }
+                );
+            }
+            else this.setState({nameArr: [], codeArr: []})
         })
     }
-
+    googleLogout = () => {
+        firebase.auth().signOut()
+        .then(() => {
+            Axios.post('/logout')
+            .then(resp=>{
+                console.log(resp.data);
+            })
+            window.location.replace("/login");
+        }).catch((error) => {
+            console.log(error.code);
+            console.log(error.message);
+        });
+    }
     render(){
         const activeTab=window.location.pathname;
         return (
@@ -41,7 +51,7 @@ class header extends Component{
                 <Container>
                     <Navbar variant="light" style={{display:'flex', justifyContent:'space-between'}}>
                         <Navbar.Brand href="/" className="mr-sm-5 pr-sm-5">
-                            <Image src="../../data/logo.png" roundedCircle />{' '} Stonks
+                            <Image src={imgPath} style={{width:'24px',height:'24px'}} roundedCircle />{' '} Stonks
                         </Navbar.Brand>
                         <Form inline>
                             <FormControl 
@@ -73,12 +83,15 @@ class header extends Component{
                             </Nav.Link>
                             <Button 
                                 variant="outline-dark" 
-                                className="ml-5">
+                                className="ml-5"
+                                onClick={this.googleLogout}>
                                     Log Out
                             </Button>
                         </Nav>
                     </Navbar>
-                    <SearchSuggestions dataResults={this.state.results} />
+                    <SearchSuggestions 
+                        codeArr={this.state.codeArr}
+                        nameArr={this.state.nameArr} />
                 </Container>
             </div>
         );

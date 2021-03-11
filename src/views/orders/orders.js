@@ -14,8 +14,8 @@ class orders extends Component{
     render(){
         return (
             <div>
-                <Navbar/>
                 <Container>
+                    <Navbar/>
                     <h2 className="m-3">Your Orders</h2>
                     <Row className="mt-4">
                         <Col sm={3}>

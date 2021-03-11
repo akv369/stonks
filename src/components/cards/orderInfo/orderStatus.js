@@ -3,9 +3,6 @@ import {React, Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class beySellPanel extends Component{
-    componentDidMount() {
-       console.log('Buy Sell Panel');
-    }
     render(){
         return (
             <div style={{width:"36rem"}}>
