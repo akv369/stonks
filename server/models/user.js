@@ -6,7 +6,7 @@ const userSchema = new Schema({
         required: true
     },
     balance: {
-        type: String,
+        type: Number,
         required: true
     },
     email: {

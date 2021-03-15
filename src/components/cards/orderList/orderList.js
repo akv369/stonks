@@ -1,92 +1,78 @@
 import {React, Component} from 'react';
+import { connect } from 'react-redux';
+import Axios from '../../../axios-base';
 
-import {Col, Row } from 'react-bootstrap';
+import * as actionTypes from '../../../store/actions';
+import DateList from './dateList'
+
+import {Col, Row, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class orderList extends Component{
+    state={
+        filteredOrders:[]
+    }
     componentDidMount() {
-       console.log('response.data');
+        Axios.get('/orders').
+        then(res=>this.setState({filteredOrders:res.data})).
+        catch(err=>console.log(err));
     }
     render(){
+        let displayCard = () => {
+            let orders = this.state.filteredOrders;     
+            let dates = [];  
+            let order = orders[0], nextOrder,equal,s1,s2;
+            for(let i=0;i<orders.length-1;i++){
+                order=orders[i];
+                nextOrder = orders[i+1];
+                s1=String(order['placedTimestamp']).slice(0,10);
+                s2=nextOrder['placedTimestamp'].slice(0,10);
+                equal = s1.toString().localeCompare(s2.toString());
+                if(equal!==0)dates.push(s1)
+            }
+            dates.push(s2)
+            console.log(dates)
+            return(
+                dates.map(date => {
+                    let datewiseOrders=[];
+                    for(let i=0;i<orders.length;i++){
+                        order=orders[i];
+                        s1=String(order['placedTimestamp']).slice(0,10);
+                        equal = s1.toString().localeCompare(date);
+                        if(equal===0)datewiseOrders.push(order)
+                    }
+                    const dated = String(date)
+                    let dd = dated.slice(8,10), mm = dated.slice(5,7), yyyy = dated.slice(0,4);
+                    const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                    'July', 'August', 'September', 'October', 'November', 'December'];
+                    const showDate = dd + ' ' + months[mm-1] + ' ' + yyyy;
+                    return(
+                        <div>
+                            <h5 className="text-secondary my-4" >{showDate}</h5>
+                            <DateList orders={datewiseOrders}/>
+                        </div>
+                    )
+                })
+            )
+        }
         return (
             <div>
-                
-                        <h5 className="text-secondary my-4" >2 February 2021</h5>
-                            <Row className="my-3">
-                                <Col sm={4}>
-                                    Company Name<br/>
-                                    <div className="text-secondary" style={{fontSize:"0.75rem"}}>Buy . Regular</div>
-                                </Col>
-                                <Col sm={3}>
-                                    100 Shares
-                                </Col>
-                                <Col sm={3}>
-                                    $42.80
-                                    <div className="text-secondary" style={{fontSize:"0.75rem"}}>Limit Price</div>
-                                </Col>
-                                <Col sm={2}>
-                                    12:59 AM 
-                                    <span className="float-right text-warning">⬤</span>
-                                </Col>
-                            </Row>
-                            <hr style={{color:"grey"}}/>
-                            <Row className="mb-3">
-                                <Col sm={4}>
-                                    Company Name<br/>
-                                    <div className="text-secondary" style={{fontSize:"0.75rem"}}>Sell . Regular</div>
-                                </Col>
-                                <Col sm={3}>
-                                    50 Shares
-                                </Col>
-                                <Col sm={3}>
-                                    $42.80
-                                    <div className="text-secondary" style={{fontSize:"0.75rem"}}>Average Price</div>
-                                </Col>
-                                <Col sm={2}>
-                                    12:59 AM 
-                                    <span className="float-right text-success">⬤</span>
-                                </Col>
-                            </Row>
-                            
-                        <h5 className="text-secondary my-4" >31 January 2021</h5>
-                            <Row className="my-3">
-                                <Col sm={4}>
-                                    Company Name<br/>
-                                    <div className="text-secondary" style={{fontSize:"0.75rem"}}>Buy . Regular</div>
-                                </Col>
-                                <Col sm={3}>
-                                    100 Shares
-                                </Col>
-                                <Col sm={3}>
-                                    $42.80
-                                    <div className="text-secondary" style={{fontSize:"0.75rem"}}>Limit Price</div>
-                                </Col>
-                                <Col sm={2}>
-                                    12:59 AM 
-                                    <span className="float-right text-danger">⬤</span>
-                                </Col>
-                            </Row>
-                            <hr style={{color:"grey"}}/>
-                            <Row className="mb-3">
-                                <Col sm={4}>
-                                    Company Name<br/>
-                                    <div className="text-secondary" style={{fontSize:"0.75rem"}}>Sell . Regular</div>
-                                </Col>
-                                <Col sm={3}>
-                                    50 Shares
-                                </Col>
-                                <Col sm={3}>
-                                    $42.80
-                                    <div className="text-secondary" style={{fontSize:"0.75rem"}}>Average Price</div>
-                                </Col>
-                                <Col sm={2}>
-                                    12:59 AM 
-                                    <span className="float-right text-success">⬤</span>
-                                </Col>
-                            </Row>
+                {displayCard()}
             </div>
-        );
+        )
     }
 }
 
-export default orderList;
+const mapStateToProps = state => {
+    return {
+        userID: state.SET_USER.currentUser._id
+    }
+};
+  
+const mapDispatchToProps = dispatch => {
+    return {
+        setPagination: (pageDetails) => dispatch({type: actionTypes.SET_PAGE_DETAILS, pageDetails: pageDetails})
+    }
+};
+  
+export default connect(mapStateToProps, mapDispatchToProps)(orderList);

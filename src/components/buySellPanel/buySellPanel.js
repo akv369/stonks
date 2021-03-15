@@ -14,18 +14,19 @@ class buySellPanel extends Component{
         buttonDisabled: true,
         order: 'Market',
         type: 'Delivery',
-        shares: 1,
+        shares: 0,
         price: this.props.buySell.cmp
     }
     componentDidUpdate(){
+        if(this.state.price===undefined)this.setState({price:this.props.buySell.cmp})
         const balance = Number(this.props.userBalance);
         const price = Number(this.state.price);
         const shares = Number(this.state.shares);
-        if(this.state.hash==='Buy'){
-            if(balance>=price*shares&&this.state.buttonDisabled===true){
+        if(this.state.hash==='Buy'&&shares>0){
+            if(balance>=price*shares && this.state.buttonDisabled){
                 this.setState({buttonDisabled:false})
             }
-            if(balance<price*shares&&this.state.buttonDisabled===false){
+            if(balance<price*shares && !this.state.buttonDisabled){
                 this.setState({buttonDisabled:true})
             }
         }
@@ -46,11 +47,11 @@ class buySellPanel extends Component{
                 balanceBeforeTransaction: this.props.userBalance
             }
             Axios.post('/order',sendData).
-            then(response=>{console.log(response)}).
-            catch(err=>{console.log(err)});
+            then(response=>console.log(response)).
+            catch(err=>console.log(err));
         }
         const formPrice = () => {
-            if(this.state.order==='market')
+            if(this.state.order==='Market')
                 return <span style={{fontSize:'1.5rem'}} >${this.props.buySell.cmp}</span>
             else 
                 return <Form.Control type="number" step=".01" min="0.01" onChange={(e) => this.setState({price:e.target.value})}/>

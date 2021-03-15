@@ -6,37 +6,39 @@ const Order = require('../models/order');
 const mongoose = require('mongoose');
 
 exports.getOrder = (req, res) => {
-    console.log(req.params.orderID);
-    res.send('get');
+    Order.findOne({_id:req.params.orderID}).
+    then(resp=>res.send(resp)).
+    catch(err=>console.log(err));
 };
 
 exports.postOrder = (req,res) => {
-    console.log('Create Order');
     let fetchedData;
     fetchStock();
     async function fetchStock() {
-        await Stock.findOne({code:req.body.code}).
-        then(res => fetchedData=res).
-        catch(err => console.log(err));
         
-
         const userID = req.body.userID;
         const code = req.body.code;
-        const name = fetchedData.name;
         const quantity = Number(req.body.quantity);
         const type = req.body.type;
         const order = req.body.order;
         const subType = req.body.subType;
-        const balanceBeforeTransaction = req.body.balanceBeforeTransaction;
         const orderPrice = Number(req.body.orderPrice);
-        const cmp = fetchedData.cmp;
-        const exchange = fetchedData.exchange;
         const status = 'In Progress';
         const progress = 'Verified';
+        await Stock.findOne({code:req.body.code}).
+        then(res => fetchedData=res).
+        catch(err => console.log(err));
+        const name = fetchedData.name;
+        const cmp = fetchedData.cmp;
+        const exchange = fetchedData.exchange;
+        let balanceBeforeTransaction;
+        await User.findOne({_id:req.body.userID}).
+        then(res => balanceBeforeTransaction=res.balance).
+        catch(err => console.log(err));
         const now = new Date();
-        let times = dateTime.format(now, 'DD/MM/YYYY HH:mm:ss');
-        let verifiedTimestamp = times;
-        const totalAmount = subType==='Market' ? quantity * cmp : quantity * orderPrice;
+        const verifiedTimestamp = dateTime.format(now, 'YYYY-MM-DD HH:mm:ss A [GMT]Z');
+        let totalAmount = subType==='Market' ? quantity * cmp : quantity * orderPrice;
+        totalAmount = totalAmount.toFixed(2);
         const saveOrder = new Order({
             userID : userID,
             code : code,
@@ -61,18 +63,72 @@ exports.postOrder = (req,res) => {
 }
 
 exports.placeOrders = (req, res) => {
-    console.log('placeorders');
-    res.send('To be Placed')
+    Order.find({progress : 'Verified'}).
+    then(result=>{
+        for(let i=0;i<result.length;i++){
+            const currentOrder=result[i];
+            const type = currentOrder.type;
+            const balance = currentOrder.balanceBeforeTransaction;
+            const amount = currentOrder.totalAmount
+            let balanceAfterTransaction = type==="Sell" ? balance + amount : balance - amount;
+            balanceAfterTransaction = balanceAfterTransaction.toFixed(2);
+            const now = new Date();
+            const timestamp = dateTime.format(now, 'YYYY-MM-DD HH:mm:ss A [GMT]Z');
+            User.updateOne({_id:currentOrder.userID},{balance: balanceAfterTransaction}).
+            then(resp=>{
+                Order.updateOne(
+                    {_id:currentOrder._id},
+                    {
+                        balanceAfterTransaction: balanceAfterTransaction,
+                        progress: "Placed",
+                        placedTimestamp: timestamp
+                }).
+                then(response => {res.redirect('/executeOrders');}).
+                catch(err => {console.log(err)})
+            }).
+            catch(err=>console.log(err))
+        }
+    }).
+    catch(err=>console.log(err))
+};
+
+exports.executeOrders = (req, res) => {
+    Order.find({progress : 'Placed'}).
+    then(result=>{
+        for(let i=0;i<result.length;i++){
+            const currentOrder=result[i];
+            const now = new Date();
+            const timestamp = dateTime.format(now, 'YYYY-MM-DD HH:mm:ss A [GMT]Z');
+            Order.updateOne(
+                {_id:currentOrder._id},
+                {
+                    progress: "Executed",
+                    status: "Successful",
+                    executedTimestamp: timestamp
+            }).
+            then( result => console.log(currentOrder._id + ' executed...')).
+            catch(err => {console.log(err)})
+        }
+    }).
+    catch(err=>console.log(err))
+    res.send('Executed')
 };
 
 exports.getOrders = (req, res) => {
-    console.log('orders');
-    res.send('get');
+    Order.find({userID:req.user._id}).
+    sort({placedTimestamp:-1}).
+    then(resp=>res.send(resp)).
+    catch(err=>console.log(err))
 };
 
 exports.getDashboard = (req, res) => {
     console.log('dashboard');
     res.send('get');
+};
+
+exports.postPortfolio = (req, res) => {
+    console.log('portfolio');
+    res.send('post');
 };
 
 exports.getWatchlist = (req, res) => {

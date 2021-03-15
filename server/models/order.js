@@ -17,7 +17,7 @@ const orderSchema = new Schema({
         required: true
     },
     quantity: {
-        type: String,
+        type: Number,
         required: true
     },
     type: {
@@ -60,14 +60,14 @@ const orderSchema = new Schema({
         required: true
     },
     verifiedTimestamp: {
-        type: Date,
+        type: String,
         required: true
     },
     placedTimestamp: {
-        type: Date
+        type: String
     },
     executedTimestamp: {
-        type: Date
+        type: String
     },
     totalAmount: {
         type: Number,

@@ -19,12 +19,13 @@ exports.getStock = (req, res) => {
         async function fetchData(){
             await fetchFromApi();
             async function fetchFromApi(){
+                console.log(req.params.stockID)
                 await axios.get(path).
                 then(response => {
                     avData = response.data;
                     if(avData['Sector']===undefined){ res.send({state:'invalid'}); }
                 }).
-                catch(err=>{console.log(err);})    
+                catch(err=>{console.log(err);})   
                 await axios.get(tdPath).
                 then( response => { tdData = response.data; }).
                 catch(err=>{console.log(err);})    

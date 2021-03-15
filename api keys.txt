@@ -1,5 +1,0 @@
-twelve data : d609067766fb4ac9bcd8a24d328d7a13
-alpha vintage : OR7C580Y9LGTY7ZE
-oauth client id : 285744579717-t5tgvcl5t0jm5p03g8ubsgc412kseohs.apps.googleusercontent.com
-client secret : NotW_RDca8qKHAq8-rPES9tZ
-firebase: AIzaSyC2Q9rtKGvpDR5-kiABKr9EZws36apJ-LU

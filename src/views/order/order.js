@@ -11,19 +11,19 @@ import {Col, Container, Row, Button} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class order extends Component{
-    state={orderID:'',print:false}
+    state={orderID:'',orderDetails:{},print:false}
     componentDidMount() {
         axios.get('/order/' +this.props.match.params.orderID) 
         .then(response => {
-            console.log(response.data);
+            this.setState({orderDetails:response.data});
         })
-        this.setState({orderID:this.props.match.params.orderID});
     }
     render(){
         const orderID = this.props.match.params.orderID;
         if(this.state.print){
+            this.setState({print:false})
             const domElement = document.getElementById('your-id')
-            const fileName = 'Order_'+ this.state.orderID +'.pdf';
+            const fileName = 'Order_'+ orderID +'.pdf';
             html2canvas(domElement, { onclone: (document) => {
                 document.getElementById('print-button').style.visibility = 'hidden'
             }})
@@ -32,22 +32,22 @@ class order extends Component{
                 const pdf = new jsPdf('landscape')
                 pdf.addImage(img, 'PNG', -20, -15, 330, 150)
                 pdf.save(fileName);
-                this.setState({print:false})
             })
         }
+        const order=this.state.orderDetails
         return (
             <div id="your-id">
-                <Navbar/>
-                <Container className="mt-5">
-                    <h2 className="m-3">Order #{orderID}</h2>
+                <Container>
+                    <Navbar/>
+                    <h2 className="m-3 mt-5">Order #{order._id}</h2>
                     <Row className="mt-4">
                         <Col>
-                            <OrderDetails orderID={orderID}/>
+                            <OrderDetails order={order}/>
                         </Col>
                     </Row>
                     <Row>
                         <Col sm={{offset:3}} className="mt-5">
-                            <OrderStatus orderID={orderID}/>
+                            <OrderStatus order={order}/>
                         </Col>
                     </Row>
                 </Container>

@@ -4,9 +4,11 @@ const userC = require('../controllers/user');
 const router = express.Router();
 
 router.get('/order/:orderID', userC.getOrder);
-router.post('/order', userC.postOrder)
-router.get('/orders', userC.getOrders)
-router.get('/placeOrders', userC.placeOrders)
+router.get('/orders', userC.getOrders);
+router.post('/order', userC.postOrder);
+router.get('/placeOrders', userC.placeOrders);
+router.get('/executeOrders', userC.executeOrders);
+router.post('/addToPortfolio', userC.postPortfolio);
 router.get('/dashboard', userC.getDashboard);
 router.get('/watchlist', userC.getWatchlist);
 router.post('/addToWatchlist', userC.addToWatchList);
