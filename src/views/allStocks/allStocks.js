@@ -47,7 +47,9 @@ class allStocks extends Component{
                                 </ListGroup.Item>
                             </ListGroup>
                             <ListCard/>
-                            <PageNumbers/>
+                            <div className="position-fixed fixed-bottom" style={{marginLeft:"820px"}}>
+                                <PageNumbers/>
+                            </div>
                         </Col>
                     </Row>
                 </Container>

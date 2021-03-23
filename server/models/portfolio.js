@@ -8,8 +8,7 @@ const portfolioSchema = new Schema({
         required: true
     },
     portfolioValue: {
-        type: Number,
-        required: true
+        type: Number
     },
     investedValue: {
         type: Number,
@@ -19,42 +18,27 @@ const portfolioSchema = new Schema({
         type: Number,
         required: true
     },
-    _1dReturns: {
-        type: Number,
-        required: true
-    },
     stocks: [{
         code: {
-            type: String,
-            required: true
+            type: String
         },
         name: {
-            type: String,
-            required: true
+            type: String
         },
         quantity: {
-            type: Number,
-            required: true
+            type: Number
         },
         averagePrice: {
-            type: Number,
-            required: true
+            type: Number
         },
         returns: {
-            type: Number,
-            required: true
+            type: Number
         },
         returnsPercent: {
-            type: Number,
-            required: true
+            type: Number
         },
         value: {
-            type: Number,
-            required: true
-        },
-        valuePercent: {
-            type: Number,
-            required: true
+            type: Number
         }
     }]
 });

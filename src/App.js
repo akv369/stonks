@@ -6,6 +6,7 @@ import './App.css';
 import Axios from './axios-base';
 import * as actionTypes from './store/actions';
 
+import Spinner from './components/spinner/spinner';
 import loginScreen from './views/login/loginScreen';
 import watchList from './views/watchList/watchList';
 import dashboard from './views/dashboard/dashboard';
@@ -41,7 +42,7 @@ class App extends Component{
     :
     this.state.loading===true ?
     <Switch>
-      <Route path="/" component={home} />
+      <Spinner mT={"350px"}/>
     </Switch>
     :
     <Switch>

@@ -60,7 +60,7 @@ class listCard extends Component{
                         </Card.Text>
                     </Card.Body>
                     <Card.Footer className="text-muted" style={{fontSize:"0.75rem"}}>
-                        {showTime(this.props.order['executedTimestamp'])}
+                        {showTime(this.props.order['verifiedTimestamp'])}
                     </Card.Footer>
                 </Card>
             </div>

@@ -3,34 +3,44 @@ import {connect} from 'react-redux'
 
 import * as actionTypes from '../../store/actions'
 
-import Pagination from 'react-bootstrap-4-pagination';
+import {Pagination} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-class pagination extends Component{
-    render(){
-        const currentPage=this.props.pageDetails.currentPage;
-        const lastPage=this.props.pageDetails.lastPage;
-        const handleChange = (page) => {
+class pageNumbers extends Component{
+    state={
+        currentPage: 1,
+        stockPerPage: 8,
+        lastPage: 1
+    }
+    componentDidMount() {
+        this.setState({
+            currentPage: this.props.pageDetails.currentPage,
+            stockPerPage: this.props.pageDetails.stockPerPage,
+            lastPage: this.props.pageDetails.lastPage
+        })
+    }
+    componentDidUpdate(){
+        if(this.state.currentPage!==this.props.pageDetails.currentPage){
             const pageDetails={
-                currentPage: page,
-                lastPage: lastPage,
-                stockPerPage: this.props.pageDetails.stockPerPage
+                currentPage: this.state.currentPage,
+                stockPerPage: this.state.stockPerPage,
+                lastPage: this.state.lastPage
             }
-            this.props.setPagination(pageDetails)
+            this.props.setPagination(pageDetails);
         }
-        const pageConfig = {
-            totalPages: lastPage,
-            currentPage: currentPage,
-            showMax: 5,
-            threeDots: true,
-            prevNext: true,
-            onClick: function (page) {
-                handleChange(page);
-           }
-        };
+    }
+    render(){
+        const currentPage=this.state.currentPage;
+        const lastPage=this.state.lastPage;
         return (
             <div className="mt-3">
-                <Pagination {...pageConfig}/>
+                <Pagination>
+                    <Pagination.First disabled={currentPage!==1 ? false:true} onClick={()=>this.setState({currentPage:1})}/>
+                    <Pagination.Prev disabled={currentPage!==1 ? false:true} onClick={()=>this.setState({currentPage:currentPage-1})}/>
+                    <Pagination.Item active>{currentPage}</Pagination.Item>
+                    <Pagination.Next disabled={currentPage!==lastPage ? false:true} onClick={()=>this.setState({currentPage:currentPage+1})}/>
+                    <Pagination.Last disabled={currentPage!==lastPage ? false:true} onClick={()=>this.setState({currentPage:lastPage})}/>
+                </Pagination>
             </div>
         );
     }
@@ -48,4 +58,4 @@ const mapStateToProps = state => {
     };
   };
   
-  export default connect(mapStateToProps, mapDispatchToProps)(pagination);
+  export default connect(mapStateToProps, mapDispatchToProps)(pageNumbers);

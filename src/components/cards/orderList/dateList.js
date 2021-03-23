@@ -7,12 +7,12 @@ class orderList extends Component{
     render(){
         
         let displayCard = () => {
-            let orders = this.props.orders;     
+            let orders = this.props.orders;  
             return(
             orders.map(order => {
                 const dotColor = order['status']==='In Progress' ? 'warning' : 'success';
                 const refLink = '/order/'+order['_id'];
-                let time = order['placedTimestamp'].slice(11,16) + order['placedTimestamp'].slice(19,22)
+                let time = order['verifiedTimestamp'].slice(11,16) + order['verifiedTimestamp'].slice(19,22)
                 return(
                     <div>
                         <Button href={refLink} variant="white" style={{width:'100%', padding:"0px", border:'none', textAlign:'left'}}>

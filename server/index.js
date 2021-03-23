@@ -48,8 +48,9 @@ const User = require('./models/user')
 
 mongoose.connect(
   mongoDbUri,
-    { useNewUrlParser: true },
-    { useUnifiedTopology: true }
+    { useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false }
   )
   .then(() => {
     User.findOne().then(user=>{

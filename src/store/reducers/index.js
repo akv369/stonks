@@ -14,9 +14,8 @@ const initialState = {
     lastPage:1
   },
   orderFilters: {
-    type: 0,
-    progress: 0,
-    name: 0
+    type: 'All',
+    status: 'All'
   },
   stock:{}
 };

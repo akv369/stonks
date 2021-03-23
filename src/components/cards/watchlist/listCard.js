@@ -27,7 +27,7 @@ class listCard extends Component{
             this.props.buySell({
                 cmp: stock['cmp'],
                 companyName: stock['name'],
-                companyCode: stock['code']
+                companySymbol: stock['code']
             })
         }
         let displayCard = () => {

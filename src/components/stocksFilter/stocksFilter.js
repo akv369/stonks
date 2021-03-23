@@ -67,7 +67,7 @@ class stocksFilter extends Component{
                 <Card className="shadow-sm">
                     <ListGroup variant="flush">
                         <ListGroup.Item>
-                            <h6 className="font-weight-bold float-left mt-2">
+                            <h6 className="font-weight-bold float-left m-0 text-info">
                                 Apply Filters
                             </h6>
                             {/* <Badge pill variant="info" className="float-right mt-2">
@@ -75,7 +75,7 @@ class stocksFilter extends Component{
                             </Badge> */}
                         </ListGroup.Item>
                         <ListGroup.Item>
-                            <div className="mb-2">
+                            <div className="text-center text-secondary m-1" style={{fontSize:"0.75rem"}}>
                                 SECTORS
                             </div>
                             <div>
@@ -198,8 +198,8 @@ class stocksFilter extends Component{
                             </div>
                         </ListGroup.Item>
                         <ListGroup.Item>
-                            <div className="mb-2">
-                                MARKET CAP ($bn)
+                            <div className="text-center text-secondary m-1" style={{fontSize:"0.75rem"}}>
+                                MARKET CAP ($BN)
                             </div>
                             <Form.Row>
                                 <Col md="5">
@@ -212,8 +212,8 @@ class stocksFilter extends Component{
                                     />
                                 </Form.Group>
                                 </Col>
-                                <span className="m-1">to</span>
-                                <Col md="5">
+                                <Col md={1}>_</Col>
+                                <Col md="6">
                                 <Form.Group>
                                     <Form.Control
                                         type="number" step=".01"
@@ -226,8 +226,8 @@ class stocksFilter extends Component{
                             </Form.Row>
                         </ListGroup.Item>
                         <ListGroup.Item>
-                            <div className="mb-2">
-                                CLOSING PRICE
+                            <div className="text-center text-secondary m-1" style={{fontSize:"0.75rem"}}>
+                                CURRENT MARKET PRICE
                             </div>
                             <Form.Row>
                                 <Col md="5">
@@ -240,8 +240,8 @@ class stocksFilter extends Component{
                                     />
                                 </Form.Group>
                                 </Col>
-                                <span className="m-1">to</span>
-                                <Col md="5">
+                                <Col md={1}>_</Col>
+                                <Col md="6">
                                 <Form.Group>
                                     <Form.Control
                                         type="number" step=".01"

@@ -59,11 +59,11 @@ class stockGraph extends Component{
                                 <Pagination.Item active={this.state.currentTime==='5Y'?true:false}>5Y</Pagination.Item>
                             </Pagination>
                         </Col>
-                        <Col 
-                            className="float-right ml-5" 
-                            style={{fontSize:"1.4rem"}}>
+                        <Col sm={1} className="ml-5">
                             <Button variant="white" onClick={()=>handleEye()}>
-                                <span className={"text-"+eyeColour}><FontAwesomeIcon icon={faEye} /></span>
+                                <span className={"text-"+eyeColour}>
+                                    <FontAwesomeIcon icon={faEye} />
+                                </span>
                             </Button>
                         </Col>
                     </Row>
