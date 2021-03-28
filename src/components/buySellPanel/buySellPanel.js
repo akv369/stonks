@@ -19,23 +19,32 @@ class buySellPanel extends Component{
         shares: 0,
         price: this.props.buySell.cmp,
         loading: false,
-        status:''
+        status:'',
+        sharesAvailable: 0
     }
     componentDidUpdate(){
+        Axios.get('/dashboard/' + this.props.code)
+        .then(res=>this.setState({sharesAvailable:res.data.quantity}))
+        .catch(err=>console.log(err))
         if(this.state.price===undefined)this.setState({price:this.props.buySell.cmp})
         const balance = Number(this.props.userBalance);
         const price = Number(this.state.price);
         const shares = Number(this.state.shares);
-        if(this.state.hash==='Buy'&&shares>0){
-            if(balance>=price*shares && this.state.buttonDisabled){
+        const sharesAvailable = Number(this.state.sharesAvailable);
+        const buttonDisabled = this.state.buttonDisabled;
+        if(this.state.hash==='Buy' && shares>0){
+            if(balance>=price*shares && buttonDisabled){
                 this.setState({buttonDisabled:false})
             }
-            if(balance<price*shares && !this.state.buttonDisabled){
+            if(balance<price*shares && !buttonDisabled){
                 this.setState({buttonDisabled:true})
             }
         }
         else{
-            console.log('Sell')
+            if(sharesAvailable>=shares && shares>0 && buttonDisabled)
+                this.setState({buttonDisabled:false})
+            if(sharesAvailable<shares && !buttonDisabled)
+                this.setState({buttonDisabled:true})
         }
     }
     componentWillUpdate(){
@@ -53,6 +62,7 @@ class buySellPanel extends Component{
         }
     }
     render(){
+        const sharesAvailable = this.state.sharesAvailable, hash= this.state.hash;
         const companyCode = this.props.code, userID= this.props.userID;
         let placeOrder = () => {
             const sendData = {
@@ -72,6 +82,13 @@ class buySellPanel extends Component{
             }).
             catch(err=>console.log(err));
             this.setState({loading:true})
+        }
+        const sharesOwned = () => {
+            if(hash==="Sell")return(
+                <div style={{fontSize:"0.75rem"}} className="text-secondary">
+                    You own {sharesAvailable} shares
+                </div>
+            )
         }
         const formPrice = () => {
             if(this.state.order==='Market')
@@ -118,7 +135,10 @@ class buySellPanel extends Component{
                         </Nav>
                     </Card.Header>
                     <Card.Body>
-                        <Card.Title className="mt-3" style={{height:"50px"}}>{this.props.buySell.companyName}</Card.Title>
+                        <Card.Title className="mt-3" style={{height:"50px"}}>
+                            {this.props.buySell.companyName}
+                            {sharesOwned()}
+                        </Card.Title>
                         <Card.Text>
                             <div className="m-2">
                                 <Form>

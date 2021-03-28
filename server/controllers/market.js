@@ -19,7 +19,6 @@ exports.getStock = (req, res) => {
         async function fetchData(){
             await fetchFromApi();
             async function fetchFromApi(){
-                console.log(req.params.stockID)
                 await axios.get(path).
                 then(response => {
                     avData = response.data;

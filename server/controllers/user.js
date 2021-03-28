@@ -4,7 +4,6 @@ const User = require('../models/user');
 const Stock = require('../models/stock');
 const Order = require('../models/order');
 const Portfolio = require('../models/portfolio');
-const mongoose = require('mongoose');
 
 exports.getOrder = (req, res) => {
     Order.findOne({_id:req.params.orderID}).
@@ -176,11 +175,29 @@ exports.executeOrders = (req, res) => {
                             }
                             else{
                                 let currentStock = stocksInPortfolio[index];
-                                currentStock.value = (currentStock.value + currentOrder.totalAmount).toFixed(2);
-                                currentStock.quantity = currentStock.quantity + currentOrder.quantity;
-                                currentStock.averagePrice = (currentStock.value/currentStock.quantity).toFixed(2);
-                                stocksInPortfolio[index] = currentStock;
-                                const investedValue = (respo.investedValue + currentOrder.totalAmount).toFixed(2);
+                                let investedValue = respo.investedValue;
+                                if(currentOrder.type==="Buy"){
+                                    currentStock.value = (currentStock.value + currentOrder.totalAmount).toFixed(2);
+                                    currentStock.quantity = currentStock.quantity + currentOrder.quantity;
+                                    currentStock.averagePrice = (currentStock.value/currentStock.quantity).toFixed(2);
+                                    stocksInPortfolio[index] = currentStock;
+                                    investedValue = (respo.investedValue + currentOrder.totalAmount).toFixed(2);
+                                }
+                                else{
+                                    currentStock.value = (currentStock.value - currentOrder.totalAmount).toFixed(2);
+                                    currentStock.quantity = currentStock.quantity - currentOrder.quantity;
+                                    currentStock.averagePrice = (currentStock.value/currentStock.quantity).toFixed(2);
+                                    stocksInPortfolio[index] = currentStock;
+                                    if(currentStock.quantity===0){
+                                        stocksInPortfolio
+                                        for(let i=index;i<stocksInPortfolio.length-1;i++){
+                                            stocksInPortfolio[i]=stocksInPortfolio[i+1];
+                                        }
+                                        stocksInPortfolio.pop();
+                                    }
+                                    const deduct = currentStock.averagePrice*currentOrder.quantity;
+                                    investedValue = (respo.investedValue - deduct).toFixed(2);
+                                }
                                 Portfolio.updateOne({_id: respo._id},{
                                     investedValue: investedValue,
                                     stocks:stocksInPortfolio
@@ -218,6 +235,19 @@ exports.getOrders = (req, res) => {
 exports.getDashboard = (req, res) => {
     Portfolio.findOne({userID:req.user._id}).
     then(resp=>res.send(resp)).
+    catch(err=>console.log(err))
+};
+
+exports.getAvailableStocks = (req, res) => {
+    const stockID = req.params.stockID;
+    Portfolio.findOne({userID:req.user._id}).
+    then(resp=>{
+        const stocks = resp.stocks;
+        for(let i=0;i<stocks.length;i++){
+            const stock = stocks[i];
+            if(stock.code===stockID)res.send(stock);
+        }
+    }).
     catch(err=>console.log(err))
 };
 
