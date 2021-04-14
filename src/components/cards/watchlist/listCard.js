@@ -6,16 +6,19 @@ import * as actionTypes from '../../../store/actions';
 
 import { Card, Col, ListGroup, Row, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Link } from 'react-router-dom';
+import Spinner from '../../spinner/spinner'
 
 class listCard extends Component{
     state = {
         filteredStocks:[],
-        activeButton:''
+        activeButton:'',
+        fetching: true
     }
     componentDidMount() {
         Axios.get('/watchlist')
         .then(response => {
-            this.setState({filteredStocks:response.data});
+            this.setState({filteredStocks:response.data, fetching:false});
         })
         .catch(err => {
             console.log(err);
@@ -44,15 +47,15 @@ class listCard extends Component{
                     <div>
                         <Button variant="white" style={{width:'100%', padding:"0px", border:'none', textAlign:'left'}}>
                     <ListGroup.Item 
-                        variant={this.state.activeButton===name?"info":"white"}
+                        variant="white"
                         onClick={()=>handleChange(stock)}>
                         <Row>
                             <Col sm={4} 
                                 className="text-info"
                                 style={{fontSize:"0.85rem"}}>
-                                    <a href={refLink}>
+                                    <Link to={refLink}>
                                         {name}
-                                    </a>
+                                    </Link>
                             </Col>
                             <Col sm={2} className={"text-" + _200dmaColour}>
                                 ${_200dma}
@@ -78,13 +81,20 @@ class listCard extends Component{
                 )
             }))
         }
+        const renderer = () => {
+            if(this.state.fetching)
+                return <Spinner />
+            else return(
+                    <Card>
+                        <ListGroup variant="flush">
+                            {displayCard()}
+                        </ListGroup>
+                    </Card>
+            )
+        }
         return (
             <div>
-                <Card>
-                    <ListGroup variant="flush">
-                        {displayCard()}
-                    </ListGroup>
-                </Card>
+                {renderer()}
             </div>
         );
     }

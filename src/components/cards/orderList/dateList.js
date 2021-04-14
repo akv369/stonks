@@ -2,6 +2,7 @@ import {React, Component} from 'react';
 
 import {Col, Row, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Link } from 'react-router-dom';
 
 class orderList extends Component{
     render(){
@@ -15,15 +16,20 @@ class orderList extends Component{
                 let time = order['verifiedTimestamp'].slice(11,16) + order['verifiedTimestamp'].slice(19,22)
                 return(
                     <div>
-                        <Button href={refLink} variant="white" style={{width:'100%', padding:"0px", border:'none', textAlign:'left'}}>
+                        <Link to={refLink}>
+                        <Button variant="white" style={{width:'100%', padding:"0px", border:'none', textAlign:'left'}}>
                             <Row>
                                 <Col sm={4}>
                                     {order['name']}<br/>
                                     <div className="text-secondary" style={{fontSize:"0.75rem"}}>
-                                        {order['type']} . {order['subType']}</div>
+                                        {order['subType']}
+                                    </div>
                                 </Col>
                                 <Col sm={3}>
-                                    {order['quantity']} Shares
+                                    {order['quantity']} Shares <br/>
+                                    <div className="text-secondary" style={{fontSize:"0.75rem"}}>
+                                        {order['type']}
+                                    </div>
                                 </Col>
                                 <Col sm={3}>
                                     ${order['orderPrice']}
@@ -35,6 +41,7 @@ class orderList extends Component{
                                 </Col>
                             </Row>
                         </Button>
+                        </Link>
                         <hr style={{color:"grey"}}/>
                     </div>
                 )}

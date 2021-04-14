@@ -2,6 +2,7 @@ import {React, Component} from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from './searchSuggestions.module.css';
+import { Link } from 'react-router-dom';
 
 class searchSuggestions extends Component{
     render(){
@@ -13,12 +14,12 @@ class searchSuggestions extends Component{
                     <div className={styles.Item}>
                         {nameArr.map(stockName => {
                             return(
-                                <a href={"/stock/"+codeArr[j]}>
+                                <Link to={"/stock/"+codeArr[j]}>
                                     <span className="float-left">{stockName}</span>
                                     <span className="float-right">{codeArr[j++]}</span>
                                     <br/>
                                     <hr className="text-muted" style={{margin:'1px'}}/>
-                                </a>
+                                </Link>
                             )
                         })}
                     </div>

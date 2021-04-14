@@ -26,7 +26,7 @@ class buySellPanel extends Component{
         Axios.get('/dashboard/' + this.props.code)
         .then(res=>this.setState({sharesAvailable:res.data.quantity}))
         .catch(err=>console.log(err))
-        if(this.state.price===undefined)this.setState({price:this.props.buySell.cmp})
+        if(this.state.price===undefined)this.setState({price:Number(this.props.buySell.cmp)})
         const balance = Number(this.props.userBalance);
         const price = Number(this.state.price);
         const shares = Number(this.state.shares);
@@ -92,7 +92,7 @@ class buySellPanel extends Component{
         }
         const formPrice = () => {
             if(this.state.order==='Market')
-                return <span style={{fontSize:'1.5rem'}} >${this.props.buySell.cmp}</span>
+                return <span style={{fontSize:'1.30rem'}} >${this.props.buySell.cmp}</span>
             else 
                 return <Form.Control type="number" step=".01" min="0.01" onChange={(e) => this.setState({price:e.target.value})}/>
         }
@@ -101,7 +101,7 @@ class buySellPanel extends Component{
                 <div style={{height:'491px'}}>
                     <Card.Header>Invest in a Stock</Card.Header>
                     <Card.Body>
-                        <Card.Title className="mb-3 mt-3 text-center">
+                        <Card.Title className="my-3 text-center">
                             <img 
                             src={imgPath}
                             style={{marginTop:"100px", width:'10%'}}/>
@@ -273,7 +273,7 @@ class buySellPanel extends Component{
         let renderer = this.state.status==="Verified" ? orderVerified() :
         this.state.status==="Placed" ? orderPlaced() :
         this.state.status==="Executed" ? orderExecuted() :
-        this.state.loading===true ? <div style={{height:'491px'}}><Spinner mT="220px"/></div> :
+        this.state.loading===true ? <div style={{height:'491px'}}><Spinner/></div> :
         this.props.buySell.cmp===undefined ? selectAStock() : orderForm() ;
         return (
             <div style={{width:"300px"}} className="shadow-sm">

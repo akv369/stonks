@@ -32,7 +32,7 @@ class dashboard extends Component{
         }
         const renderer = () => { 
             if(this.state.loading===true){
-                return ( <div style={{height:"491px"}}><Spinner mT={"240px"}/></div> ) 
+                return ( <div style={{height:"491px"}}><Spinner/></div> ) 
             }
             else{
                 return(

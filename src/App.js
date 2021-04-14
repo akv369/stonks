@@ -25,31 +25,34 @@ class App extends Component{
     Axios.get('/getUser')
     .then(response=>{
       this.props.setUser(response.data);
+      console.log(response.data)
       this.setState({user:response.data,loading:false});
     })
   }
   render(){
-    let option = this.state.user!==null ?
+    let renderer = this.state.user!==null ?
     <Switch>
-      <Route path="/orders" component={orders} />
-      <Route path="/dashboard" component={dashboard} />
-      <Route path="/stocks" component={allStocks} />
-      <Route path="/watchlist" component={watchList} />
-      <Route path="/stock/:stockID" component={stock} />
-      <Route path="/order/:orderID" component={order} />
+      <Route path="/orders" exact component={orders} />
+      <Route path="/dashboard" exact component={dashboard} />
+      <Route path="/stocks" exact component={allStocks} />
+      <Route path="/watchlist" exact component={watchList} />
+      <Route path="/stock/:stockID" exact component={stock} />
+      <Route path="/order/:orderID" exact component={order} />
       <Route path="/" component={home} />
     </Switch>
     :
     this.state.loading===true ?
-    <Switch>
-      <Spinner mT={"350px"}/>
-    </Switch>
+      <Switch>
+        <Spinner/>
+      </Switch>
     :
-    <Switch>
-      <Route path="/" component={loginScreen} />
-    </Switch>;
+      <Switch>
+        <Route path="/" component={loginScreen} />
+      </Switch>;
     return (
-      <div>{option}</div>
+      <div className="app">
+        {renderer} 
+      </div>
     );
   }
 }

@@ -14,28 +14,29 @@ class orderList extends Component{
         orderFilters: {
             type:'',
             status:''
-        }
+        },
+        fetching: true
     }
     componentDidMount() {
         const sendData = this.props.orderFilters;
         this.setState({orderFilters:sendData});
         Axios.post('/orders', sendData).
-        then(res=>this.setState({filteredOrders:res.data})).
+        then(res=>this.setState({filteredOrders:res.data, fetching: false})).
         catch(err=>console.log(err));
     }
     componentWillUpdate() {
         if(this.props.orderFilters.status!==this.state.orderFilters.status || this.props.orderFilters.type!==this.state.orderFilters.type){
             const sendData = this.props.orderFilters;
-            this.setState({orderFilters:sendData});
+            this.setState({orderFilters:sendData, fetching:true});
             Axios.post('/orders', sendData).
-            then(res=>this.setState({filteredOrders:res.data})).
+            then(res=>this.setState({filteredOrders:res.data, fetching: false})).
             catch(err=>console.log(err));
         }
     }
     render(){
         let displayCard = () => {
             let orders = this.state.filteredOrders;     
-            if(orders.length===0)<div><Spinner mT={"80px"} mL={"100px"}/></div>
+            if(orders.length===0)<div><Spinner/></div>
             else if(orders.length===1){
                 const order = orders[0];
                 let date= String(order['verifiedTimestamp']).slice(0,10);
@@ -87,9 +88,15 @@ class orderList extends Component{
                 )
             }
         }
+        const renderer = () => {
+            if(this.state.fetching)
+                return <Spinner/>
+            else 
+                return displayCard()
+        }
         return (
             <div>
-                {displayCard()}
+                {renderer()}
             </div>
         )
     }

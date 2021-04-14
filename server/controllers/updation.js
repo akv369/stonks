@@ -13,7 +13,9 @@ exports.updateStocks = (req, res) => {
 };
 
 exports.updatePortFolios = (req,res) => {
-    let fetchedData;
+    Portfolio.find().
+    then(resp=>console.log(resp)).
+    catch(err=>console.log(err))
 }
 
 exports.updateOrders = (req, res) => {

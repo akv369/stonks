@@ -5,6 +5,7 @@ import Axios from '../../../axios-base';
 import * as actionTypes from '../../../store/actions';
 import { Card, Col, ListGroup, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Link } from 'react-router-dom';
 
 class listCard extends Component{
     state = {
@@ -86,7 +87,7 @@ class listCard extends Component{
                 const _200dmaColour = ((Number(_52wh)+Number(_52wl))/2)>Number(_200dma) ? "danger" : "success";
                 const roeColour = Number(roe)<5 ? "danger" : "success";
                 const refLink = '/stock/'+stock['code'];
-                if(name.length>25)name=name.slice(0,22)+'...';
+                if(name.length>25)name=name.slice(0,19)+'...';
                 return(
                     <div>
                     <ListGroup.Item>
@@ -94,9 +95,9 @@ class listCard extends Component{
                             <Col sm={2} 
                                 className="text-info"
                                 style={{fontSize:"0.85rem"}}>
-                                    <a href={refLink}>
+                                    <Link to={refLink}>
                                         {name}
-                                    </a>
+                                    </Link>
                             </Col>
                             <Col sm={2} className={"text-" + _200dmaColour}>
                                 ${_200dma}

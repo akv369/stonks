@@ -11,6 +11,7 @@ import StockGraph from '../../components/stockPage/stockGraph';
 import CompanyPerformance from '../../components/stockPage/companyPerformance';
 import CompanyOverview from '../../components/stockPage/companyOverview';
 import SimilarStocks from '../../components/stockPage/similarStocks';
+import Spinner from '../../components/spinner/spinner'
 
 import {Container, Row, Col} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -63,9 +64,8 @@ class stock extends Component{
             )
             else return(
                 <div className="mt-5"> 
-                    <div className="mb-4"><ContentLoader w={714} h={200}/></div>
-                    <div className="mb-4"><ContentLoader w={714} h={200}/></div>
-                    <div className="mb-4"><ContentLoader w={714} h={500}/></div>
+                    <Spinner/>
+                    {/* <div className="mb-4"><ContentLoader w={714} h={200}/></div> */}
                 </div>
             )
         }

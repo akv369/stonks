@@ -9,6 +9,9 @@ import { Container, Navbar, Nav, Form, Button, FormControl, Image } from 'react-
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import SearchSuggestions from './searchSuggestions';
+import { Link } from 'react-router-dom';
+
+import './header.css';
 
 class header extends Component{
     state = {
@@ -49,9 +52,11 @@ class header extends Component{
         return (
             <div>
                 <Container>
-                    <Navbar variant="light" style={{display:'flex', justifyContent:'space-between'}}>
-                        <Navbar.Brand href="/" className="mr-sm-5 pr-sm-5">
-                            <Image src={imgPath} style={{width:'24px',height:'24px'}} roundedCircle />{' '} Stonks
+                    <Navbar variant="light" >
+                        <Navbar.Brand>
+                            <Link to="/" className="navLink">
+                                <Image src={imgPath} style={{width:'24px',height:'24px',marginRight:'10px'}} roundedCircle />Stonks
+                            </Link>
                         </Navbar.Brand>
                         <Form inline>
                             <FormControl 
@@ -61,37 +66,31 @@ class header extends Component{
                                 style={{width:'300px'}} 
                                 onChange={this.handleSearch}
                             />
+                            <SearchSuggestions 
+                                codeArr={this.state.codeArr}
+                                nameArr={this.state.nameArr} />
                         </Form>
-                        <Nav>
-                            <Nav.Link 
-                                href="/dashboard" 
-                                active={activeTab==='/dashboard'?true:false} 
-                                className="ml-5">
+                            <Link 
+                                to="/dashboard" 
+                                className={activeTab==='/dashboard'?"navLink active":"navLink"} >
                                     Dashboard
-                            </Nav.Link>
-                            <Nav.Link 
-                                href="/orders"
-                                active={activeTab==='/orders'?true:false} 
-                                className="ml-5">
+                            </Link>
+                            <Link 
+                                to="/orders"
+                                className={activeTab==='/orders'?"navLink active":"navLink"} >
                                     Orders
-                            </Nav.Link>
-                            <Nav.Link 
-                                href="/watchlist" 
-                                active={activeTab==='/watchlist'?true:false} 
-                                className="ml-5">
+                            </Link>
+                            <Link 
+                                to="/watchlist" 
+                                className={activeTab==='/watchlist'?"navLink active":"navLink"} >
                                     Watchlist
-                            </Nav.Link>
+                            </Link>
                             <Button 
                                 variant="outline-dark" 
-                                className="ml-5"
-                                onClick={this.googleLogout}>
+                                onClick={()=>this.googleLogout()}>
                                     Log Out
                             </Button>
-                        </Nav>
                     </Navbar>
-                    <SearchSuggestions 
-                        codeArr={this.state.codeArr}
-                        nameArr={this.state.nameArr} />
                 </Container>
             </div>
         );

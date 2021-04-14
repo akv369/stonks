@@ -2,6 +2,7 @@ import {React, Component} from 'react';
 
 import { Card, Col, ListGroup, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Link } from 'react-router-dom';
 
 class listCard extends Component{
     render(){
@@ -23,7 +24,7 @@ class listCard extends Component{
                             <ListGroup.Item>
                                 <Row>
                                     <Col sm={3}>
-                                        <a href={hrefLink}>{companyName}</a>
+                                        <Link to={hrefLink}>{companyName}</Link>
                                         <div style={{fontSize:"0.75rem"}}>{quantity} shares @{avg}</div>
                                     </Col>
                                     <Col sm={5}>

@@ -4,14 +4,15 @@ import "firebase/storage";
 import "firebase/database";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyC2Q9rtKGvpDR5-kiABKr9EZws36apJ-LU",
-    authDomain: "virtual-stock-market-369.firebaseapp.com",
-    projectId: "virtual-stock-market-369",
-    storageBucket: "virtual-stock-market-369.appspot.com",
-    messagingSenderId: "858506793603",
-    appId: "1:858506793603:web:80a5b436a3e13af716c1b6"
-  };
+  apiKey: "AIzaSyCPloi1OeoEP1TZc0K21-UYfizEcXK1MqQ",
+  authDomain: "stonks-369.firebaseapp.com",
+  projectId: "stonks-369",
+  storageBucket: "stonks-369.appspot.com",
+  messagingSenderId: "705943685805",
+  appId: "1:705943685805:web:88e317ee3cd52d39a29424",
+  measurementId: "G-YST7HYZ098"
+};
 
 firebase.initializeApp(firebaseConfig);
 
- export default firebase;
+export default firebase;
