@@ -2,22 +2,22 @@ const initialState = {
   currentUser: null,
   err: null,
   stockFilters: {
-    cmpUl:10000,
-    cmpLl:0,
-    sectors:{"All":true},
-    mcUl:10000,
-    mcLl:0
+    cmpUl: 10000,
+    cmpLl: 0,
+    sectors: { All: true },
+    mcUl: 10000,
+    mcLl: 0,
   },
-  pageDetails:{
-    currentPage:1,
-    stockPerPage:8,
-    lastPage:1
+  pageDetails: {
+    currentPage: 1,
+    stockPerPage: 8,
+    lastPage: 1,
   },
   orderFilters: {
     type: 'All',
-    status: 'All'
+    status: 'All',
   },
-  stock:{}
+  stock: {},
 };
 
 const reducer = (state = initialState, actions) => {
@@ -25,33 +25,33 @@ const reducer = (state = initialState, actions) => {
     case 'SET_USER':
       return {
         ...state,
-        currentUser: actions.currentUser
+        currentUser: actions.currentUser,
       };
     case 'SET_ERROR':
       return {
         ...state,
-        err: actions.msg
+        err: actions.msg,
       };
     case 'BUY_SELL':
       return {
         ...state,
-        stock: actions.stock
+        stock: actions.stock,
       };
     case 'SET_STOCK_FILTERS':
       return {
         ...state,
-        stockFilters: actions.stockFilters
-      }
+        stockFilters: actions.stockFilters,
+      };
     case 'SET_ORDER_FILTERS':
       return {
         ...state,
-        orderFilters: actions.orderFilters
-      }
+        orderFilters: actions.orderFilters,
+      };
     case 'SET_PAGE_DETAILS':
       return {
         ...state,
-        pageDetails: actions.pageDetails
-      }
+        pageDetails: actions.pageDetails,
+      };
     default:
       return state;
   }

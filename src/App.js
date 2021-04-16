@@ -1,5 +1,5 @@
-import {React, Component} from 'react';
-import {Route, Switch} from "react-router-dom";
+import { React, Component } from 'react';
+import { Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import './App.css';
@@ -16,56 +16,51 @@ import stock from './views/stock/stock';
 import order from './views/order/order';
 import home from './views/home/home';
 
-class App extends Component{
-  state={
-    loading:true,
-    user:null
-  }
-  componentDidMount(){
-    Axios.get('/getUser')
-    .then(response=>{
+class App extends Component {
+  state = {
+    loading: true,
+  };
+  componentDidMount() {
+    Axios.get('/getUser').then((response) => {
       this.props.setUser(response.data);
-      console.log(response.data)
-      this.setState({user:response.data,loading:false});
-    })
+      this.setState({ loading: false });
+    });
   }
-  render(){
-    let renderer = this.state.user!==null ?
-    <Switch>
-      <Route path="/orders" exact component={orders} />
-      <Route path="/dashboard" exact component={dashboard} />
-      <Route path="/stocks" exact component={allStocks} />
-      <Route path="/watchlist" exact component={watchList} />
-      <Route path="/stock/:stockID" exact component={stock} />
-      <Route path="/order/:orderID" exact component={order} />
-      <Route path="/" component={home} />
-    </Switch>
-    :
-    this.state.loading===true ?
-      <Switch>
-        <Spinner/>
-      </Switch>
-    :
-      <Switch>
-        <Route path="/" component={loginScreen} />
-      </Switch>;
-    return (
-      <div className="app">
-        {renderer} 
-      </div>
-    );
+  render() {
+    let renderer =
+      this.props.currentUser !== null ? (
+        <Switch>
+          <Route path="/orders" exact component={orders} />
+          <Route path="/dashboard" exact component={dashboard} />
+          <Route path="/stocks" exact component={allStocks} />
+          <Route path="/watchlist" exact component={watchList} />
+          <Route path="/stock/:stockID" exact component={stock} />
+          <Route path="/order/:orderID" exact component={order} />
+          <Route path="/" component={home} />
+        </Switch>
+      ) : this.state.loading === true ? (
+        <Switch>
+          <Spinner />
+        </Switch>
+      ) : (
+        <Switch>
+          <Route path="/" component={loginScreen} />
+        </Switch>
+      );
+    return <div className="app">{renderer}</div>;
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-      currentUser: state.SET_USER.currentUser
-  }
+    currentUser: state.SET_USER.currentUser,
+  };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    setUser: (user) => dispatch({type: actionTypes.SET_USER, currentUser: user})
+    setUser: (user) =>
+      dispatch({ type: actionTypes.SET_USER, currentUser: user }),
   };
 };
 

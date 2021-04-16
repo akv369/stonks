@@ -1,95 +1,119 @@
-import {React, Component} from 'react';
+import { React, Component } from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-class orderStatus extends Component{
-    render(){
-        const order = this.props.order;
-        const statusColor = order['status']==="Successful" ? "success" : order['status']==="Unsuccessful" ? "danger" : "warning";
-        const showTime = (dated) => {
-            if(dated!==undefined){
-                let dd = dated.slice(8,10), MM = dated.slice(5,7), yyyy = dated.slice(0,4);
-                const months = ['January', 'February', 'March', 'April', 'May', 'June', 
-                'July', 'August', 'September', 'October', 'November', 'December'];
-                let time = dated.slice(11,19)
-                const showDate = dd + ' ' + months[MM-1] + ' ' + yyyy + ' | ' + time + ' IST';
-                return(showDate)
-            }
-        }
-        function onStatus () {
-            if(order['progress']==='Placed'){
-                return(
-                    <div>   
-                        <div className="m-1">
-                            <span className={"text-"+"success"}>⬤ </span> 
-                            <span className="m-1"> Order Placed with {order['exchange']}</span>
-                        </div>
-                        <div className="ml-4 text-muted" style={{fontSize:"0.8rem"}}>
-                            <span className="m-1">
-                                {showTime(order['placedTimestamp'])}
-                            </span>
-                            <span className="m-1 float-right">
-                                Order ID: {order._id}
-                            </span>
-                        </div>
-                    </div>
-                )
-            }
-            else if(order['progress']==='Executed'){
-                return(
-                    <div>
-                        <div className="m-1">
-                            <span className={"text-"+"success"}>⬤ </span> 
-                            <span className="m-1"> Order Placed with {order['exchange']}</span>
-                        </div>
-                        <div className="ml-4 text-muted" style={{fontSize:"0.8rem"}}>
-                            <span className="m-1">
-                                {showTime(order['placedTimestamp'])}
-                            </span>
-                            <span className="m-1 float-right">
-                                Order ID: {order._id}
-                            </span>
-                        </div>
-                        <div className="m-1">
-                            <span className={"text-"+statusColor}>⬤ </span> 
-                            <span className="m-1"> Order {order['progress']}</span>
-                        </div>
-                        <div className="ml-4 text-muted" style={{fontSize:"0.8rem"}}>
-                            <span className="m-1">
-                            {showTime(order['executedTimestamp'])}
-                            </span>
-                            <span className="m-1 float-right">
-                                Total Amount: ${order['totalAmount']}
-                            </span>
-                        </div>
-                    </div>
-                )
-            }
-        }
+class orderStatus extends Component {
+  render() {
+    const order = this.props.order;
+    const statusColor =
+      order['status'] === 'Successful'
+        ? 'success'
+        : order['status'] === 'Unsuccessful'
+        ? 'danger'
+        : 'warning';
+    const showTime = (dated) => {
+      if (dated !== undefined) {
+        let dd = dated.slice(8, 10),
+          MM = dated.slice(5, 7),
+          yyyy = dated.slice(0, 4);
+        const months = [
+          'January',
+          'February',
+          'March',
+          'April',
+          'May',
+          'June',
+          'July',
+          'August',
+          'September',
+          'October',
+          'November',
+          'December',
+        ];
+        let time = dated.slice(11, 19);
+        const showDate =
+          dd + ' ' + months[MM - 1] + ' ' + yyyy + ' | ' + time + ' IST';
+        return showDate;
+      }
+    };
+    function onStatus() {
+      if (order['progress'] === 'Placed') {
         return (
-            <div style={{width:"36rem"}}>
-                <span className="font-weight-bold text-muted" style={{fontSize:"1.2rem"}}>Order Status</span>
-                <span className={"float-right text-"+statusColor}>{order['status']} ⬤</span>
-                <div className="ml-4">
-                    <div className="mt-2">
-                        <div className="m-1">
-                            <span className="text-success">⬤ </span> 
-                            <span className="m-1"> User Request Verified</span>
-                        </div>
-                        <div className="ml-4 text-muted" style={{fontSize:"0.8rem"}}>
-                            <span className="m-1">
-                            {showTime(order['verifiedTimestamp'])}
-                            </span>
-                            <span className="m-1 float-right">
-                                User ID: {order['userID']}
-                            </span>
-                        </div>
-                        {onStatus()}
-                    </div>
-                </div>
+          <div>
+            <div className="m-1">
+              <span className={'text-success'}>⬤ </span>
+              <span className="m-1">
+                {' '}
+                Order Placed with {order['exchange']}
+              </span>
             </div>
+            <div className="ml-4 text-muted" style={{ fontSize: '0.8rem' }}>
+              <span className="m-1">{showTime(order['placedTimestamp'])}</span>
+              <span className="m-1 float-right">Order ID: {order._id}</span>
+            </div>
+          </div>
         );
+      } else if (order['progress'] === 'Executed') {
+        return (
+          <div>
+            <div className="m-1">
+              <span className={'text-success'}>⬤ </span>
+              <span className="m-1">
+                {' '}
+                Order Placed with {order['exchange']}
+              </span>
+            </div>
+            <div className="ml-4 text-muted" style={{ fontSize: '0.8rem' }}>
+              <span className="m-1">{showTime(order['placedTimestamp'])}</span>
+              <span className="m-1 float-right">Order ID: {order._id}</span>
+            </div>
+            <div className="m-1">
+              <span className={'text-' + statusColor}>⬤ </span>
+              <span className="m-1"> Order {order['progress']}</span>
+            </div>
+            <div className="ml-4 text-muted" style={{ fontSize: '0.8rem' }}>
+              <span className="m-1">
+                {showTime(order['executedTimestamp'])}
+              </span>
+              <span className="m-1 float-right">
+                Total Amount: ${order['totalAmount']}
+              </span>
+            </div>
+          </div>
+        );
+      }
     }
+    return (
+      <div style={{ width: '36rem' }}>
+        <span
+          className="font-weight-bold text-muted"
+          style={{ fontSize: '1.2rem' }}
+        >
+          Order Status
+        </span>
+        <span className={'float-right text-' + statusColor}>
+          {order['status']} ⬤
+        </span>
+        <div className="ml-4">
+          <div className="mt-2">
+            <div className="m-1">
+              <span className="text-success">⬤ </span>
+              <span className="m-1"> User Request Verified</span>
+            </div>
+            <div className="ml-4 text-muted" style={{ fontSize: '0.8rem' }}>
+              <span className="m-1">
+                {showTime(order['verifiedTimestamp'])}
+              </span>
+              <span className="m-1 float-right">
+                User ID: {order['userID']}
+              </span>
+            </div>
+            {onStatus()}
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default orderStatus;

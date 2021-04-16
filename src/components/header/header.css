@@ -1,17 +1,17 @@
-.navbar{
-    justify-content: space-between;
+.navbar {
+  justify-content: space-between;
 }
-.navLink{
-    display: inline-flex;
-    justify-content: space-between;
-    color: rgba(0,0,0,.6) !important;
-    text-decoration: none;
+.navLink {
+  display: inline-flex;
+  justify-content: space-between;
+  color: rgba(0, 0, 0, 0.6) !important;
+  text-decoration: none;
 }
-.active{
-    color: rgba(0,0,0,1) !important;
-    text-decoration: none;
+.active {
+  color: rgba(0, 0, 0, 1) !important;
+  text-decoration: none;
 }
-a:hover.navLink{
-    color: rgba(0,0,0,0.8) !important;
-    text-decoration: none;
+a:hover.navLink {
+  color: rgba(0, 0, 0, 0.8) !important;
+  text-decoration: none;
 }

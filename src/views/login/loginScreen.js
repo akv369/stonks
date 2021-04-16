@@ -1,27 +1,41 @@
-import {React, Component} from 'react';
+import { React, Component } from 'react';
 import { Col, Image, Row } from 'react-bootstrap';
 
-import StonkImage from '../../data/stonkImage.png'
+import StonkImage from '../../data/stonkImage.png';
 import LoginForm from './LoginForm';
 
-import './loginScreen.css'
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { connect } from 'react-redux';
 
-class loginScreen extends Component{
-    render(){       
+import './loginScreen.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Redirect } from 'react-router';
+
+class loginScreen extends Component {
+  render() {
+    const renderLogin = () => {
+      if (this.props.currentUser !== null) {
         return (
-            <div className="loginScreen">
-                <Row className="loginRow">
-                    <Col sm={8} className="loginCol">
-                        <Image src={StonkImage} className="stonkImage"/>
-                    </Col>
-                    <Col sm={4} className="loginCol">
-                        <LoginForm/>
-                    </Col>
-                </Row>
-            </div>
+          <div className="loginScreen">
+            <Row className="loginRow">
+              <Col sm={8} className="loginCol">
+                <Image src={StonkImage} className="stonkImage" />
+              </Col>
+              <Col sm={4} className="loginCol">
+                <LoginForm />
+              </Col>
+            </Row>
+          </div>
         );
-    }
+      } else <Redirect to="/" />;
+    };
+    return <div>{renderLogin()}</div>;
+  }
 }
 
-export default loginScreen;
+const mapStateToProps = (state) => {
+  return {
+    currentUser: state.SET_USER.currentUser,
+  };
+};
+
+export default connect(mapStateToProps)(loginScreen);

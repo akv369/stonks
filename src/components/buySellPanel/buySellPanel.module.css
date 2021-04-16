@@ -1,55 +1,54 @@
 svg {
-    width: 100px;
-    display: block;
-  }
-  
+  width: 100px;
+  display: block;
+}
+
 .path {
-    stroke-dasharray: 1000;
-    stroke-dashoffset: 0;
-    -webkit-animation: dash .9s ease-in-out;
-    animation: dash .9s ease-in-out;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 0;
+  -webkit-animation: dash 0.9s ease-in-out;
+  animation: dash 0.9s ease-in-out;
 }
-.pathCheck{
-    stroke-dasharray: 1000;
+.pathCheck {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 0;
+  stroke-dashoffset: -100;
+  -webkit-animation: dash-check 0.9s 0.35s ease-in-out forwards;
+  animation: dash-check 0.9s 0.35s ease-in-out forwards;
+}
+
+@-webkit-keyframes dash {
+  0% {
+    stroke-dashoffset: 1000;
+  }
+  100% {
     stroke-dashoffset: 0;
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dashoffset: 1000;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@-webkit-keyframes dash-check {
+  0% {
     stroke-dashoffset: -100;
-    -webkit-animation: dash-check .9s .35s ease-in-out forwards;
-    animation: dash-check .9s .35s ease-in-out forwards;
+  }
+  100% {
+    stroke-dashoffset: 900;
+  }
 }
-  
-  @-webkit-keyframes dash {
-    0% {
-      stroke-dashoffset: 1000;
-    }
-    100% {
-      stroke-dashoffset: 0;
-    }
+
+@keyframes dash-check {
+  0% {
+    stroke-dashoffset: -100;
   }
-  
-  @keyframes dash {
-    0% {
-      stroke-dashoffset: 1000;
-    }
-    100% {
-      stroke-dashoffset: 0;
-    }
+  100% {
+    stroke-dashoffset: 900;
   }
-  
-  @-webkit-keyframes dash-check {
-    0% {
-      stroke-dashoffset: -100;
-    }
-    100% {
-      stroke-dashoffset: 900;
-    }
-  }
-  
-  @keyframes dash-check {
-    0% {
-      stroke-dashoffset: -100;
-    }
-    100% {
-      stroke-dashoffset: 900;
-    }
-  }
-  
+}
