@@ -3,10 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import './App.css';
-import Axios from './axios-base';
-import * as actionTypes from './store/actions';
 
-import Spinner from './components/spinner/spinner';
 import loginScreen from './views/login/loginScreen';
 import watchList from './views/watchList/watchList';
 import dashboard from './views/dashboard/dashboard';
@@ -14,21 +11,15 @@ import allStocks from './views/allStocks/allStocks';
 import orders from './views/orders/orders';
 import stock from './views/stock/stock';
 import order from './views/order/order';
+import lost from './views/lost/lost';
 import home from './views/home/home';
+import Navbar from './components/header/header';
 
 class App extends Component {
-  state = {
-    loading: true,
-  };
-  componentDidMount() {
-    Axios.get('/getUser').then((response) => {
-      this.props.setUser(response.data);
-      this.setState({ loading: false });
-    });
-  }
   render() {
-    let renderer =
-      this.props.currentUser !== null ? (
+    let renderer = this.props.isAuthenticated ? (
+      <div>
+        <Navbar />
         <Switch>
           <Route path="/orders" exact component={orders} />
           <Route path="/dashboard" exact component={dashboard} />
@@ -36,32 +27,25 @@ class App extends Component {
           <Route path="/watchlist" exact component={watchList} />
           <Route path="/stock/:stockID" exact component={stock} />
           <Route path="/order/:orderID" exact component={order} />
-          <Route path="/" component={home} />
+          <Route path="/404" component={lost} />
+          <Route path="/" exact component={home} />
+          <Route path="/" component={lost} />
         </Switch>
-      ) : this.state.loading === true ? (
-        <Switch>
-          <Spinner />
-        </Switch>
-      ) : (
-        <Switch>
-          <Route path="/" component={loginScreen} />
-        </Switch>
-      );
+      </div>
+    ) : (
+      <Switch>
+        <Route path="/" component={loginScreen} />
+      </Switch>
+    );
+
     return <div className="app">{renderer}</div>;
   }
 }
 
 const mapStateToProps = (state) => {
   return {
-    currentUser: state.SET_USER.currentUser,
+    isAuthenticated: state.SET_USER.isAuthenticated,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setUser: (user) =>
-      dispatch({ type: actionTypes.SET_USER, currentUser: user }),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps)(App);

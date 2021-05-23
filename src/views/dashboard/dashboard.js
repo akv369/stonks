@@ -5,9 +5,9 @@ import { connect } from 'react-redux';
 import * as actionTypes from '../../store/actions';
 
 import Spinner from '../../components/spinner/spinner';
-import Navbar from '../../components/header/header';
 import ListCard from '../../components/cards/listCard/listCard';
 import BuySellPanel from '../../components/buySellPanel/buySellPanel';
+import DataNull from '../../components/dataNull/dataNull';
 
 import { Container, Card, Row, Col, ListGroup } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -16,10 +16,16 @@ class dashboard extends Component {
   state = {
     loading: true,
     portfolio: {},
+    dataNull: false,
   };
   componentDidMount() {
-    Axios.get('/dashboard')
-      .then((res) => this.setState({ portfolio: res.data, loading: false }))
+    Axios.post('/dashboard', { _id: this.props.user._id })
+      .then((res) => {
+        console.log(res.data);
+        if (res.data !== 'Data Unavailable')
+          this.setState({ portfolio: res.data, loading: false });
+        else this.setState({ dataNull: true, loading: false });
+      })
       .catch((err) => console.log(err));
   }
   render() {
@@ -89,26 +95,38 @@ class dashboard extends Component {
         );
       }
     };
+    const returnData = () => {
+      if (this.state.dataNull) {
+        return (
+          <DataNull
+            reason="No Data Available!"
+            tip="Buy some stocks to enable Dashboard..."
+          />
+        );
+      }
+      return (
+        <Row className="mt-sm-5">
+          <Col sm={8}>
+            <Card className="shadow-sm">{renderer()}</Card>
+          </Col>
+          <Col sm={3}>
+            <BuySellPanel />
+          </Col>
+        </Row>
+      );
+    };
     return (
       <div>
-        <Container>
-          <Navbar />
-          <Row className="mt-sm-5">
-            <Col sm={8}>
-              <Card className="shadow-sm">{renderer()}</Card>
-            </Col>
-            <Col sm={3}>
-              <BuySellPanel />
-            </Col>
-          </Row>
-        </Container>
+        <Container>{returnData()}</Container>
       </div>
     );
   }
 }
 
 const mapStateToProps = (state) => {
-  return null;
+  return {
+    user: state.SET_USER.currentUser,
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {

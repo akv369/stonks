@@ -1,6 +1,7 @@
 import { React, Component } from 'react';
 import firebase from '../../firebase';
 import { connect } from 'react-redux';
+import Axios from '../../axios-base';
 
 import * as actionTypes from '../../store/actions';
 
@@ -24,12 +25,11 @@ class loginForm extends Component {
       .auth()
       .signInWithPopup(provider)
       .then((result) => {
-        // const name = result.user.providerData[0].displayName;
-        // Axios.post('/login',result.user.providerData[0]).
-        // then(response=>console.log(response.data)).
-        // catch(err=>console.log(err));
-
-        this.props.setUser(result.user.providerData[0]);
+        Axios.post('/login', result.user.providerData[0])
+          .then((response) => {
+            this.props.setUser(response.data);
+          })
+          .catch((err) => console.log(err));
       })
       .catch((e) => {
         console.log(e.message);
@@ -239,10 +239,6 @@ class loginForm extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return null;
-};
-
 const mapDispatchToProps = (dispatch) => {
   return {
     setUser: (user) =>
@@ -250,4 +246,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(loginForm);
+export default connect(null, mapDispatchToProps)(loginForm);

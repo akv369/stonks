@@ -1,6 +1,5 @@
 import { React, Component } from 'react';
 
-import Navbar from '../../components/header/header';
 import ListCard from '../../components/cards/watchlist/listCard';
 import BuySellPanel from '../../components/buySellPanel/buySellPanel';
 
@@ -8,14 +7,10 @@ import { Card, Container, ListGroup, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class watchList extends Component {
-  componentDidMount() {
-    console.log('wl');
-  }
   render() {
     return (
       <div>
         <Container>
-          <Navbar />
           <Row className="mt-sm-5">
             <Col sm={8}>
               <Card className="shadow-sm">

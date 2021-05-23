@@ -3,18 +3,11 @@ import firebase from '../../firebase';
 import Axios from '../../axios-base';
 import imgPath from '../../data/logo.png';
 
-import {
-  Container,
-  Navbar,
-  Form,
-  Button,
-  FormControl,
-  Image,
-} from 'react-bootstrap';
+import { Navbar, Form, Button, FormControl, Image } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import SearchSuggestions from './searchSuggestions';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 import './header.css';
 
@@ -23,6 +16,21 @@ class header extends Component {
     query: '',
     nameArr: [],
     codeArr: [],
+    path: '/',
+    navLinks: [
+      {
+        name: 'Dashboard',
+        path: '/dashboard',
+      },
+      {
+        name: 'Orders',
+        path: '/orders',
+      },
+      {
+        name: 'Watchlist',
+        path: '/watchlist',
+      },
+    ],
   };
   handleSearch = (event) => {
     this.setState({ query: event.target.value }, () => {
@@ -34,6 +42,16 @@ class header extends Component {
           });
         });
       } else this.setState({ nameArr: [], codeArr: [] });
+    });
+  };
+  handleSuggestionClick = (stockCode) => {
+    console.log(stockCode)
+    this.setState({
+      query: '',
+      nameArr: [],
+      codeArr: [],
+    },()=>{
+      <Redirect to={`/stock/${stockCode}`}/>
     });
   };
   googleLogout = () => {
@@ -52,61 +70,58 @@ class header extends Component {
       });
   };
   render() {
-    const activeTab = window.location.pathname;
+    const path = this.state.path;
+    function checkActive(linkName) {
+      if (path === linkName) return 'navLink active';
+      return 'navLink';
+    }
     return (
-      <div>
-        <Container>
-          <Navbar variant="light">
-            <Navbar.Brand>
-              <Link to="/" className="navLink">
-                <Image
-                  src={imgPath}
-                  style={{ width: '24px', height: '24px', marginRight: '10px' }}
-                  roundedCircle
-                />
-                Stonks
+      <div className="nav-container">
+        <Navbar variant="light">
+          <Navbar.Brand>
+            <Link
+              to="/"
+              className={checkActive('/')}
+              onClick={() => this.setState({ path: '/' })}
+            >
+              <Image
+                src={imgPath}
+                style={{ width: '24px', height: '24px', marginRight: '10px' }}
+                roundedCircle
+              />
+              Stonks
+            </Link>
+          </Navbar.Brand>
+          <Form inline>
+            <FormControl
+              type="text"
+              placeholder="Search Stocks"
+              className="shadow-sm"
+              style={{ width: '300px' }}
+              onChange={this.handleSearch}
+            />
+            <SearchSuggestions
+              codeArr={this.state.codeArr}
+              nameArr={this.state.nameArr}
+              clicked={(stockCode) => this.handleSuggestionClick(stockCode)}
+            />
+          </Form>
+          {this.state.navLinks.map((navLink, index) => {
+            return (
+              <Link
+                to={navLink.path}
+                className={checkActive(navLink.path)}
+                onClick={() => this.setState({ path: navLink.path })}
+                key={index}
+              >
+                {navLink.name}
               </Link>
-            </Navbar.Brand>
-            <Form inline>
-              <FormControl
-                type="text"
-                placeholder="Search Stocks"
-                className="shadow-sm"
-                style={{ width: '300px' }}
-                onChange={this.handleSearch}
-              />
-              <SearchSuggestions
-                codeArr={this.state.codeArr}
-                nameArr={this.state.nameArr}
-              />
-            </Form>
-            <Link
-              to="/dashboard"
-              className={
-                activeTab === '/dashboard' ? 'navLink active' : 'navLink'
-              }
-            >
-              Dashboard
-            </Link>
-            <Link
-              to="/orders"
-              className={activeTab === '/orders' ? 'navLink active' : 'navLink'}
-            >
-              Orders
-            </Link>
-            <Link
-              to="/watchlist"
-              className={
-                activeTab === '/watchlist' ? 'navLink active' : 'navLink'
-              }
-            >
-              Watchlist
-            </Link>
-            <Button variant="outline-dark" onClick={() => this.googleLogout()}>
-              Log Out
-            </Button>
-          </Navbar>
-        </Container>
+            );
+          })}
+          <Button variant="outline-dark" onClick={() => this.googleLogout()}>
+            Log Out
+          </Button>
+        </Navbar>
       </div>
     );
   }

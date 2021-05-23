@@ -1,5 +1,6 @@
 const initialState = {
   currentUser: null,
+  isAuthenticated: false,
   err: null,
   stockFilters: {
     cmpUl: 10000,
@@ -26,6 +27,7 @@ const reducer = (state = initialState, actions) => {
       return {
         ...state,
         currentUser: actions.currentUser,
+        isAuthenticated: true,
       };
     case 'SET_ERROR':
       return {

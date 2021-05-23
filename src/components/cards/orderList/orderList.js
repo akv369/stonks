@@ -4,7 +4,7 @@ import Axios from '../../../axios-base';
 
 import * as actionTypes from '../../../store/actions';
 import DateList from './dateList';
-
+import DataNull from '../../dataNull/dataNull';
 import Spinner from '../../spinner/spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -16,14 +16,19 @@ class orderList extends Component {
       status: '',
     },
     fetching: true,
+    dataNull: false,
   };
   componentDidMount() {
-    const sendData = this.props.orderFilters;
+    let sendData = this.props.orderFilters;
+    sendData._id = this.props.userID;
     this.setState({ orderFilters: sendData });
     Axios.post('/orders', sendData)
-      .then((res) =>
-        this.setState({ filteredOrders: res.data, fetching: false })
-      )
+      .then((res) => {
+        if (res.data === 'Data Unavailable' || res.data.length === 0) 
+          this.setState({ dataNull: true, fetching: false });
+        else 
+          this.setState({ filteredOrders: res.data, fetching: false });
+      })
       .catch((err) => console.log(err));
   }
   componentWillUpdate() {
@@ -34,8 +39,12 @@ class orderList extends Component {
       const sendData = this.props.orderFilters;
       this.setState({ orderFilters: sendData, fetching: true });
       Axios.post('/orders', sendData)
-        .then((res) =>
-          this.setState({ filteredOrders: res.data, fetching: false })
+        .then((res) =>{
+          if (res.data === 'Data Unavailable' || res.data.length === 0) 
+            this.setState({ dataNull: true, fetching: false });
+          else 
+            this.setState({ filteredOrders: res.data, fetching: false });
+          }
         )
         .catch((err) => console.log(err));
     }
@@ -127,11 +136,17 @@ class orderList extends Component {
         });
       }
     };
-    const renderer = () => {
-      if (this.state.fetching) return <Spinner />;
-      else return displayCard();
-    };
-    return <div>{renderer()}</div>;
+    return (
+      <div>
+        {this.state.fetching ? (
+          <Spinner />
+        ) : this.state.dataNull ? (
+          <DataNull reason="No Orders to show!" tip=":(" />
+        ) : (
+          displayCard()
+        )}
+      </div>
+    );
   }
 }
 

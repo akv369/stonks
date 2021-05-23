@@ -22,7 +22,7 @@ class buySellPanel extends Component {
     sharesAvailable: 0,
   };
   componentDidUpdate() {
-    Axios.get('/dashboard/' + this.props.code)
+    Axios.post('/portfolio/' + this.props.code, { _id: this.props.userID })
       .then((res) => this.setState({ sharesAvailable: res.data.quantity }))
       .catch((err) => console.log(err));
     if (this.state.price === undefined)
@@ -113,7 +113,11 @@ class buySellPanel extends Component {
           <Card.Header>Invest in a Stock</Card.Header>
           <Card.Body>
             <Card.Title className="my-3 text-center">
-              <img src={imgPath} alt="Select A Stock" style={{ marginTop: '100px', width: '10%' }} />
+              <img
+                src={imgPath}
+                alt="Select A Stock"
+                style={{ marginTop: '100px', width: '10%' }}
+              />
               <div style={{ marginTop: '100px' }}>
                 Click on a stock to see investing options.
               </div>
@@ -420,8 +424,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return null;
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(buySellPanel);
+export default connect(mapStateToProps)(buySellPanel);

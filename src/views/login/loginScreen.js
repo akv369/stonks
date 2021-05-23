@@ -13,7 +13,8 @@ import { Redirect } from 'react-router';
 class loginScreen extends Component {
   render() {
     const renderLogin = () => {
-      if (this.props.currentUser !== null) {
+      if (!this.props.isAuthenticated) {
+        if (window.location.pathname !== '/') return <Redirect to="/" />;
         return (
           <div className="loginScreen">
             <Row className="loginRow">
@@ -26,7 +27,9 @@ class loginScreen extends Component {
             </Row>
           </div>
         );
-      } else <Redirect to="/" />;
+      } else {
+        return <Redirect to="/" />;
+      }
     };
     return <div>{renderLogin()}</div>;
   }
@@ -34,7 +37,7 @@ class loginScreen extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    currentUser: state.SET_USER.currentUser,
+    isAuthenticated: state.SET_USER.isAuthenticated,
   };
 };
 

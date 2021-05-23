@@ -1,6 +1,5 @@
 import { React, Component } from 'react';
 
-import Navbar from '../../components/header/header';
 import ListCard from '../../components/cards/stockList/listCard';
 import StocksFilter from '../../components/stocksFilter/stocksFilter';
 import PageNumbers from '../../components/PageNumbers/PageNumbers';
@@ -13,7 +12,6 @@ class allStocks extends Component {
     return (
       <div>
         <Container>
-          <Navbar />
           <Row className="mt-sm-5">
             <Col sm={3}>
               <StocksFilter />

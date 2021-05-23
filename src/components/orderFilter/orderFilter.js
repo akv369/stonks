@@ -11,6 +11,15 @@ class orderFilter extends Component {
     type: 'All',
     status: 'All',
   };
+  componentDidMount(){
+    const type = 'All',
+      status = 'All';
+      const sendData = {
+        type: type,
+        status: status,
+      };
+      this.props.setFilters(sendData);
+  }
   render() {
     const type = this.state.type,
       status = this.state.status;
@@ -54,16 +63,16 @@ class orderFilter extends Component {
                 label="Buy"
                 type={'radio'}
                 id={'buy'}
-                checked={this.state.type === 'Buy' ? true : false}
-                onClick={() => this.setState({ type: 'Buy' })}
+                defaultChecked={this.state.type === 'Buy' ? true : false}
+                onChange={() => this.setState({ type: 'Buy' })}
               />
               <Form.Check
                 inline
                 label="Sell"
                 type={'radio'}
                 id={'sell'}
-                checked={this.state.type === 'Sell' ? true : false}
-                onClick={() => this.setState({ type: 'Sell' })}
+                defaultChecked={this.state.type === 'Sell' ? true : false}
+                onChange={() => this.setState({ type: 'Sell' })}
               />
             </ListGroup.Item>
             <ListGroup.Item>
@@ -73,8 +82,10 @@ class orderFilter extends Component {
                   label="Successful"
                   type={'radio'}
                   id={'successful'}
-                  checked={this.state.status === 'Successful' ? true : false}
-                  onClick={() => this.setState({ status: 'Successful' })}
+                  defaultChecked={
+                    this.state.status === 'Successful' ? true : false
+                  }
+                  onChange={() => this.setState({ status: 'Successful' })}
                 />
                 <span className="float-right text-success">⬤</span>
               </div>
@@ -84,8 +95,10 @@ class orderFilter extends Component {
                   label="In Progress"
                   type={'radio'}
                   id={'inProgress'}
-                  checked={this.state.status === 'In Progress' ? true : false}
-                  onClick={() => this.setState({ status: 'In Progress' })}
+                  defaultChecked={
+                    this.state.status === 'In Progress' ? true : false
+                  }
+                  onChange={() => this.setState({ status: 'In Progress' })}
                 />
                 <span className="float-right text-warning">⬤</span>
               </div>
@@ -95,8 +108,10 @@ class orderFilter extends Component {
                   label="Unsuccessful"
                   type={'radio'}
                   id={'unsuccessful'}
-                  checked={this.state.status === 'Unsuccessful' ? true : false}
-                  onClick={() => this.setState({ status: 'Unsuccessful' })}
+                  defaultChecked={
+                    this.state.status === 'Unsuccessful' ? true : false
+                  }
+                  onChange={() => this.setState({ status: 'Unsuccessful' })}
                 />
                 <span className="float-right text-danger">⬤</span>
               </div>
@@ -108,10 +123,6 @@ class orderFilter extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return null;
-};
-
 const mapDispatchToProps = (dispatch) => {
   return {
     setFilters: (orderFilters) =>
@@ -122,4 +133,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(orderFilter);
+export default connect(null, mapDispatchToProps)(orderFilter);

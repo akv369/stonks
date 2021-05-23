@@ -8,17 +8,22 @@ import { Card, Col, ListGroup, Row, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
 import Spinner from '../../spinner/spinner';
+import DataNull from '../../dataNull/dataNull';
 
 class listCard extends Component {
   state = {
     filteredStocks: [],
     activeButton: '',
     fetching: true,
+    dataNull: false
   };
   componentDidMount() {
-    Axios.get('/watchlist')
+    Axios.post('/watchlist', { _id: this.props._id })
       .then((response) => {
-        this.setState({ filteredStocks: response.data, fetching: false });
+        if(response.data==='Data Unavailable')
+          this.setState({ dataNull: true, fetching: false });
+        else
+          this.setState({ filteredStocks: response.data, fetching: false });
       })
       .catch((err) => {
         console.log(err);
@@ -97,21 +102,26 @@ class listCard extends Component {
         );
       });
     };
-    const renderer = () => {
-      if (this.state.fetching) return <Spinner />;
-      else
-        return (
+    return (
+      <div style={{minHeight:"300px"}}>
+        {this.state.fetching ? (
+          <Spinner />
+        ) : this.state.dataNull ? (
+          <DataNull reason="No Stocks to show!" tip="Try adding some stocks to your watchlist" />
+        ) : (
           <Card>
             <ListGroup variant="flush">{displayCard()}</ListGroup>
           </Card>
-        );
-    };
-    return <div>{renderer()}</div>;
+        )}
+      </div>
+    );
   }
 }
 
 const mapStateToProps = (state) => {
-  return null;
+  return {
+    _id: state.SET_USER.currentUser._id,
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {

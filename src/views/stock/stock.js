@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 
 import * as actionTypes from '../../store/actions';
 
-import Navbar from '../../components/header/header';
 import BuySellPanel from '../../components/buySellPanel/buySellPanel';
 import StockGraph from '../../components/stockPage/stockGraph';
 import CompanyPerformance from '../../components/stockPage/companyPerformance';
@@ -14,6 +13,7 @@ import Spinner from '../../components/spinner/spinner';
 
 import { Container, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Redirect } from 'react-router';
 
 class stock extends Component {
   state = {
@@ -30,9 +30,9 @@ class stock extends Component {
   componentDidMount() {
     const stockName = this.props.match.params.stockID;
     axios.get('/stock/' + stockName).then((response) => {
-      if (response.data.state === 'invalid') {
-        window.location.replace('/404');
-      } else {
+      if (response.data.state === 'invalid') 
+        <Redirect to='/404'/>
+      else {
         this.setState({
           close: response.data.close,
           change: response.data.change,
@@ -73,7 +73,6 @@ class stock extends Component {
     return (
       <div>
         <Container>
-          <Navbar />
           <Row className="mt-5">
             <Col sm={8}>
               <Row>
@@ -116,14 +115,10 @@ class stock extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return null;
-};
-
 const mapDispatchToProps = (dispatch) => {
   return {
     buySell: (stock) => dispatch({ type: actionTypes.BUY_SELL, stock: stock }),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(stock);
+export default connect(null, mapDispatchToProps)(stock);

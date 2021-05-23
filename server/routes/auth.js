@@ -3,8 +3,6 @@ const express = require('express');
 const authC = require('../controllers/auth');
 const router = express.Router();
 
-router.get('/getUser', authC.getUser);
-router.get('/login', authC.getLogin);
 router.post('/login', authC.postLogin);
 router.post('/logout', authC.postLogout);
 

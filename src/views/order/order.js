@@ -1,9 +1,9 @@
 import { React, Component } from 'react';
-import axios from '../../axios-base';
+import Axios from '../../axios-base';
 import html2canvas from 'html2canvas';
 import jsPdf from 'jspdf';
+import { connect } from 'react-redux';
 
-import Navbar from '../../components/header/header';
 import OrderDetails from '../../components/cards/orderInfo/orderDetails';
 import OrderStatus from '../../components/cards/orderInfo/orderStatus';
 
@@ -11,12 +11,20 @@ import { Col, Container, Row, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class order extends Component {
-  state = { orderID: '', orderDetails: {}, print: false };
+  state = {
+    orderID: '',
+    orderDetails: {},
+    print: false,
+  };
+
   componentDidMount() {
-    axios.get('/order/' + this.props.match.params.orderID).then((response) => {
+    Axios.post('/order/' + this.props.match.params.orderID, {
+      _id: this.props.user._id,
+    }).then((response) => {
       this.setState({ orderDetails: response.data });
     });
   }
+
   render() {
     const orderID = this.props.match.params.orderID;
     if (this.state.print) {
@@ -38,7 +46,6 @@ class order extends Component {
     return (
       <div id="your-id">
         <Container>
-          <Navbar />
           <h2 className="m-3 mt-5">Order #{order._id}</h2>
           <Row className="mt-4">
             <Col>
@@ -65,4 +72,10 @@ class order extends Component {
   }
 }
 
-export default order;
+const mapStateToProps = (state) => {
+  return {
+    user: state.SET_USER.currentUser,
+  };
+};
+
+export default connect(mapStateToProps)(order);

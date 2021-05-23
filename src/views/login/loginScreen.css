@@ -43,14 +43,14 @@
   display: flex;
   justify-content: space-between;
 }
-.linkButton {
+.btn-light {
   font-size: 12px;
   padding: 0;
   background-color: #fff;
   border: none;
-  color: #17a2b8;
+  color: #17a2b8 !important;
 }
-.linkButton:hover {
+.btn-light:hover {
   background-color: #fff;
   border: none;
   color: #3f3f3f;

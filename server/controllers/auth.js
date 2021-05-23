@@ -1,49 +1,40 @@
+const express = require('express');
 const axios = require('axios');
 const Portfolio = require('../models/portfolio');
 const Stock = require('../models/stock');
 const Order = require('../models/order');
-
-exports.getUser = (req, res) => {
-    console.log('hi')
-    res.send(req.user);
-    // Portfolio.findOne({userID:req.user._id}).
-    // then(resp=>{
-    //     let totalReturns = 0;
-    //     const stocksInPortfolio = resp.stocks;
-    //     for(let i=0;i<stocksInPortfolio.length;i++){
-    //         let currentStock = stocksInPortfolio[i];
-    //         Stock.findOne({code:currentStock.code}).
-    //         then(respo=>{
-    //             const returnPerShare = respo.cmp - currentStock.averagePrice;
-    //             console.log(respo.cmp+' '+currentStock.averagePrice)
-    //             currentStock.returns = returnPerShare * currentStock.quantity;
-    //             totalReturns += currentStock.returns;
-    //             stocksInPortfolio[i] = currentStock;
-    //         }).
-    //         catch(err=>console.log(err));
-    //     }
-    //     Portfolio.updateOne({_id:resp._id},{
-    //         totalReturns: totalReturns,
-    //         stocks: stocksInPortfolio
-    //     }).
-    //     then(respo=>console.log(respo)).
-    //     catch(err=>console.log(err))
-    // }).
-    // catch(err=>console.log(err))
-}
-
-exports.getLogin = (req, res) => {
-    console.log('getUser');
-}
+const app = express();
+const User = require('../models/user');
 
 exports.postLogin = (req, res) => {
-    req.session.uid=req.body.uid;
-    console.log(req.body);
-    console.log(req.session);
-    res.send(req.session);
-}
+  User.findOne({ email: req.body.email })
+    .then((user) => {
+      if (!user) {
+        const newUser = new User({
+          uid: req.body.uid,
+          name: req.body.displayName,
+          email: req.body.email,
+          photoURL: req.body.photoURL,
+          provider: req.body.providerId,
+          balance: 50000,
+          watchlist: [],
+        });
+        newUser
+          .save()
+          .then((response) => {
+            res.send(response);
+          })
+          .catch((err) => console.log(err));
+      } else {
+        res.send(user);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 exports.postLogout = (req, res) => {
-    req.session.uid=null;
-    res.send(req.session);
-}
+  req.session.uid = null;
+  res.send(req.session);
+};

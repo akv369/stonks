@@ -1,6 +1,5 @@
 import { React, Component } from 'react';
 
-import Navbar from '../../components/header/header';
 import OrderFilter from '../../components/orderFilter/orderFilter';
 import OrderList from '../../components/cards/orderList/orderList';
 
@@ -12,7 +11,6 @@ class orders extends Component {
     return (
       <div>
         <Container>
-          <Navbar />
           <h2 className="m-3">Your Orders</h2>
           <Row className="mt-4">
             <Col sm={3}>

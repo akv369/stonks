@@ -1,7 +1,6 @@
 import { React, Component } from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Axios from '../../axios-base';
-
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
@@ -93,9 +92,9 @@ class stockGraph extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-      userDetails: state.SET_USER.currentUser
+    userDetails: state.SET_USER.currentUser,
   };
 };
 

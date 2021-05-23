@@ -31,6 +31,7 @@
     "react-bootstrap-4-pagination": "^1.0.4",
     "react-client-session": "0.0.7",
     "react-content-loader": "^6.0.1",
+    "react-cookie": "^4.0.3",
     "react-datepicker": "^3.4.1",
     "react-dom": "^17.0.1",
     "react-dual-range-slider": "^1.0.4",
@@ -54,7 +55,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "prettier": "prettier --single-quote --write \"src/**/*.{js,css}\""
+    "prettier": "prettier --single-quote --write \"src/**/*.{js,css}\"",
+    "pretty-server": "prettier --single-quote --write \"server/**/*.{js,css}\""
   },
   "eslintConfig": {
     "extends": [

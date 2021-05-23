@@ -1,7 +1,6 @@
 import { React, Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import Navbar from '../../components/header/header';
 import HomeCard from '../../components/cards/homeCard/homeCard';
 
 import { CardDeck, Container, Badge, Row, Col } from 'react-bootstrap';
@@ -11,7 +10,6 @@ class home extends Component {
   render() {
     return (
       <div>
-        <Navbar />
         <Container>
           <h4 className="mt-sm-4 mb-sm-3">Indices</h4>
           <CardDeck>

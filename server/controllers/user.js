@@ -1,320 +1,396 @@
 const axios = require('axios');
-const dateTime =require('date-and-time');
+const dateTime = require('date-and-time');
 const User = require('../models/user');
 const Stock = require('../models/stock');
 const Order = require('../models/order');
 const Portfolio = require('../models/portfolio');
 
 exports.getOrder = (req, res) => {
-    Order.findOne({_id:req.params.orderID}).
-    then(resp=>{
-        const code = resp.code;
-        Stock.findOne({code:code}).
-        then(respo=>{
-            Order.updateOne(
-                {_id:req.params.orderID},
-                {cmp:respo.cmp}
-            ).
-            catch(err=>console.log(err))
-            let sendData = resp;
-            sendData.cmp = respo.cmp;
-            res.send(sendData)
-        })
-    }).
-    catch(err=>console.log(err));
+  Order.findOne({ _id: req.params.orderID })
+    .then((resp) => {
+      const code = resp.code;
+      Stock.findOne({ code: code }).then((respo) => {
+        Order.updateOne(
+          { _id: req.params.orderID },
+          { cmp: respo.cmp }
+        ).catch((err) => console.log(err));
+        let sendData = resp;
+        sendData.cmp = respo.cmp;
+        if(sendData.userID!==req.body._id)
+            res.send('Access Denied')
+        else
+            res.send(sendData);
+      });
+    })
+    .catch((err) => console.log(err));
 };
 
-exports.postOrder = (req,res) => {
-    let fetchedData;
-    fetchStock();
-    async function fetchStock() {
-        const userID = req.body.userID;
-        const code = req.body.code;
-        const quantity = Number(req.body.quantity);
-        const type = req.body.type;
-        const order = req.body.order;
-        const subType = req.body.subType;
-        const orderPrice = Number(req.body.orderPrice);
-        const status = 'In Progress';
-        const progress = 'Verified';
-        await Stock.findOne({code:req.body.code}).
-        then(res => fetchedData=res).
-        catch(err => console.log(err));
-        const name = fetchedData.name;
-        const cmp = fetchedData.cmp;
-        const exchange = fetchedData.exchange;
-        let balanceBeforeTransaction;
-        await User.findOne({_id:req.body.userID}).
-        then(res => balanceBeforeTransaction=res.balance).
-        catch(err => console.log(err));
-        const now = new Date();
-        const verifiedTimestamp = dateTime.format(now, 'YYYY-MM-DD HH:mm:ss A [GMT]Z');
-        let totalAmount = subType==='Market' ? quantity * cmp : quantity * orderPrice;
-        totalAmount = totalAmount.toFixed(2);
-        const saveOrder = new Order({
-            userID : userID,
-            code : code,
-            name : name,
-            quantity : quantity,
-            type : type,
-            order : order,
-            subType : subType,
-            balanceBeforeTransaction : balanceBeforeTransaction,
-            orderPrice : orderPrice,
-            cmp : cmp,
-            exchange : exchange,
-            status : status,
-            progress : progress,
-            verifiedTimestamp : verifiedTimestamp,
-            totalAmount : totalAmount
-        })
-        saveOrder.save().
-        then(res.redirect('/placeOrders')).
-        catch(err => console.log(err))
-    }
-}
+exports.postOrder = (req, res) => {
+  let fetchedData;
+  fetchStock();
+  async function fetchStock() {
+    const userID = req.body.userID;
+    const code = req.body.code;
+    const quantity = Number(req.body.quantity);
+    const type = req.body.type;
+    const order = req.body.order;
+    const subType = req.body.subType;
+    const orderPrice = Number(req.body.orderPrice);
+    const status = 'In Progress';
+    const progress = 'Verified';
+    await Stock.findOne({ code: req.body.code })
+      .then((res) => (fetchedData = res))
+      .catch((err) => console.log(err));
+    const name = fetchedData.name;
+    const cmp = fetchedData.cmp;
+    const exchange = fetchedData.exchange;
+    let balanceBeforeTransaction;
+    await User.findOne({ _id: req.body.userID })
+      .then((res) => (balanceBeforeTransaction = res.balance))
+      .catch((err) => console.log(err));
+    const now = new Date();
+    const verifiedTimestamp = dateTime.format(
+      now,
+      'YYYY-MM-DD HH:mm:ss A [GMT]Z'
+    );
+    let totalAmount =
+      subType === 'Market' ? quantity * cmp : quantity * orderPrice;
+    totalAmount = totalAmount.toFixed(2);
+    const saveOrder = new Order({
+      userID: userID,
+      code: code,
+      name: name,
+      quantity: quantity,
+      type: type,
+      order: order,
+      subType: subType,
+      balanceBeforeTransaction: balanceBeforeTransaction,
+      orderPrice: orderPrice,
+      cmp: cmp,
+      exchange: exchange,
+      status: status,
+      progress: progress,
+      verifiedTimestamp: verifiedTimestamp,
+      totalAmount: totalAmount,
+    });
+    saveOrder
+      .save()
+      .then(res.redirect('/placeOrders'))
+      .catch((err) => console.log(err));
+  }
+};
 
 exports.placeOrders = (req, res) => {
-    const now = new Date();
-    const hour = Number(dateTime.format(now, 'HH'));
-    const minute = Number(dateTime.format(now, 'mm'));
-    if((hour>=17 || hour<1) || (hour===1 && minute<=30)){
-        Order.find({progress : 'Verified'}).
-        then(result=>{
-            for(let i=0;i<result.length;i++){
-                const currentOrder=result[i];
-                const type = currentOrder.type;
-                const balance = currentOrder.balanceBeforeTransaction;
-                const amount = currentOrder.totalAmount
-                let balanceAfterTransaction = type==="Sell" ? balance + amount : balance - amount;
-                balanceAfterTransaction = balanceAfterTransaction.toFixed(2);
-                const now = new Date();
-                const timestamp = dateTime.format(now, 'YYYY-MM-DD HH:mm:ss A [GMT]Z');
-                User.updateOne({_id:currentOrder.userID},{balance: balanceAfterTransaction}).
-                then(
-                    Order.updateOne(
-                        {_id:currentOrder._id},
-                        {
-                            balanceAfterTransaction: balanceAfterTransaction,
-                            progress: "Placed",
-                            placedTimestamp: timestamp
-                    }).
-                    catch(err=>console.log(err))
-                ).
-                catch(err=>console.log(err))
-            }
-            res.redirect('/executeOrders')
-        }).
-        catch(err=>console.log(err))
-    }
-    else res.send('Verified')
+  const now = new Date();
+  const hour = Number(dateTime.format(now, 'HH'));
+  const minute = Number(dateTime.format(now, 'mm'));
+  if (hour >= 17 || hour < 1 || (hour === 1 && minute <= 30)) {
+    Order.find({ progress: 'Verified' })
+      .then((result) => {
+        for (let i = 0; i < result.length; i++) {
+          const currentOrder = result[i];
+          const type = currentOrder.type;
+          const balance = currentOrder.balanceBeforeTransaction;
+          const amount = currentOrder.totalAmount;
+          let balanceAfterTransaction =
+            type === 'Sell' ? balance + amount : balance - amount;
+          balanceAfterTransaction = balanceAfterTransaction.toFixed(2);
+          const now = new Date();
+          const timestamp = dateTime.format(
+            now,
+            'YYYY-MM-DD HH:mm:ss A [GMT]Z'
+          );
+          User.updateOne(
+            { _id: currentOrder.userID },
+            { balance: balanceAfterTransaction }
+          )
+            .then(
+              Order.updateOne(
+                { _id: currentOrder._id },
+                {
+                  balanceAfterTransaction: balanceAfterTransaction,
+                  progress: 'Placed',
+                  placedTimestamp: timestamp,
+                }
+              ).catch((err) => console.log(err))
+            )
+            .catch((err) => console.log(err));
+        }
+        res.redirect('/executeOrders');
+      })
+      .catch((err) => console.log(err));
+  } else res.send('Verified');
 };
 
 exports.executeOrders = (req, res) => {
-    Order.find({progress : 'Placed'}).
-    then(result=>{
-        for(let i=0;i<result.length;i++){
-            const currentOrder=result[i];
-            const now = new Date();
-            const timestamp = dateTime.format(now, 'YYYY-MM-DD HH:mm:ss A [GMT]Z');
-            Order.updateOne(
-                {_id:currentOrder._id},
-                {
-                    progress: "Executed",
-                    status: "Successful",
-                    executedTimestamp: timestamp
-                }
-            ).
-            then(resp=>{
-                if(resp.n==1){
-                    Portfolio.findOne({userID: currentOrder.userID}).
-                    then(respo=>{
-                        if(respo===null){
-                            const newStockInPortfolio = {
-                                code: currentOrder.code,
-                                name: currentOrder.name,
-                                quantity: currentOrder.quantity,
-                                averagePrice: currentOrder.totalAmount,
-                                returns: 0,
-                                returnPercent: 0,
-                                value: currentOrder.totalAmount
-                            };
-                            let stocks = [];
-                            stocks.push(newStockInPortfolio);
-                            const newPortfolio = new Portfolio({
-                                userID: currentOrder.userID,
-                                investedValue: 0,
-                                totalReturns: 0,
-                                stocks: newStockInPortfolio
-                            })
-                            newPortfolio.save().
-                            then(respon=> console.log(respon._id + ' portfolio created...') ).
-                            catch(err=>console.log(err));
+  Order.find({ progress: 'Placed' })
+    .then((result) => {
+      for (let i = 0; i < result.length; i++) {
+        const currentOrder = result[i];
+        const now = new Date();
+        const timestamp = dateTime.format(now, 'YYYY-MM-DD HH:mm:ss A [GMT]Z');
+        Order.updateOne(
+          { _id: currentOrder._id },
+          {
+            progress: 'Executed',
+            status: 'Successful',
+            executedTimestamp: timestamp,
+          }
+        )
+          .then((resp) => {
+            if (resp.n == 1) {
+              Portfolio.findOne({ userID: currentOrder.userID })
+                .then((respo) => {
+                  if (respo === null) {
+                    const newStockInPortfolio = {
+                      code: currentOrder.code,
+                      name: currentOrder.name,
+                      quantity: currentOrder.quantity,
+                      averagePrice: currentOrder.totalAmount,
+                      returns: 0,
+                      returnPercent: 0,
+                      value: currentOrder.totalAmount,
+                    };
+                    let stocks = [];
+                    stocks.push(newStockInPortfolio);
+                    const newPortfolio = new Portfolio({
+                      userID: currentOrder.userID,
+                      investedValue: 0,
+                      totalReturns: 0,
+                      stocks: newStockInPortfolio,
+                    });
+                    newPortfolio
+                      .save()
+                      .then((respon) =>
+                        console.log(respon._id + ' portfolio created...')
+                      )
+                      .catch((err) => console.log(err));
+                  } else {
+                    const stocksInPortfolio = respo.stocks;
+                    const index = stocksInPortfolio.findIndex(
+                      (element) => element.code === currentOrder.code
+                    );
+                    if (index === -1) {
+                      let averagePrice =
+                        currentOrder.totalAmount / currentOrder.quantity;
+                      const newStockInPortfolio = {
+                        code: currentOrder.code,
+                        name: currentOrder.name,
+                        quantity: currentOrder.quantity,
+                        averagePrice: averagePrice,
+                        returns: 0,
+                        returnPercent: 0,
+                        value: currentOrder.totalAmount,
+                      };
+                      stocksInPortfolio.push(newStockInPortfolio);
+                      const investedValue = (
+                        respo.investedValue + currentOrder.totalAmount
+                      ).toFixed(2);
+                      Portfolio.updateOne(
+                        { _id: respo._id },
+                        {
+                          investedValue: investedValue,
+                          stocks: stocksInPortfolio,
                         }
-                        else{
-                            const stocksInPortfolio = respo.stocks;
-                            const index = stocksInPortfolio.findIndex((element) => element.code === currentOrder.code);
-                            if(index===-1){
-                                let averagePrice = currentOrder.totalAmount/currentOrder.quantity;
-                                const newStockInPortfolio = {
-                                    code: currentOrder.code,
-                                    name: currentOrder.name,
-                                    quantity: currentOrder.quantity,
-                                    averagePrice: averagePrice,
-                                    returns: 0,
-                                    returnPercent: 0,
-                                    value: currentOrder.totalAmount
-                                }
-                                stocksInPortfolio.push(newStockInPortfolio);
-                                const investedValue = (respo.investedValue + currentOrder.totalAmount).toFixed(2);
-                                Portfolio.updateOne({_id: respo._id},{
-                                    investedValue: investedValue,
-                                    stocks:stocksInPortfolio
-                                }).
-                                catch(err=>console.log(err))
-                            }
-                            else{
-                                let currentStock = stocksInPortfolio[index];
-                                let investedValue = respo.investedValue;
-                                if(currentOrder.type==="Buy"){
-                                    currentStock.value = (currentStock.value + currentOrder.totalAmount).toFixed(2);
-                                    currentStock.quantity = currentStock.quantity + currentOrder.quantity;
-                                    currentStock.averagePrice = (currentStock.value/currentStock.quantity).toFixed(2);
-                                    stocksInPortfolio[index] = currentStock;
-                                    investedValue = (respo.investedValue + currentOrder.totalAmount).toFixed(2);
-                                }
-                                else{
-                                    currentStock.value = (currentStock.value - currentOrder.totalAmount).toFixed(2);
-                                    currentStock.quantity = currentStock.quantity - currentOrder.quantity;
-                                    currentStock.averagePrice = (currentStock.value/currentStock.quantity).toFixed(2);
-                                    stocksInPortfolio[index] = currentStock;
-                                    if(currentStock.quantity===0){
-                                        stocksInPortfolio
-                                        for(let i=index;i<stocksInPortfolio.length-1;i++){
-                                            stocksInPortfolio[i]=stocksInPortfolio[i+1];
-                                        }
-                                        stocksInPortfolio.pop();
-                                    }
-                                    const deduct = currentStock.averagePrice*currentOrder.quantity;
-                                    investedValue = (respo.investedValue - deduct).toFixed(2);
-                                }
-                                Portfolio.updateOne({_id: respo._id},{
-                                    investedValue: investedValue,
-                                    stocks:stocksInPortfolio
-                                }).
-                                catch(err=>console.log(err))
-                            }
+                      ).catch((err) => console.log(err));
+                    } else {
+                      let currentStock = stocksInPortfolio[index];
+                      let investedValue = respo.investedValue;
+                      if (currentOrder.type === 'Buy') {
+                        currentStock.value = (
+                          currentStock.value + currentOrder.totalAmount
+                        ).toFixed(2);
+                        currentStock.quantity =
+                          currentStock.quantity + currentOrder.quantity;
+                        currentStock.averagePrice = (
+                          currentStock.value / currentStock.quantity
+                        ).toFixed(2);
+                        stocksInPortfolio[index] = currentStock;
+                        investedValue = (
+                          respo.investedValue + currentOrder.totalAmount
+                        ).toFixed(2);
+                      } else {
+                        currentStock.value = (
+                          currentStock.value - currentOrder.totalAmount
+                        ).toFixed(2);
+                        currentStock.quantity =
+                          currentStock.quantity - currentOrder.quantity;
+                        currentStock.averagePrice = (
+                          currentStock.value / currentStock.quantity
+                        ).toFixed(2);
+                        stocksInPortfolio[index] = currentStock;
+                        if (currentStock.quantity === 0) {
+                          stocksInPortfolio;
+                          for (
+                            let i = index;
+                            i < stocksInPortfolio.length - 1;
+                            i++
+                          ) {
+                            stocksInPortfolio[i] = stocksInPortfolio[i + 1];
+                          }
+                          stocksInPortfolio.pop();
                         }
-                    }).
-                    catch(err=>console.log(err))
-                }
-            }).
-            catch(err=>console.log(err))
-        }
-    }).
-    catch(err=>console.log(err))
-    res.send('Executed')
+                        const deduct =
+                          currentStock.averagePrice * currentOrder.quantity;
+                        investedValue = (respo.investedValue - deduct).toFixed(
+                          2
+                        );
+                      }
+                      Portfolio.updateOne(
+                        { _id: respo._id },
+                        {
+                          investedValue: investedValue,
+                          stocks: stocksInPortfolio,
+                        }
+                      ).catch((err) => console.log(err));
+                    }
+                  }
+                })
+                .catch((err) => console.log(err));
+            }
+          })
+          .catch((err) => console.log(err));
+      }
+    })
+    .catch((err) => console.log(err));
+  res.send('Executed');
 };
 
 exports.getOrders = (req, res) => {
-    Order.find({userID:req.user._id}).
-    sort({verifiedTimestamp:-1}).
-    then(resp=>{
+  Order.find({ userID: req.body._id })
+    .sort({ verifiedTimestamp: -1 })
+    .then((resp) => {
+      if(resp.length>0){
         const status = req.body.status;
         const type = req.body.type;
         let sendData = [];
-        for(let i=0;i<resp.length;i++){
-            const order = resp[i];
-            if((status === 'All' || status === order.status) && (type === "All" || type === order.type)) sendData.push(order);
+        for (let i = 0; i < resp.length; i++) {
+          const order = resp[i];
+          if (
+            (status === 'All' || status === order.status) &&
+            (type === 'All' || type === order.type)
+          )
+            sendData.push(order);
         }
-        res.send(sendData)
-    }).
-    catch(err=>console.log(err))
+        res.send(sendData);
+      }
+      else res.send('Data Unavailable')
+    })
+    .catch((err) => console.log(err));
 };
 
 exports.getDashboard = (req, res) => {
-    Portfolio.findOne({userID:req.user._id}).
-    then(resp=>res.send(resp)).
-    catch(err=>console.log(err))
+  console.log(req.body)
+  Portfolio.findOne({ userID: req.body._id })
+    .then((resp) => {
+      if(resp===null)
+        res.send('Data Unavailable')
+      else
+        res.send(resp)
+    })
+    .catch((err) => console.log(err));
 };
 
 exports.getAvailableStocks = (req, res) => {
-    const stockID = req.params.stockID;
-    Portfolio.findOne({userID:req.user._id}).
-    then(resp=>{
-        const stocks = resp.stocks;
-        for(let i=0;i<stocks.length;i++){
-            const stock = stocks[i];
-            if(stock.code===stockID)res.send(stock);
-        }
-    }).
-    catch(err=>console.log(err))
+  const stockID = req.params.stockID;
+  Portfolio.findOne({ userID: req.body._id })
+    .then((resp) => {
+      if(resp.stocks===undefined)res.send({quantity: 0})
+      const stocks = resp.stocks;
+      for (let i = 0; i < stocks.length; i++) {
+        const stock = stocks[i];
+        if (stock.code === stockID) res.send(stock);
+        if(i===stocks.length-1) res.send({quantity: 0})
+      }
+    })
+    .catch((err) => console.log(err));
 };
 
 exports.getWatchlist = (req, res) => {
-    const watchlist=req.user.watchlist;
-    let sendList=[];
-    fetchData();
-    async function fetchData(){
-        for(let i=0;i<watchlist.length;i++){
-            await Stock.find({code:watchlist[i]}).
-            then(response=>{ sendList.push(response[0]) }).
-            catch(err=>{console.log(err)})
-        }
-        res.send(sendList);
+  let sendList = [],
+    watchList = [];
+
+  User.findById(req.body._id)
+    .then((user) => {
+      console.log(user)
+      if(user!==null && user.watchlist.length>0){
+        watchList = user.watchlist;
+        getData();
+      }
+      else 
+        res.send('Data Unavailable');
+    })
+    .catch((err) => console.log(err));
+
+  async function getData() {
+    for (let i = 0; i < watchList.length; i++) {
+      await Stock.findOne({ code: watchList[i] })
+        .then((stock) => sendList.push(stock))
+        .catch((err) => console.log(err));
     }
+    res.send(sendList);
+  }
 };
 
 exports.addToWatchList = (req, res) => {
-    const _id = req.body.userId;
-    const code = req.body.code;
+  const _id = req.body.userId;
+  const code = req.body.code;
 
-    if(_id.length>1&&code.length>0){
-        User.findById(_id)
-        .then(result=>{
-            let newStocks=result.watchlist,f=1;
-            for(let i=0;i<newStocks.length;i++){
-                if(newStocks[i]===code)f=0;
-            }
-            if(f){
-                newStocks.push(code);
-                User.findByIdAndUpdate(_id, {watchlist: newStocks}).
-                then(resp=>{ console.log('Added to WatchList') }).
-                catch(err=>{ console.log(err); })
-            }
-        })
-        .catch(err=>{ console.log(err); })
-    }
+  if (_id.length > 1 && code.length > 0) {
+    User.findById(_id)
+      .then((result) => {
+        let newStocks = result.watchlist,
+          f = 1;
+        for (let i = 0; i < newStocks.length; i++) {
+          if (newStocks[i] === code) f = 0;
+        }
+        if (f) {
+          newStocks.push(code);
+          User.findByIdAndUpdate(_id, { watchlist: newStocks })
+            .then((resp) => {
+              console.log('Added to WatchList');
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 };
 
 exports.removeFromWatchList = (req, res) => {
-    const _id = req.body.userId;
-    const code = req.body.code;
+  const _id = req.body.userId;
+  const code = req.body.code;
 
-    if(_id.length>1&&code.length>0){
-        User.findById(_id)
-        .then(result=>{
-            let newStocks=result.watchlist;
-            console.log(newStocks);
-            const len=newStocks.length;
-            for(let i=0;i<len;i++){
-                if(newStocks[i]==code){
-                    for(let j=i+1;j<len;j++){
-                        newStocks[j-1]=newStocks[j];
-                    }
-                    newStocks.pop();
-                    break;
-                }
+  if (_id.length > 1 && code.length > 0) {
+    User.findById(_id)
+      .then((result) => {
+        let newStocks = result.watchlist;
+        const len = newStocks.length;
+        for (let i = 0; i < len; i++) {
+          if (newStocks[i] == code) {
+            for (let j = i + 1; j < len; j++) {
+              newStocks[j - 1] = newStocks[j];
             }
-            console.log(newStocks)
+            newStocks.pop();
+            break;
+          }
+        }
 
-
-            User.findByIdAndUpdate(_id, {watchlist: newStocks}).
-            then(resp=>{ console.log('Removed from WatchList') }).
-            catch(err=>{ console.log(err); })
-
-        })
-        .catch(err=>{ console.log(err); })
-    }
-    res.send('Removed');
+        User.findByIdAndUpdate(_id, { watchlist: newStocks })
+          .then((resp) => {
+            console.log('Removed from WatchList');
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  res.send('Removed');
 };
