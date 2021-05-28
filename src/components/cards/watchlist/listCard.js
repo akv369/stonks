@@ -15,15 +15,14 @@ class listCard extends Component {
     filteredStocks: [],
     activeButton: '',
     fetching: true,
-    dataNull: false
+    dataNull: false,
   };
   componentDidMount() {
     Axios.post('/watchlist', { _id: this.props._id })
       .then((response) => {
-        if(response.data==='Data Unavailable')
+        if (response.data === 'Data Unavailable')
           this.setState({ dataNull: true, fetching: false });
-        else
-          this.setState({ filteredStocks: response.data, fetching: false });
+        else this.setState({ filteredStocks: response.data, fetching: false });
       })
       .catch((err) => {
         console.log(err);
@@ -103,11 +102,14 @@ class listCard extends Component {
       });
     };
     return (
-      <div style={{minHeight:"300px"}}>
+      <div style={{ minHeight: '300px' }}>
         {this.state.fetching ? (
           <Spinner />
         ) : this.state.dataNull ? (
-          <DataNull reason="No Stocks to show!" tip="Try adding some stocks to your watchlist" />
+          <DataNull
+            reason="No Stocks to show!"
+            tip="Try adding some stocks to your watchlist"
+          />
         ) : (
           <Card>
             <ListGroup variant="flush">{displayCard()}</ListGroup>

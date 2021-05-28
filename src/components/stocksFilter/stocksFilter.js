@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import * as actionTypes from '../../store/actions';
 
-import { Card, ListGroup, Form, Col } from 'react-bootstrap';
+import { Card, ListGroup, Form, Col, Button, Badge } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class stocksFilter extends Component {
@@ -11,66 +11,69 @@ class stocksFilter extends Component {
     cmpUl: 10000,
     cmpLl: 0,
     sectors: {
-      All: true,
-      'Basic Materials': false,
-      'Communication Services': false,
-      'Consumer Cyclical': false,
-      'Consumer Defensive': false,
-      Energy: false,
-      'Financial Services': false,
-      Healthcare: false,
-      Industrials: false,
-      Other: false,
-      'Real Estate': false,
-      Technology: false,
-      Utilities: false,
-      length: 1,
+      All: false,
     },
     mcUl: 10000,
     mcLl: 0,
   };
-  componentDidUpdate() {
-    const stockFilters = {
-      cmpUl: this.state.cmpUl,
-      cmpLl: this.state.cmpLl,
-      sectors: this.state.sectors,
-      mcUl: this.state.mcUl,
-      mcLl: this.state.mcLl,
-    };
-    this.props.setFilters(stockFilters);
+  componentDidMount() {
+    let currentSectors = this.state.sectors;
+    currentSectors[this.props.defaultTrue] = true;
+    this.setState({ sectors: currentSectors });
   }
   render() {
+    const sectors = [
+      'All',
+      'Basic Materials',
+      'Communication Services',
+      'Consumer Cyclical',
+      'Consumer Defensive',
+      'Energy',
+      'Financial Services',
+      'Healthcare',
+      'Industrials',
+      'Other',
+      'Real Estate',
+      'Technology',
+      'Utilities',
+    ];
     const handleCheck = (event) => {
       event.preventDefault();
       const id = event.target.id;
       let currentSectors = this.state.sectors;
-      let length = this.state.sectors['length'];
       if (event.target.value === 'on') {
-        if (currentSectors[id] === true) {
-          currentSectors[id] = false;
-          currentSectors['length'] = length - 1;
-        } else {
-          currentSectors[id] = true;
-          currentSectors['length'] = length + 1;
-        }
+        currentSectors[id] = !currentSectors[id];
         this.setState({ sectors: currentSectors });
       } else {
         currentSectors[id] = false;
-        currentSectors['length'] = length - 1;
         this.setState({ sectors: currentSectors });
       }
+    };
+    const handleApply = () => {
+      const filters = {
+        cmpUl: this.state.cmpUl,
+        cmpLl: this.state.cmpLl,
+        sectors: this.state.sectors,
+        mcUl: this.state.mcUl,
+        mcLl: this.state.mcLl,
+      };
+      this.props.handleApply(filters);
     };
     return (
       <div>
         <Card className="shadow-sm">
           <ListGroup variant="flush">
             <ListGroup.Item>
-              <h6 className="font-weight-bold float-left m-0 text-info">
-                Apply Filters
-              </h6>
-              {/* <Badge pill variant="info" className="float-right mt-2">
-                                Apply Filters
-                            </Badge> */}
+              <h6 className="font-weight-bold float-left mt-2">Filters</h6>
+              <Button
+                variant="white"
+                className="float-right p-0"
+                onClick={() => handleApply()}
+              >
+                <Badge pill variant="info" className="float-right mt-2">
+                  Apply Filters
+                </Badge>
+              </Button>
             </ListGroup.Item>
             <ListGroup.Item>
               <div
@@ -79,124 +82,20 @@ class stocksFilter extends Component {
               >
                 SECTORS
               </div>
-              <div>
-                <Form.Check
-                  inline
-                  label="All"
-                  type={'checkbox'}
-                  id={'All'}
-                  defaultChecked
-                  onChange={(event) => handleCheck(event)}
-                />
-              </div>
-              <div>
-                <Form.Check
-                  inline
-                  label="Basic Materials"
-                  type={'checkbox'}
-                  id={'Basic Materials'}
-                  onChange={(event) => handleCheck(event)}
-                />
-              </div>
-              <div>
-                <Form.Check
-                  inline
-                  label="Communication Services"
-                  type={'checkbox'}
-                  id={'Communication Services'}
-                  onChange={(event) => handleCheck(event)}
-                />
-              </div>
-              <div>
-                <Form.Check
-                  inline
-                  label="Consumer Cyclical"
-                  type={'checkbox'}
-                  id={'Consumer Cyclical'}
-                  onChange={(event) => handleCheck(event)}
-                />
-              </div>
-              <div>
-                <Form.Check
-                  inline
-                  label="Consumer Defensive"
-                  type={'checkbox'}
-                  id={'Consumer Defensive'}
-                  onChange={(event) => handleCheck(event)}
-                />
-              </div>
-              <div>
-                <Form.Check
-                  inline
-                  label="Energy"
-                  type={'checkbox'}
-                  id={'Energy'}
-                  onChange={(event) => handleCheck(event)}
-                />
-              </div>
-              <div>
-                <Form.Check
-                  inline
-                  label="Financial Services"
-                  type={'checkbox'}
-                  id={'Financial Services'}
-                  onChange={(event) => handleCheck(event)}
-                />
-              </div>
-              <div>
-                <Form.Check
-                  inline
-                  label="Healthcare"
-                  type={'checkbox'}
-                  id={'Healthcare'}
-                  onChange={(event) => handleCheck(event)}
-                />
-              </div>
-              <div>
-                <Form.Check
-                  inline
-                  label="Industrials"
-                  type={'checkbox'}
-                  id={'Industrials'}
-                  onChange={(event) => handleCheck(event)}
-                />
-              </div>
-              <div>
-                <Form.Check
-                  inline
-                  label="Other"
-                  type={'checkbox'}
-                  id={'Other'}
-                  onChange={(event) => handleCheck(event)}
-                />
-              </div>
-              <div>
-                <Form.Check
-                  inline
-                  label="Real Estate"
-                  type={'checkbox'}
-                  id={'Real Estate'}
-                  onChange={(event) => handleCheck(event)}
-                />
-              </div>
-              <div>
-                <Form.Check
-                  inline
-                  label="Technology"
-                  type={'checkbox'}
-                  id={'Technology'}
-                  onChange={(event) => handleCheck(event)}
-                />
-              </div>
-              <div>
-                <Form.Check
-                  inline
-                  label="Utilities"
-                  type={'checkbox'}
-                  id={'Utilities'}
-                  onChange={(event) => handleCheck(event)}
-                />
-              </div>
+              {sectors.map((sectorName) => {
+                return (
+                  <div key={sectorName}>
+                    <Form.Check
+                      inline
+                      label={sectorName}
+                      type={'checkbox'}
+                      id={sectorName}
+                      defaultChecked={sectorName === this.props.defaultTrue}
+                      onChange={(event) => handleCheck(event)}
+                    />
+                  </div>
+                );
+              })}
             </ListGroup.Item>
             <ListGroup.Item>
               <div

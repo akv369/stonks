@@ -1,4 +1,14 @@
 const initialState = {
+  currentUsers: {
+    _id: '6042f71d5e5b631c10fa3d6e',
+    balance: 1377116.81,
+    email: 'rockstarboy0103@gmail.com',
+    name: 'Akayishh',
+    photoURL: 'h',
+    provider: 'google.com',
+    uid: 113414445289128080000,
+    watchlist: ['AMZN', 'TSLA', 'GE', 'FB'],
+  },
   currentUser: null,
   isAuthenticated: false,
   err: null,
@@ -11,7 +21,7 @@ const initialState = {
   },
   pageDetails: {
     currentPage: 1,
-    stockPerPage: 8,
+    stocksPerPage: 8,
     lastPage: 1,
   },
   orderFilters: {

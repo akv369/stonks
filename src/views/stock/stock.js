@@ -30,88 +30,73 @@ class stock extends Component {
   componentDidMount() {
     const stockName = this.props.match.params.stockID;
     axios.get('/stock/' + stockName).then((response) => {
-      if (response.data.state === 'invalid') 
-        <Redirect to='/404'/>
-      else {
-        this.setState({
-          close: response.data.close,
-          change: response.data.change,
-          pChange: response.data.pChange,
-          tChange: response.data.tChange,
-          companyName: response.data.companyName,
-          companySymbol: response.data.companySymbol,
-          overviewData: response.data.overviewData,
-          performanceData: response.data.performanceData,
-          isLoading: false,
-        });
-        this.props.buySell({
-          cmp: response.data.close,
-          companyName: response.data.companyName,
-          companySymbol: response.data.companySymbol,
-        });
-      }
+      this.setState({
+        close: response.data.close,
+        change: response.data.change,
+        pChange: response.data.pChange,
+        tChange: response.data.tChange,
+        companyName: response.data.companyName,
+        companySymbol: response.data.companySymbol,
+        overviewData: response.data.overviewData,
+        performanceData: response.data.performanceData,
+        isLoading: false,
+      });
+      this.props.buySell({
+        cmp: response.data.close,
+        companyName: response.data.companyName,
+        companySymbol: response.data.companySymbol,
+      });
     });
   }
   render() {
-    const details = () => {
+    const renderer = () => {
       if (!this.state.isLoading)
         return (
-          <div>
+          <Container>
+            <Row className="mt-5">
+              <Col sm={8}>
+                <Row>
+                  <Col sm={1} className="bg-info text-white ml-3">
+                    <h1 className="mt-2 ml-1">
+                      {this.state.companyName.slice(0, 1)}
+                    </h1>
+                  </Col>
+                  <Col sm={7}>
+                    <h3>{this.state.companyName}</h3>
+                    <h6 className="text-muted">{this.state.companySymbol}</h6>
+                  </Col>
+                  <Col
+                    sm={{ span: 3 }}
+                    className="text-right font-weight-bold ml-4"
+                  >
+                    <h3>${this.state.close}</h3>
+                    <h6
+                      className={
+                        this.state.tChange === 1
+                          ? 'text-success'
+                          : 'text-danger'
+                      }
+                    >
+                      {this.state.change} ({this.state.pChange}%)
+                    </h6>
+                  </Col>
+                </Row>
+                <div className="mt-4">
+                  <StockGraph companyCode={this.state.companySymbol} />
+                </div>
+              </Col>
+              <Col sm={3}>
+                <BuySellPanel />
+              </Col>
+            </Row>
             <CompanyPerformance data={this.state.performanceData} />
             <CompanyOverview data={this.state.overviewData} />
-            <SimilarStocks sector={this.state.overviewData[10]} />
-          </div>
+            <SimilarStocks sector={this.state.companySymbol} />
+          </Container>
         );
-      else
-        return (
-          <div className="mt-5">
-            <Spinner />
-            {/* <div className="mb-4"><ContentLoader w={714} h={200}/></div> */}
-          </div>
-        );
+      else return <Spinner />;
     };
-    return (
-      <div>
-        <Container>
-          <Row className="mt-5">
-            <Col sm={8}>
-              <Row>
-                <Col sm={1} className="bg-info text-white ml-3">
-                  <h1 className="mt-2 ml-1">
-                    {this.state.companyName.slice(0, 1)}
-                  </h1>
-                </Col>
-                <Col sm={7}>
-                  <h3>{this.state.companyName}</h3>
-                  <h6 className="text-muted">{this.state.companySymbol}</h6>
-                </Col>
-                <Col
-                  sm={{ span: 3 }}
-                  className="text-right font-weight-bold ml-4"
-                >
-                  <h3>${this.state.close.slice(0, 8)}</h3>
-                  <h6
-                    className={
-                      this.state.tChange === 1 ? 'text-success' : 'text-danger'
-                    }
-                  >
-                    {this.state.change.slice(0, 5)} (
-                    {this.state.pChange.slice(0, 4)}%)
-                  </h6>
-                </Col>
-              </Row>
-              <div className="mt-4">
-                <StockGraph companyCode={this.state.companySymbol} />
-              </div>
-            </Col>
-            <Col sm={3}>
-              <BuySellPanel />
-            </Col>
-          </Row>
-          {details()}
-        </Container>
-      </div>
-    );
+    return renderer();
   }
 }
 

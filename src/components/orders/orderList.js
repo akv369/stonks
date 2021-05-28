@@ -1,57 +1,14 @@
 import { React, Component } from 'react';
-import { connect } from 'react-redux';
-import Axios from '../../../axios-base';
 
-import * as actionTypes from '../../../store/actions';
 import DateList from './dateList';
-import DataNull from '../../dataNull/dataNull';
-import Spinner from '../../spinner/spinner';
+import Spinner from '../../components/spinner/spinner';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class orderList extends Component {
-  state = {
-    filteredOrders: [],
-    orderFilters: {
-      type: '',
-      status: '',
-    },
-    fetching: true,
-    dataNull: false,
-  };
-  componentDidMount() {
-    let sendData = this.props.orderFilters;
-    sendData._id = this.props.userID;
-    this.setState({ orderFilters: sendData });
-    Axios.post('/orders', sendData)
-      .then((res) => {
-        if (res.data === 'Data Unavailable' || res.data.length === 0) 
-          this.setState({ dataNull: true, fetching: false });
-        else 
-          this.setState({ filteredOrders: res.data, fetching: false });
-      })
-      .catch((err) => console.log(err));
-  }
-  componentWillUpdate() {
-    if (
-      this.props.orderFilters.status !== this.state.orderFilters.status ||
-      this.props.orderFilters.type !== this.state.orderFilters.type
-    ) {
-      const sendData = this.props.orderFilters;
-      this.setState({ orderFilters: sendData, fetching: true });
-      Axios.post('/orders', sendData)
-        .then((res) =>{
-          if (res.data === 'Data Unavailable' || res.data.length === 0) 
-            this.setState({ dataNull: true, fetching: false });
-          else 
-            this.setState({ filteredOrders: res.data, fetching: false });
-          }
-        )
-        .catch((err) => console.log(err));
-    }
-  }
   render() {
     let displayCard = () => {
-      let orders = this.state.filteredOrders;
+      let orders = this.props.filteredOrders;
       if (orders.length === 0)
         <div>
           <Spinner />
@@ -136,35 +93,8 @@ class orderList extends Component {
         });
       }
     };
-    return (
-      <div>
-        {this.state.fetching ? (
-          <Spinner />
-        ) : this.state.dataNull ? (
-          <DataNull reason="No Orders to show!" tip=":(" />
-        ) : (
-          displayCard()
-        )}
-      </div>
-    );
+    return displayCard();
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    userID: state.SET_USER.currentUser._id,
-    orderFilters: state.SET_ORDER_FILTERS.orderFilters,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setPagination: (pageDetails) =>
-      dispatch({
-        type: actionTypes.SET_PAGE_DETAILS,
-        pageDetails: pageDetails,
-      }),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(orderList);
+export default orderList;

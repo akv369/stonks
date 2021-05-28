@@ -45,14 +45,17 @@ class header extends Component {
     });
   };
   handleSuggestionClick = (stockCode) => {
-    console.log(stockCode)
-    this.setState({
-      query: '',
-      nameArr: [],
-      codeArr: [],
-    },()=>{
-      <Redirect to={`/stock/${stockCode}`}/>
-    });
+    console.log(stockCode);
+    this.setState(
+      {
+        query: '',
+        nameArr: [],
+        codeArr: [],
+      },
+      () => {
+        <Redirect to={`/stock/${stockCode}`} />;
+      }
+    );
   };
   googleLogout = () => {
     firebase

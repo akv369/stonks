@@ -16,10 +16,8 @@ exports.getOrder = (req, res) => {
         ).catch((err) => console.log(err));
         let sendData = resp;
         sendData.cmp = respo.cmp;
-        if(sendData.userID!==req.body._id)
-            res.send('Access Denied')
-        else
-            res.send(sendData);
+        if (sendData.userID !== req.body._id) res.send('Access Denied');
+        else res.send(sendData);
       });
     })
     .catch((err) => console.log(err));
@@ -260,33 +258,31 @@ exports.getOrders = (req, res) => {
   Order.find({ userID: req.body._id })
     .sort({ verifiedTimestamp: -1 })
     .then((resp) => {
-      if(resp.length>0){
         const status = req.body.status;
         const type = req.body.type;
         let sendData = [];
-        for (let i = 0; i < resp.length; i++) {
-          const order = resp[i];
-          if (
-            (status === 'All' || status === order.status) &&
-            (type === 'All' || type === order.type)
-          )
-            sendData.push(order);
+        if(resp.length){
+          for (let i = 0; i < resp.length; i++) {
+            const order = resp[i];
+            if (
+              (status === 'All' || status === order.status) &&
+              (type === 'All' || type === order.type)
+            )
+              sendData.push(order);
+          }
         }
-        res.send(sendData);
-      }
-      else res.send('Data Unavailable')
+        if(sendData.length>0)res.send(sendData);
+        else res.send('Data Unavailable');
     })
     .catch((err) => console.log(err));
 };
 
 exports.getDashboard = (req, res) => {
-  console.log(req.body)
+  console.log(req.body);
   Portfolio.findOne({ userID: req.body._id })
     .then((resp) => {
-      if(resp===null)
-        res.send('Data Unavailable')
-      else
-        res.send(resp)
+      if (resp === null) res.send('Data Unavailable');
+      else res.send(resp);
     })
     .catch((err) => console.log(err));
 };
@@ -295,12 +291,12 @@ exports.getAvailableStocks = (req, res) => {
   const stockID = req.params.stockID;
   Portfolio.findOne({ userID: req.body._id })
     .then((resp) => {
-      if(resp.stocks===undefined)res.send({quantity: 0})
+      if (resp.stocks === undefined) res.send({ quantity: 0 });
       const stocks = resp.stocks;
       for (let i = 0; i < stocks.length; i++) {
         const stock = stocks[i];
         if (stock.code === stockID) res.send(stock);
-        if(i===stocks.length-1) res.send({quantity: 0})
+        if (i === stocks.length - 1) res.send({ quantity: 0 });
       }
     })
     .catch((err) => console.log(err));
@@ -312,13 +308,11 @@ exports.getWatchlist = (req, res) => {
 
   User.findById(req.body._id)
     .then((user) => {
-      console.log(user)
-      if(user!==null && user.watchlist.length>0){
+      console.log(user);
+      if (user !== null && user.watchlist.length > 0) {
         watchList = user.watchlist;
         getData();
-      }
-      else 
-        res.send('Data Unavailable');
+      } else res.send('Data Unavailable');
     })
     .catch((err) => console.log(err));
 

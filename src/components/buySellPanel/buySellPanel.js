@@ -7,7 +7,7 @@ import imgPath from '../../data/click.png';
 import Spinner from '../spinner/spinner';
 import { Card, Nav, Button, Form, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import styles from './buySellPanel.module.css';
+import './buySellPanel.css';
 
 class buySellPanel extends Component {
   state = {
@@ -268,31 +268,7 @@ class buySellPanel extends Component {
         <div style={{ height: '491px' }}>
           <div className="text-center p-2">
             <div className="my-5" style={{ marginLeft: '80px' }}>
-              <svg
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 130.2 130.2"
-              >
-                <circle
-                  className={styles.pathCircle}
-                  fill="none"
-                  stroke="#73AF55"
-                  stroke-width="6"
-                  stroke-miterlimit="10"
-                  cx="65.1"
-                  cy="65.1"
-                  r="62.1"
-                />
-                <polyline
-                  className={styles.pathCheck}
-                  fill="none"
-                  stroke="#73AF55"
-                  stroke-width="6"
-                  stroke-linecap="round"
-                  stroke-miterlimit="10"
-                  points="100.2,40.2 51.5,88.8 29.8,67.5 "
-                />
-              </svg>
+              {renderTick()}
             </div>
             <h5 className="font-weight-bold mb-4">
               Order Verified Successfully
@@ -312,31 +288,7 @@ class buySellPanel extends Component {
         <div style={{ height: '491px' }}>
           <div className="text-center p-2">
             <div className="my-5" style={{ marginLeft: '80px' }}>
-              <svg
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 130.2 130.2"
-              >
-                <circle
-                  className={styles.pathCircle}
-                  fill="none"
-                  stroke="#73AF55"
-                  stroke-width="6"
-                  stroke-miterlimit="10"
-                  cx="65.1"
-                  cy="65.1"
-                  r="62.1"
-                />
-                <polyline
-                  className={styles.pathCheck}
-                  fill="none"
-                  stroke="#73AF55"
-                  stroke-width="6"
-                  stroke-linecap="round"
-                  stroke-miterlimit="10"
-                  points="100.2,40.2 51.5,88.8 29.8,67.5 "
-                />
-              </svg>
+              {renderTick()}
             </div>
             <h5 className="font-weight-bold mb-4">Order Placed Successfully</h5>
             <p>
@@ -354,31 +306,7 @@ class buySellPanel extends Component {
         <div style={{ height: '491px' }}>
           <div className="text-center p-2">
             <div className="my-5" style={{ marginLeft: '80px' }}>
-              <svg
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 130.2 130.2"
-              >
-                <circle
-                  className={styles.pathCircle}
-                  fill="none"
-                  stroke="#73AF55"
-                  stroke-width="6"
-                  stroke-miterlimit="10"
-                  cx="65.1"
-                  cy="65.1"
-                  r="62.1"
-                />
-                <polyline
-                  className={styles.pathCheck}
-                  fill="none"
-                  stroke="#73AF55"
-                  stroke-width="6"
-                  stroke-linecap="round"
-                  stroke-miterlimit="10"
-                  points="100.2,40.2 51.5,88.8 29.8,67.5 "
-                />
-              </svg>
+              {renderTick()}
             </div>
             <h5 className="font-weight-bold mb-4">
               Order Executed Successfully
@@ -389,6 +317,36 @@ class buySellPanel extends Component {
             </p>
           </div>
         </div>
+      );
+    };
+    const renderTick = () => {
+      return (
+        <svg
+          className="svg-style"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 130.2 130.2"
+        >
+          <circle
+            className="pathCircle"
+            fill="none"
+            stroke="#73AF55"
+            stroke-width="6"
+            stroke-miterlimit="10"
+            cx="65.1"
+            cy="65.1"
+            r="62.1"
+          />
+          <polyline
+            className="pathCheck"
+            fill="none"
+            stroke="#73AF55"
+            stroke-width="6"
+            stroke-linecap="round"
+            stroke-miterlimit="10"
+            points="100.2,40.2 51.5,88.8 29.8,67.5 "
+          />
+        </svg>
       );
     };
     let renderer =

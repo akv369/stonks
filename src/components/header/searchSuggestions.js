@@ -18,7 +18,7 @@ class searchSuggestions extends Component {
           {nameArr.map((stockName) => {
             return (
               <Link
-              to={'/stock/'+codeArr[j]}
+                to={'/stock/' + codeArr[j]}
                 // onClick={() => this.props.clicked(codeArr[j+1])}
               >
                 <span className="float-left">{stockName}</span>

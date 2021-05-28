@@ -33,7 +33,6 @@
   width: 80%;
   padding: 30px;
   text-align: center;
-  height: 500px;
 }
 .classicLogin {
   text-align: left;
@@ -46,12 +45,11 @@
 .btn-light {
   font-size: 12px;
   padding: 0;
-  background-color: #fff;
+  background-color: #fff !important;
   border: none;
   color: #17a2b8 !important;
 }
 .btn-light:hover {
-  background-color: #fff;
-  border: none;
-  color: #3f3f3f;
+  background-color: #fff !important;
+  border: none !important;
 }

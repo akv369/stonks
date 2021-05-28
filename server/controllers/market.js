@@ -1,195 +1,116 @@
 const axios = require('axios');
 const Stock = require('../models/stock');
+const Graph = require('../models/graph');
+const updateC = require('./updation');
 const mongoose = require('mongoose');
 
 exports.getL = (req, res) => {
   res.redirect('/login');
 };
 
+exports.getGraph = (req, res) => {
+  const stockName = req.params.stockID.toUpperCase();
+  Graph.find({ code: stockName })
+    .then((resp) => {
+      let sendArray = [];
+      for (let k = 0; k < resp.length; k++) {
+        let sendData = {};
+        sendData.code = resp[k].code;
+        sendData.interval = resp[k].interval;
+        sendData.coordinate = [];
+        for (let i = 0; i < resp[k].values.length; i++) {
+          const item = resp[k].values[i];
+          let coordinates = {};
+          coordinates.x = item.datetime;
+          coordinates.y = [];
+          coordinates.y.push(Number(item.open).toFixed(2));
+          coordinates.y.push(Number(item.high).toFixed(2));
+          coordinates.y.push(Number(item.low).toFixed(2));
+          coordinates.y.push(Number(item.close).toFixed(2));
+          sendData.coordinate.push(coordinates);
+        }
+        sendArray.push(sendData);
+      }
+      res.send(sendArray);
+      console.log(`${sendArray.length} ${stockName} graphs sent`)
+    })
+    .catch((err) => console.log(err));
+};
+
 exports.getStock = (req, res) => {
   const stockName = req.params.stockID.toUpperCase();
-  const apiKey = '&apikey=OR7C580Y9LGTY7ZE';
-  const tdApiKey = '&apikey=d609067766fb4ac9bcd8a24d328d7a13';
-  const path =
-    'https://www.alphavantage.co/query?function=OVERVIEW&symbol=' +
-    stockName +
-    apiKey;
-  const tdPath =
-    'https://api.twelvedata.com/quote?symbol=' + stockName + tdApiKey;
-  let companyOverviewData = [],
-    companyPerformanceData = [],
-    exchange;
-  let companyName,
-    companySymbol,
-    close,
-    change,
-    tChange,
-    pChange,
-    marketCapitalization;
-  let avData, tdData;
-  fetchData();
-  async function fetchData() {
-    await fetchFromApi();
-    async function fetchFromApi() {
-      await axios
-        .get(path)
-        .then((response) => {
-          avData = response.data;
-          if (avData['Sector'] === undefined) {
-            res.send({ state: 'invalid' });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
+  Stock.findOne({ code: stockName })
+    .then((resp) => {
+      if (resp) {
+        let companyOverviewData = [
+            resp.marketCap,
+            resp.pegRatio,
+            resp.peRatio,
+            resp.ebitda,
+            resp.divYield,
+            resp.bookValue,
+            resp.eps,
+            resp.roe,
+            resp.about,
+            resp.exchange,
+            resp.sector,
+            resp.industry,
+            resp.assetType,
+          ],
+          companyPerformanceData = [
+            resp._52wh,
+            resp._52wl,
+            resp.volume,
+            resp._200dma,
+            resp.open,
+            resp.high,
+            resp.low,
+            resp.previousClose,
+          ];
+        res.send({
+          companyName: resp.name,
+          companySymbol: resp.code,
+          close: resp.cmp,
+          change: resp.change,
+          tChange: resp.tChange,
+          pChange: resp.pChange,
+          overviewData: companyOverviewData,
+          performanceData: companyPerformanceData,
         });
-      await axios
-        .get(tdPath)
-        .then((response) => {
-          tdData = response.data;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-    sendData(avData, tdData);
-
-    res.send({
-      companyName: companyName,
-      companySymbol: companySymbol,
-      overviewData: companyOverviewData,
-      performanceData: companyPerformanceData,
-      close: close,
-      change: change,
-      tChange: tChange,
-      pChange: pChange,
-    });
-
-    const stock = new Stock({
-      code: companySymbol,
-      name: companyName,
-      cmp: close,
-      _200dma: companyPerformanceData[3],
-      _52wh: companyPerformanceData[0],
-      _52wl: companyPerformanceData[1],
-      marketCap: companyOverviewData[0],
-      sector: companyOverviewData[10],
-      roe: companyOverviewData[7],
-      peRatio: companyOverviewData[2],
-      exchange: exchange,
-    });
-
-    Stock.updateOne(
-      { code: stockName },
-      {
-        cmp: close,
-        _200dma: companyPerformanceData[3],
-        _52wh: companyPerformanceData[0],
-        _52wl: companyPerformanceData[1],
-        marketCap: companyOverviewData[0],
-        sector: companyOverviewData[10],
-        roe: companyOverviewData[7],
-        peRatio: companyOverviewData[2],
-        exchange: exchange,
-        marketCapitalization: marketCapitalization,
+        console.log(`${resp.code} stock data sent`)
       }
-    )
-      .then((result) => {
-        if (!result.n) {
-          stock
-            .save()
-            .then((result) => {
-              console.log(stockName + ' Saved');
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        } else console.log(stockName + ' Updated');
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    function sendData(data, tdData) {
-      companyName = data['Name'];
-      companySymbol = data['Symbol'];
-      marketCapitalization = data['MarketCapitalization'];
-      let labelValue = data['MarketCapitalization'];
-      let marketCap =
-        Number(labelValue) >= 1.0e12
-          ? Number(labelValue) / 1.0e12 + 'T'
-          : Number(labelValue) >= 1.0e9
-          ? Number(labelValue) / 1.0e9 + 'B'
-          : Number(labelValue) >= 1.0e6
-          ? Number(labelValue) / 1.0e6 + 'M'
-          : Number(labelValue) / 1.0e3 + 'K';
-      labelValue =
-        Number(marketCap.slice(0, -1)).toFixed(2) +
-        marketCap[marketCap.length - 1];
-      companyOverviewData.push(labelValue);
-      labelValue = Number(data['PEGRatio']).toFixed(2);
-      if (isNaN(labelValue)) companyOverviewData.push('0');
-      else companyOverviewData.push(labelValue);
-      labelValue = Number(data['PERatio']).toFixed(2);
-      if (isNaN(labelValue)) companyOverviewData.push('0');
-      else companyOverviewData.push(labelValue);
-      labelValue = data['EBITDA'];
-      let ebitda =
-        Number(labelValue) >= 1.0e12
-          ? Number(labelValue) / 1.0e12 + 'T'
-          : Number(labelValue) >= 1.0e9
-          ? Number(labelValue) / 1.0e9 + 'B'
-          : Number(labelValue) >= 1.0e6
-          ? Number(labelValue) / 1.0e6 + 'M'
-          : Number(labelValue) / 1.0e3 + 'K';
-      labelValue =
-        Number(ebitda.slice(0, -1)).toFixed(2) + ebitda[ebitda.length - 1];
-      if (isNaN(labelValue)) companyOverviewData.push('0');
-      else companyOverviewData.push(labelValue);
-      labelValue = (Number(data['DividendYield']) * 100).toFixed(2);
-      if (isNaN(labelValue)) companyOverviewData.push('0');
-      else companyOverviewData.push(labelValue);
-      labelValue = Number(data['BookValue']).toFixed(2);
-      if (isNaN(labelValue)) companyOverviewData.push('0');
-      else companyOverviewData.push(labelValue);
-      labelValue = Number(data['EPS']).toFixed(2);
-      if (isNaN(labelValue)) companyOverviewData.push('0');
-      else companyOverviewData.push(labelValue);
-      labelValue = (Number(data['ReturnOnEquityTTM']) * 100).toFixed(2);
-      if (isNaN(labelValue)) companyOverviewData.push('0');
-      else companyOverviewData.push(labelValue);
-      companyOverviewData.push(data['Description']);
-      exchange = data['Exchange'];
-      companyOverviewData.push(exchange);
-      companyOverviewData.push(data['Sector']);
-      companyOverviewData.push(data['Industry']);
-      companyOverviewData.push(data['AssetType']);
-      labelValue = Number(data['52WeekHigh']).toFixed(2);
-      companyPerformanceData.push(labelValue);
-      labelValue = Number(data['52WeekLow']).toFixed(2);
-      companyPerformanceData.push(labelValue);
-      companyPerformanceData.push(data['SharesOutstanding']);
-      labelValue = Number(data['200DayMovingAverage']).toFixed(2);
-      companyPerformanceData.push(labelValue);
-      companyPerformanceData[2] = tdData['volume'];
-      labelValue = Number(tdData['open']).toFixed(2);
-      companyPerformanceData.push(labelValue);
-      labelValue = Number(tdData['high']).toFixed(2);
-      companyPerformanceData.push(labelValue);
-      labelValue = Number(tdData['low']).toFixed(2);
-      companyPerformanceData.push(labelValue);
-      labelValue = Number(tdData['previous_close']).toFixed(2);
-      companyPerformanceData.push(labelValue);
-      close = Number(tdData['close']).toFixed(2);
-      if (isNaN(tdData['change'].slice(0, 1)))
-        change = Number(tdData['change']).toFixed(2);
-      else {
-        change = '+' + String(Number(tdData['change']).toFixed(2));
-        tChange = 1;
+      addToDB()
+      async function addToDB(){
+        await updateC.updateStock(stockName);
+        await updateC.updateGraph(stockName);
+        if (!resp) {
+          console.log(`Adding ${stockName} to database`);
+          res.redirect(`/stock/${stockName}`)
+        }
       }
-      pChange = Number(tdData['percent_change']).toFixed(2);
-    }
-  }
+    })
+    .catch((err) => console.log(err));
 };
+
+exports.getSimilarStock = (req,res) => {
+  const stockName = req.params.stockID.toUpperCase();
+  Stock.findOne({ code: stockName })
+  .then(resp => {
+    Stock.find({ sector: resp.sector})
+    .sort({marketCapitalization: -1})
+    .limit(9)
+    .then(respo=>{
+      let sendData = [];
+      respo.map(eachStock => {
+        if(eachStock.code!==resp.code)sendData.push(eachStock);
+      })
+      if(sendData.length>0)res.send(sendData)
+      else res.send('Data Unavailable')
+      console.log(`${sendData.length} similar stock with ${resp.code} sent`)
+    })
+  })
+  .catch(err=>console.log(err))
+}
 
 exports.getAllStocks = (req, res) => {
   Stock.find().then((stocks) => {
@@ -208,12 +129,12 @@ exports.postAllStocks = (req, res) => {
       const mcLl = Number(req.body.mcLl) * 1000000000;
       const sectors = req.body.sectors;
       stocks.map((eachStock) => {
-        const fetched_200dma = Number(eachStock['_200dma']);
+        const fetched_cmp = Number(eachStock['cmp']);
         const fetchedSector = eachStock['sector'];
         const fetchedMc = Number(eachStock['marketCapitalization']);
         if (
-          cmpUl >= fetched_200dma &&
-          cmpLl <= fetched_200dma &&
+          cmpUl >= fetched_cmp &&
+          cmpLl <= fetched_cmp &&
           mcUl >= fetchedMc &&
           mcLl <= fetchedMc &&
           (sectors['All'] || sectors[fetchedSector])
@@ -221,6 +142,8 @@ exports.postAllStocks = (req, res) => {
           filteredStocks.push(eachStock);
         }
       });
-      res.send(filteredStocks);
+      if(filteredStocks.length===0)res.send('Data Unavailable')
+      else res.send(filteredStocks);
+      console.log(`${filteredStocks.length} stocks sent for screener`)
     });
 };

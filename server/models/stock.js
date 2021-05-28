@@ -9,7 +9,27 @@ const stockSchema = new Schema({
     type: String,
     required: true,
   },
+  lastUpdated: {
+    type: Date,
+    required: true,
+  },
   cmp: {
+    type: Number,
+    required: true,
+  },
+  change: {
+    type: Number,
+    required: true,
+  },
+  tChange: {
+    type: Number,
+    required: true,
+  },
+  pChange: {
+    type: Number,
+    required: true,
+  },
+  volume: {
     type: Number,
     required: true,
   },
@@ -25,12 +45,28 @@ const stockSchema = new Schema({
     type: Number,
     required: true,
   },
+  open: {
+    type: Number,
+    required: true,
+  },
+  high: {
+    type: Number,
+    required: true,
+  },
+  low: {
+    type: Number,
+    required: true,
+  },
+  previousClose: {
+    type: Number,
+    required: true,
+  },
   marketCap: {
     type: String,
     required: true,
   },
-  sector: {
-    type: String,
+  marketCapitalization: {
+    type: Number,
     required: true,
   },
   roe: {
@@ -41,12 +77,44 @@ const stockSchema = new Schema({
     type: Number,
     required: true,
   },
+  pegRatio: {
+    type: Number,
+    required: true,
+  },
+  ebitda: {
+    type: String,
+    required: true,
+  },
+  divYield: {
+    type: Number,
+    required: true,
+  },
+  bookValue: {
+    type: Number,
+    required: true,
+  },
+  eps: {
+    type: Number,
+    required: true,
+  },
+  about: {
+    type: String,
+    required: true,
+  },
   exchange: {
     type: String,
     required: true,
   },
-  marketCapitalization: {
-    type: Number,
+  sector: {
+    type: String,
+    required: true,
+  },
+  industry: {
+    type: String,
+    required: true,
+  },
+  assetType: {
+    type: String,
     required: true,
   },
 });
