@@ -8,6 +8,30 @@ exports.getL = (req, res) => {
   res.redirect('/login');
 };
 
+exports.getWeekGraph = (req, res) => {
+  const stockName = req.params.stockID.toUpperCase();
+  Graph.findOne({ code: stockName, interval: '1week' })
+    .then((resp) => {
+      if(resp.values){
+        let sendData = {};
+        sendData.code = resp.code;
+        sendData.interval = resp.interval;
+        sendData.coordinate = [];
+        for (let i = 0; i < resp.values.length; i++) {
+          const item = resp.values[i];
+          let coordinates = {};
+          coordinates.x = item.datetime;
+          coordinates.y = Number(item.close).toFixed(2);
+          sendData.coordinate.push(coordinates);
+        }
+        res.send(sendData)
+        console.log(`${stockName} week graph sent`)
+      }
+      else console.log(`${stockName} graph not sent`)
+    })
+    .catch((err) => console.log(err));
+};
+
 exports.getGraph = (req, res) => {
   const stockName = req.params.stockID.toUpperCase();
   Graph.find({ code: stockName })

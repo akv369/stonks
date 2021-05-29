@@ -3,8 +3,63 @@ import { React, Component } from 'react';
 import { Card, Col, ListGroup, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
+import Axios from '../../../axios-base';
+import ApexCharts from 'react-apexcharts';
 
 class listCard extends Component {
+  state={
+    series: [{
+      name: 'sales',
+      data: [
+        {
+          x: '',
+          y: 0,
+        },
+      ],
+    }],
+    options: {
+      chart: {
+        type: 'area',
+        zoom: {
+          enabled: false
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: 'straight'
+      },
+      // labels: series.monthDataSeries1.dates,
+      xaxis: {
+        type: 'datetime',
+      },
+      yaxis: {
+        opposite: true
+      },
+      legend: {
+        horizontalAlign: 'left'
+      }
+    },
+  }
+  componentDidMount(){
+    // console.log(this.props.portfolio.stocks)
+    const stocks = this.props.portfolio.stocks;
+    stocks.map(stock => {
+      console.log(stock.code)
+      Axios.get(`/weekgraph/${stock.code}`)
+      .then(res=>{
+        // console.log(res.data.coordinate)
+        let newSeries = this.state.series;
+        newSeries[0].data = res.data.coordinate;
+        console.log(newSeries);
+        // console.log()
+        this.setState({series: newSeries})
+      })
+      .catch(err=>console.log(err))
+    })
+  }
+  
   render() {
     const portfolio = this.props.portfolio;
     const renderer = () => {
@@ -36,8 +91,14 @@ class listCard extends Component {
                   </div>
                 </Col>
                 <Col sm={5}>
-                  <div className={'text-' + graphColor}>
-                    Graph Points will form a graph here
+                  <div className={'text-' + graphColor} id="chart">
+              <ApexCharts
+                options={this.state.options}
+                series={this.state.series}
+                type="area"
+                height={35}
+                width={255}
+              />
                   </div>
                 </Col>
                 <Col sm={2}>
