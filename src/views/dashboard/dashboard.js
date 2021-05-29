@@ -34,7 +34,7 @@ class dashboard extends Component {
     if (portfolio.investedValue !== undefined) {
       investedValue = portfolio.investedValue;
       returns = portfolio.totalReturns;
-      returnsPercent = (returns / investedValue) * 100;
+      returnsPercent = portfolio.returnsPercent;
     }
     const renderer = () => {
       if (this.state.loading === true) {

@@ -75,8 +75,7 @@ class listCard extends Component {
         const investedValue = stock.value;
         let investedPercent = (investedValue / portfolio.investedValue) * 100;
         investedPercent = investedPercent.toFixed(2);
-        const returns = stock.returns,
-          returnsPercent = ((returns / investedValue) * 100).toFixed(2);
+        const returns = stock.returns, returnsPercent = stock.returnsPercent;
         const returnsColor = returns <= 0 ? 'danger' : 'success';
         const graphColor = 'success',
           hrefLink = '/stock/' + stock.code;

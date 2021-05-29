@@ -4,6 +4,7 @@ const User = require('../models/user');
 const Stock = require('../models/stock');
 const Order = require('../models/order');
 const Portfolio = require('../models/portfolio');
+const userUpdate = require('./userDataUpdation');
 
 exports.placeOrders = () => placeOrders();
 exports.executeOrders = () => executeOrders();
@@ -76,22 +77,21 @@ exports.postOrder = (req, res) => {
     });
     saveOrder
       .save()
-      .then(response => {
+      .then((response) => {
         placeOrders();
         const now = new Date();
         const hour = Number(dateTime.format(now, 'HH'));
         const minute = Number(dateTime.format(now, 'mm'));
-        if (hour >= 17 || hour < 1 || (hour === 1 && minute <= 30)){
-          if(order==='Market') res.send('Executed');
+        if (hour >= 17 || hour < 1 || (hour === 1 && minute <= 30)) {
+          if (order === 'Market') res.send('Executed');
           else res.send('Placed');
-        }
-        else res.send('Placed')
+        } else res.send('Placed');
       })
       .catch((err) => console.log(err));
   }
 };
 
-async function placeOrders(){
+async function placeOrders() {
   const now = new Date();
   const hour = Number(dateTime.format(now, 'HH'));
   const minute = Number(dateTime.format(now, 'mm'));
@@ -124,19 +124,19 @@ async function placeOrders(){
                   placedTimestamp: timestamp,
                 }
               )
-              .then(response => {
-                executeOrders();
-              })
-              .catch((err) => console.log(err))
+                .then((response) => {
+                  executeOrders();
+                })
+                .catch((err) => console.log(err))
             )
             .catch((err) => console.log(err));
         }
       })
       .catch((err) => console.log(err));
   } else console.log('Markets Closed');
-};
+}
 
-async function executeOrders(){
+async function executeOrders() {
   Order.find({ progress: 'Placed' })
     .then((result) => {
       for (let i = 0; i < result.length; i++) {
@@ -240,8 +240,8 @@ async function executeOrders(){
                         stocks: stocksInPortfolio,
                       }
                     )
-                    .then(console.log(`${respo._id} portfolio updated`))
-                    .catch((err) => console.log(err));
+                      .then(console.log(`${respo._id} portfolio updated`))
+                      .catch((err) => console.log(err));
                   }
                 })
                 .catch((err) => console.log(err));
@@ -251,27 +251,49 @@ async function executeOrders(){
       }
     })
     .catch((err) => console.log(err));
-};
+}
 
 exports.getOrders = (req, res) => {
   Order.find({ userID: req.body._id })
     .sort({ verifiedTimestamp: -1 })
     .then((resp) => {
-        const status = req.body.status;
-        const type = req.body.type;
-        let sendData = [];
-        if(resp.length){
-          for (let i = 0; i < resp.length; i++) {
-            const order = resp[i];
-            if (
-              (status === 'All' || status === order.status) &&
-              (type === 'All' || type === order.type)
-            )
-              sendData.push(order);
-          }
+      const status = req.body.status;
+      const type = req.body.type;
+      let sendData = [];
+      if (resp.length) {
+        for (let i = 0; i < resp.length; i++) {
+          const order = resp[i];
+          if (
+            (status === 'All' || status === order.status) &&
+            (type === 'All' || type === order.type)
+          )
+            sendData.push(order);
         }
-        if(sendData.length>0)res.send(sendData);
-        else res.send('Data Unavailable');
+      }
+      if (sendData.length > 0) res.send(sendData);
+      else res.send('Data Unavailable');
+    })
+    .catch((err) => console.log(err));
+};
+
+exports.getHome = (req, res) => {
+  Portfolio.findOne({ userID: req.body._id })
+    .then((resp) => {
+      if (resp === null) res.send('Data Unavailable');
+      else {
+        userUpdate.updatePortfolio(resp._id);
+        // console.log(resp);
+        let stocks = resp.stocks;
+        stocks.sort(function (a, b) {
+          return a.returns - b.returns;
+        });
+        const sendData = {
+          gainer: stocks[stocks.length - 1],
+          loser: stocks[0],
+          returnsPercent: resp.returnsPercent
+        }
+        res.send(sendData)
+      }
     })
     .catch((err) => console.log(err));
 };
@@ -291,7 +313,7 @@ exports.getAvailableStocks = (req, res) => {
   Portfolio.findOne({ userID: req.body._id })
     .then((resp) => {
       if (resp === null) res.send({ quantity: 0 });
-      else{
+      else {
         const stocks = resp.stocks;
         for (let i = 0; i < stocks.length; i++) {
           const stock = stocks[i];

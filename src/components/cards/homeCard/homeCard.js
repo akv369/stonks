@@ -5,24 +5,24 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 class homeCard extends Component {
   render() {
-    let cardWidth =
-      this.props.category === 'index'
-        ? '21.5rem'
-        : this.props.category === 'news'
-        ? '21rem'
-        : '33rem';
+    const name = this.props.data.name;
+    const code = this.props.data.code;
+    const percent = this.props.data.returnsPercent;
+    const color = percent>0 ? 'success' : 'danger';
+    const bgColor = percent>0 ? '#ccffb3' : '#ffad99';
+    const returns = this.props.data.returns;
     return (
       <div>
-        <Card style={{ width: cardWidth }} className="shadow-sm">
+        <Card style={{ width: '33rem', backgroundColor: bgColor }} className="shadow-sm">
           <Card.Body>
-            <Card.Title>Reliance Industries</Card.Title>
-            <Card.Subtitle className="mb-2 text-muted">RIL</Card.Subtitle>
+            <Card.Title>{name}</Card.Title>
+            <Card.Subtitle className="mb-2 text-muted">{code}</Card.Subtitle>
             <Card.Text>
               All the graph points fetched would make up a graph here.
             </Card.Text>
-            <Card.Text className={'mb-sm-0'}>CMP</Card.Text>
-            <Card.Link href="#" className="text-danger">
-              DC(%DC)
+            <Card.Text className={'mb-sm-0'}>Returns</Card.Text>
+            <Card.Link href="#" className={`text-${color}`}>
+              {returns}{' '}({percent}%)
             </Card.Link>
           </Card.Body>
         </Card>

@@ -257,11 +257,3 @@ async function updateGraph(stockName) {
       });
   }
 }
-
-exports.updatePortfoliosData = (req,res) => {
-  res.send('Portfolios')
-  console.log('Update Portfolios')
-  Portfolio.find()
-  .then(resp=>{console.log(resp)})
-  .catch(err=>{console.log(err)})
-}

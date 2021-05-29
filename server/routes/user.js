@@ -7,6 +7,7 @@ router.post('/orders', userC.getOrders);
 router.post('/order/', userC.postOrder);
 router.get('/placeOrders', userC.placeOrders);
 router.get('/executeOrders', userC.executeOrders);
+router.post('/home', userC.getHome);
 router.post('/dashboard', userC.getDashboard);
 router.post('/portfolio/:stockID', userC.getAvailableStocks);
 router.post('/watchlist', userC.getWatchlist);

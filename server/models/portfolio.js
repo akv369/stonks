@@ -18,6 +18,9 @@ const portfolioSchema = new Schema({
     type: Number,
     required: true,
   },
+  returnsPercent: {
+    type: Number,
+  },
   stocks: [
     {
       code: {

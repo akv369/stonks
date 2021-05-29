@@ -1,7 +1,7 @@
 const axios = require('axios');
 const Stock = require('../models/stock');
 const Graph = require('../models/graph');
-const updateC = require('./updation');
+const updateC = require('./databaseUpdation');
 const mongoose = require('mongoose');
 
 exports.getL = (req, res) => {
@@ -12,7 +12,7 @@ exports.getWeekGraph = (req, res) => {
   const stockName = req.params.stockID.toUpperCase();
   Graph.findOne({ code: stockName, interval: '1week' })
     .then((resp) => {
-      if(resp.values){
+      if (resp.values) {
         let sendData = {};
         sendData.code = resp.code;
         sendData.interval = resp.interval;
@@ -24,10 +24,9 @@ exports.getWeekGraph = (req, res) => {
           coordinates.y = Number(item.close).toFixed(2);
           sendData.coordinate.push(coordinates);
         }
-        res.send(sendData)
-        console.log(`${stockName} week graph sent`)
-      }
-      else console.log(`${stockName} graph not sent`)
+        res.send(sendData);
+        console.log(`${stockName} week graph sent`);
+      } else console.log(`${stockName} graph not sent`);
     })
     .catch((err) => console.log(err));
 };
@@ -38,7 +37,7 @@ exports.getGraph = (req, res) => {
     .then((resp) => {
       let sendArray = [];
       for (let k = 0; k < resp.length; k++) {
-        if(resp[k].values){
+        if (resp[k].values) {
           let sendData = {};
           sendData.code = resp[k].code;
           sendData.interval = resp[k].interval;
@@ -58,7 +57,7 @@ exports.getGraph = (req, res) => {
         }
       }
       res.send(sendArray);
-      console.log(`${sendArray.length} ${stockName} graphs sent`)
+      console.log(`${sendArray.length} ${stockName} graphs sent`);
     })
     .catch((err) => console.log(err));
 };
@@ -103,40 +102,42 @@ exports.getStock = (req, res) => {
           overviewData: companyOverviewData,
           performanceData: companyPerformanceData,
         });
-        console.log(`${resp.code} stock data sent`)
+        console.log(`${resp.code} stock data sent`);
       }
-      addToDB()
-      async function addToDB(){
+      addToDB();
+      async function addToDB() {
         await updateC.updateStock(stockName);
         await updateC.updateGraph(stockName);
         if (!resp) {
           console.log(`Adding ${stockName} to database`);
-          res.redirect(`/stock/${stockName}`)
+          res.redirect(`/stock/${stockName}`);
         }
       }
     })
     .catch((err) => console.log(err));
 };
 
-exports.getSimilarStock = (req,res) => {
+exports.getSimilarStock = (req, res) => {
   const stockName = req.params.stockID.toUpperCase();
   Stock.findOne({ code: stockName })
-  .then(resp => {
-    Stock.find({ sector: resp.sector})
-    .sort({marketCapitalization: -1})
-    .limit(9)
-    .then(respo=>{
-      let sendData = [];
-      respo.map(eachStock => {
-        if(eachStock.code!==resp.code)sendData.push(eachStock);
-      })
-      if(sendData.length>0)res.send(sendData)
-      else res.send('Data Unavailable')
-      console.log(`${sendData.length} similar stock with ${resp.code} sent`)
+    .then((resp) => {
+      Stock.find({ sector: resp.sector })
+        .sort({ marketCapitalization: -1 })
+        .limit(9)
+        .then((respo) => {
+          let sendData = [];
+          respo.map((eachStock) => {
+            if (eachStock.code !== resp.code) sendData.push(eachStock);
+          });
+          if (sendData.length > 0) res.send(sendData);
+          else res.send('Data Unavailable');
+          console.log(
+            `${sendData.length} similar stock with ${resp.code} sent`
+          );
+        });
     })
-  })
-  .catch(err=>console.log(err))
-}
+    .catch((err) => console.log(err));
+};
 
 exports.getAllStocks = (req, res) => {
   Stock.find().then((stocks) => {
@@ -168,8 +169,8 @@ exports.postAllStocks = (req, res) => {
           filteredStocks.push(eachStock);
         }
       });
-      if(filteredStocks.length===0)res.send('Data Unavailable')
+      if (filteredStocks.length === 0) res.send('Data Unavailable');
       else res.send(filteredStocks);
-      console.log(`${filteredStocks.length} stocks sent for screener`)
+      console.log(`${filteredStocks.length} stocks sent for screener`);
     });
 };
