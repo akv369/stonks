@@ -5,7 +5,10 @@ const Stock = require('../models/stock');
 const Order = require('../models/order');
 const Portfolio = require('../models/portfolio');
 
-exports.getOrder = (req, res) => {
+exports.placeOrders = () => placeOrders();
+exports.executeOrders = () => executeOrders();
+
+exports.getOrderDetails = (req, res) => {
   Order.findOne({ _id: req.params.orderID })
     .then((resp) => {
       const code = resp.code;
@@ -73,12 +76,22 @@ exports.postOrder = (req, res) => {
     });
     saveOrder
       .save()
-      .then(res.redirect('/placeOrders'))
+      .then(response => {
+        placeOrders();
+        const now = new Date();
+        const hour = Number(dateTime.format(now, 'HH'));
+        const minute = Number(dateTime.format(now, 'mm'));
+        if (hour >= 17 || hour < 1 || (hour === 1 && minute <= 30)){
+          if(order==='Market') res.send('Executed');
+          else res.send('Placed');
+        }
+        else res.send('Placed')
+      })
       .catch((err) => console.log(err));
   }
 };
 
-exports.placeOrders = (req, res) => {
+async function placeOrders(){
   const now = new Date();
   const hour = Number(dateTime.format(now, 'HH'));
   const minute = Number(dateTime.format(now, 'mm'));
@@ -110,17 +123,20 @@ exports.placeOrders = (req, res) => {
                   progress: 'Placed',
                   placedTimestamp: timestamp,
                 }
-              ).catch((err) => console.log(err))
+              )
+              .then(response => {
+                executeOrders();
+              })
+              .catch((err) => console.log(err))
             )
             .catch((err) => console.log(err));
         }
-        res.redirect('/executeOrders');
       })
       .catch((err) => console.log(err));
-  } else res.send('Verified');
+  } else console.log('Markets Closed');
 };
 
-exports.executeOrders = (req, res) => {
+async function executeOrders(){
   Order.find({ progress: 'Placed' })
     .then((result) => {
       for (let i = 0; i < result.length; i++) {
@@ -139,7 +155,7 @@ exports.executeOrders = (req, res) => {
             if (resp.n == 1) {
               Portfolio.findOne({ userID: currentOrder.userID })
                 .then((respo) => {
-                  if (respo === null) {
+                  if (!respo) {
                     const newStockInPortfolio = {
                       code: currentOrder.code,
                       name: currentOrder.name,
@@ -153,47 +169,36 @@ exports.executeOrders = (req, res) => {
                     stocks.push(newStockInPortfolio);
                     const newPortfolio = new Portfolio({
                       userID: currentOrder.userID,
-                      investedValue: 0,
+                      investedValue: currentOrder.totalAmount,
                       totalReturns: 0,
-                      stocks: newStockInPortfolio,
+                      stocks: stocks,
                     });
                     newPortfolio
                       .save()
                       .then((respon) =>
-                        console.log(respon._id + ' portfolio created...')
+                        console.log(respon._id + ' portfolio created')
                       )
                       .catch((err) => console.log(err));
                   } else {
-                    const stocksInPortfolio = respo.stocks;
+                    let stocksInPortfolio = respo.stocks;
                     const index = stocksInPortfolio.findIndex(
                       (element) => element.code === currentOrder.code
                     );
+                    let investedValue = respo.investedValue;
                     if (index === -1) {
-                      let averagePrice =
-                        currentOrder.totalAmount / currentOrder.quantity;
                       const newStockInPortfolio = {
                         code: currentOrder.code,
                         name: currentOrder.name,
                         quantity: currentOrder.quantity,
-                        averagePrice: averagePrice,
+                        averagePrice: currentOrder.orderPrice,
                         returns: 0,
                         returnPercent: 0,
                         value: currentOrder.totalAmount,
                       };
                       stocksInPortfolio.push(newStockInPortfolio);
-                      const investedValue = (
-                        respo.investedValue + currentOrder.totalAmount
-                      ).toFixed(2);
-                      Portfolio.updateOne(
-                        { _id: respo._id },
-                        {
-                          investedValue: investedValue,
-                          stocks: stocksInPortfolio,
-                        }
-                      ).catch((err) => console.log(err));
+                      investedValue += currentOrder.totalAmount;
                     } else {
                       let currentStock = stocksInPortfolio[index];
-                      let investedValue = respo.investedValue;
                       if (currentOrder.type === 'Buy') {
                         currentStock.value = (
                           currentStock.value + currentOrder.totalAmount
@@ -204,9 +209,7 @@ exports.executeOrders = (req, res) => {
                           currentStock.value / currentStock.quantity
                         ).toFixed(2);
                         stocksInPortfolio[index] = currentStock;
-                        investedValue = (
-                          respo.investedValue + currentOrder.totalAmount
-                        ).toFixed(2);
+                        investedValue += currentOrder.totalAmount;
                       } else {
                         currentStock.value = (
                           currentStock.value - currentOrder.totalAmount
@@ -218,7 +221,6 @@ exports.executeOrders = (req, res) => {
                         ).toFixed(2);
                         stocksInPortfolio[index] = currentStock;
                         if (currentStock.quantity === 0) {
-                          stocksInPortfolio;
                           for (
                             let i = index;
                             i < stocksInPortfolio.length - 1;
@@ -228,20 +230,18 @@ exports.executeOrders = (req, res) => {
                           }
                           stocksInPortfolio.pop();
                         }
-                        const deduct =
-                          currentStock.averagePrice * currentOrder.quantity;
-                        investedValue = (respo.investedValue - deduct).toFixed(
-                          2
-                        );
+                        investedValue -= currentOrder.totalAmount;
                       }
-                      Portfolio.updateOne(
-                        { _id: respo._id },
-                        {
-                          investedValue: investedValue,
-                          stocks: stocksInPortfolio,
-                        }
-                      ).catch((err) => console.log(err));
                     }
+                    Portfolio.updateOne(
+                      { _id: respo._id },
+                      {
+                        investedValue: investedValue,
+                        stocks: stocksInPortfolio,
+                      }
+                    )
+                    .then(console.log(`${respo._id} portfolio updated`))
+                    .catch((err) => console.log(err));
                   }
                 })
                 .catch((err) => console.log(err));
@@ -251,7 +251,6 @@ exports.executeOrders = (req, res) => {
       }
     })
     .catch((err) => console.log(err));
-  res.send('Executed');
 };
 
 exports.getOrders = (req, res) => {
@@ -291,12 +290,14 @@ exports.getAvailableStocks = (req, res) => {
   const stockID = req.params.stockID;
   Portfolio.findOne({ userID: req.body._id })
     .then((resp) => {
-      if (resp.stocks === undefined) res.send({ quantity: 0 });
-      const stocks = resp.stocks;
-      for (let i = 0; i < stocks.length; i++) {
-        const stock = stocks[i];
-        if (stock.code === stockID) res.send(stock);
-        if (i === stocks.length - 1) res.send({ quantity: 0 });
+      if (resp === null) res.send({ quantity: 0 });
+      else{
+        const stocks = resp.stocks;
+        for (let i = 0; i < stocks.length; i++) {
+          const stock = stocks[i];
+          if (stock.code === stockID) res.send(stock);
+          else if (i === stocks.length - 1) res.send({ quantity: 0 });
+        }
       }
     })
     .catch((err) => console.log(err));

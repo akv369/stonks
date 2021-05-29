@@ -2,9 +2,9 @@ const express = require('express');
 const userC = require('../controllers/user');
 const router = express.Router();
 
-router.get('/order/:orderID', userC.getOrder);
+router.post('/order/:orderID', userC.getOrderDetails);
 router.post('/orders', userC.getOrders);
-router.post('/order', userC.postOrder);
+router.post('/order/', userC.postOrder);
 router.get('/placeOrders', userC.placeOrders);
 router.get('/executeOrders', userC.executeOrders);
 router.post('/dashboard', userC.getDashboard);

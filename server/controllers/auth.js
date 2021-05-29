@@ -22,10 +22,12 @@ exports.postLogin = (req, res) => {
         newUser
           .save()
           .then((response) => {
+            console.log(`New user ${req.body.email} created`)
             res.send(response);
           })
           .catch((err) => console.log(err));
       } else {
+        console.log(`User ${req.body.email} loggedIn`)
         res.send(user);
       }
     })

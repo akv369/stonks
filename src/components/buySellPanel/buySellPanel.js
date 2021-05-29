@@ -16,61 +16,28 @@ class buySellPanel extends Component {
     order: 'Market',
     type: 'Delivery',
     shares: 0,
-    price: this.props.buySell.cmp,
+    price: 0,
     loading: false,
     status: '',
     sharesAvailable: 0,
   };
-  componentDidUpdate() {
+  componentDidMount() {
     Axios.post('/portfolio/' + this.props.code, { _id: this.props.userID })
       .then((res) => this.setState({ sharesAvailable: res.data.quantity }))
       .catch((err) => console.log(err));
-    if (this.state.price === undefined)
-      this.setState({ price: Number(this.props.buySell.cmp) });
-    const balance = Number(this.props.userBalance);
-    const price = Number(this.state.price);
-    const shares = Number(this.state.shares);
-    const sharesAvailable = Number(this.state.sharesAvailable);
-    const buttonDisabled = this.state.buttonDisabled;
-    if (this.state.hash === 'Buy' && shares > 0) {
-      if (balance >= price * shares && buttonDisabled) {
-        this.setState({ buttonDisabled: false });
-      }
-      if (balance < price * shares && !buttonDisabled) {
-        this.setState({ buttonDisabled: true });
-      }
-    } else {
-      if (sharesAvailable >= shares && shares > 0 && buttonDisabled)
-        this.setState({ buttonDisabled: false });
-      if (sharesAvailable < shares && !buttonDisabled)
-        this.setState({ buttonDisabled: true });
-    }
+    this.setState({price: this.props.buySell.cmp})
   }
-  componentWillUpdate() {
-    if (this.props.buySell.cmp !== this.state.price) {
-      this.setState({
-        hash: 'Buy',
-        buttonDisabled: true,
-        order: 'Market',
-        type: 'Delivery',
-        shares: 0,
-        price: this.props.buySell.cmp,
-        loading: false,
-        status: '',
-      });
+  placeOrder = () => {
+    const price = this.state.price, shares= this.state.shares
+    if(isNaN(price)||price<=0 || isNaN(shares)||shares<=0){
+      alert('Invalid Input');
     }
-  }
-  render() {
-    const sharesAvailable = this.state.sharesAvailable,
-      hash = this.state.hash;
-    const companyCode = this.props.code,
-      userID = this.props.userID;
-    let placeOrder = () => {
+    else{
       const sendData = {
-        userID: userID,
-        code: companyCode,
-        orderPrice: this.state.price,
-        quantity: this.state.shares,
+        userID: this.props.userID,
+        code: this.props.code,
+        orderPrice: Number(price),
+        quantity: Number(shares),
         type: this.state.hash,
         order: this.state.order,
         subType: this.state.type,
@@ -83,7 +50,11 @@ class buySellPanel extends Component {
         })
         .catch((err) => console.log(err));
       this.setState({ loading: true });
-    };
+    }
+  };
+  render() {
+    const sharesAvailable = this.state.sharesAvailable,
+      hash = this.state.hash;
     const sharesOwned = () => {
       if (hash === 'Sell')
         return (
@@ -253,9 +224,8 @@ class buySellPanel extends Component {
             </Card.Text>
             <Button
               variant="info"
-              disabled={this.state.buttonDisabled}
               style={{ width: '100%' }}
-              onClick={placeOrder}
+              onClick={() => this.placeOrder()}
             >
               {this.state.hash}
             </Button>

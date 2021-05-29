@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const userSchema = new Schema({
   uid: {
-    type: Decimal128,
+    type: String,
     required: true,
   },
   name: {
@@ -20,7 +20,6 @@ const userSchema = new Schema({
   },
   photoURL: {
     type: String,
-    required: true,
   },
   provider: {
     type: String,

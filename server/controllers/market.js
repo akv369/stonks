@@ -14,22 +14,24 @@ exports.getGraph = (req, res) => {
     .then((resp) => {
       let sendArray = [];
       for (let k = 0; k < resp.length; k++) {
-        let sendData = {};
-        sendData.code = resp[k].code;
-        sendData.interval = resp[k].interval;
-        sendData.coordinate = [];
-        for (let i = 0; i < resp[k].values.length; i++) {
-          const item = resp[k].values[i];
-          let coordinates = {};
-          coordinates.x = item.datetime;
-          coordinates.y = [];
-          coordinates.y.push(Number(item.open).toFixed(2));
-          coordinates.y.push(Number(item.high).toFixed(2));
-          coordinates.y.push(Number(item.low).toFixed(2));
-          coordinates.y.push(Number(item.close).toFixed(2));
-          sendData.coordinate.push(coordinates);
+        if(resp[k].values){
+          let sendData = {};
+          sendData.code = resp[k].code;
+          sendData.interval = resp[k].interval;
+          sendData.coordinate = [];
+          for (let i = 0; i < resp[k].values.length; i++) {
+            const item = resp[k].values[i];
+            let coordinates = {};
+            coordinates.x = item.datetime;
+            coordinates.y = [];
+            coordinates.y.push(Number(item.open).toFixed(2));
+            coordinates.y.push(Number(item.high).toFixed(2));
+            coordinates.y.push(Number(item.low).toFixed(2));
+            coordinates.y.push(Number(item.close).toFixed(2));
+            sendData.coordinate.push(coordinates);
+          }
+          sendArray.push(sendData);
         }
-        sendArray.push(sendData);
       }
       res.send(sendArray);
       console.log(`${sendArray.length} ${stockName} graphs sent`)

@@ -84,18 +84,19 @@ class loginForm extends Component {
       }
     }
     this.setState({ error: errors, message: error, formIsValid: formIsValid });
-    return formIsValid===true ? formIsValid : error
+    return formIsValid === true ? formIsValid : error;
   }
 
   contactSubmit(e) {
     e.preventDefault();
     const validity = this.handleValidation();
-    if (validity===true) {
-      if(this.state.currentForm==='signUp') this.classicSignup();
+    if (validity === true) {
+      if (this.state.currentForm === 'signUp') this.classicSignup();
+      else if (this.state.currentForm === 'forgotPassword')
+        this.forgotPassword();
       else this.classicLogin();
-    }
-    else{
-       alert(validity)
+    } else {
+      alert(validity);
     }
   }
 
@@ -140,19 +141,29 @@ class loginForm extends Component {
   classicSignup = () => {
     const email = this.state.fields.Email;
     const password = this.state.fields.Password;
-    this.setState({buttonDisabled: true})
+    this.setState({ buttonDisabled: true });
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then((result) => {
-        this.props.setUser(result.user.providerData[0]);
+        const userData = result.user.providerData[0];
+        const sendData = {
+          uid: userData.uid,
+          email: userData.email,
+          displayName: userData.displayName || this.state.fields.Name,
+          photoURL: 'null',
+          providerId: userData.providerId,
+        };
+        Axios.post('/login', sendData)
+          .then((res) => this.props.setUser(res.data))
+          .catch((err) => console.log(err));
         return result.user.updateProfile({
-          displayName: this.state.fields.Name
-        })
+          displayName: this.state.fields.Name,
+        });
       })
-      .catch((error) => {
-        console.log(error.code);
-        console.log(error.message);
+      .catch((err) => {
+        console.log(err.code);
+        alert(err.message);
       });
   };
   classicLogin = () => {
@@ -162,11 +173,31 @@ class loginForm extends Component {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then((result) => {
-        this.props.setUser(result.user.providerData[0]);
+        const userData = result.user.providerData[0];
+        const sendData = {
+          email: userData.email,
+        };
+        Axios.post('/login', sendData)
+          .then((res) => this.props.setUser(res.data))
+          .catch((err) => console.log(err));
       })
-      .catch((error) => {
-        console.log(error.code);
-        console.log(error.message);
+      .catch((err) => {
+        console.log(err.code);
+        alert(err.message);
+      });
+  };
+  forgotPassword = () => {
+    const email = this.state.fields.Email;
+    firebase
+      .auth()
+      .sendPasswordResetEmail(email)
+      .then((result) => {
+        this.setState({ currentForm: 'forgotPassword' });
+        alert('We have sent a reset password link on your email.');
+      })
+      .catch((err) => {
+        console.log(err.code);
+        alert(err.message);
       });
   };
   render() {

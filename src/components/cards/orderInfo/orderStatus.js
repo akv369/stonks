@@ -13,9 +13,7 @@ class orderStatus extends Component {
         : 'warning';
     const showTime = (dated) => {
       if (dated !== undefined) {
-        let dd = dated.slice(8, 10),
-          MM = dated.slice(5, 7),
-          yyyy = dated.slice(0, 4);
+        let MM = dated.slice(5, 7);
         const months = [
           'January',
           'February',
@@ -30,13 +28,10 @@ class orderStatus extends Component {
           'November',
           'December',
         ];
-        let time = dated.slice(11, 19);
-        const showDate =
-          dd + ' ' + months[MM - 1] + ' ' + yyyy + ' | ' + time + ' IST';
-        return showDate;
+        return `${dated.slice(8, 10)} ${months[MM - 1]} ${dated.slice(0, 4)} | ${dated.slice(11, 19)} IST`;
       }
     };
-    function onStatus() {
+    function onPlace() {
       if (order['progress'] === 'Placed') {
         return (
           <div>
@@ -53,20 +48,12 @@ class orderStatus extends Component {
             </div>
           </div>
         );
-      } else if (order['progress'] === 'Executed') {
+      }
+    };
+    function onExec() {
+      if (order['progress'] === 'Executed') {
         return (
           <div>
-            <div className="m-1">
-              <span className={'text-success'}>⬤ </span>
-              <span className="m-1">
-                {' '}
-                Order Placed with {order['exchange']}
-              </span>
-            </div>
-            <div className="ml-4 text-muted" style={{ fontSize: '0.8rem' }}>
-              <span className="m-1">{showTime(order['placedTimestamp'])}</span>
-              <span className="m-1 float-right">Order ID: {order._id}</span>
-            </div>
             <div className="m-1">
               <span className={'text-' + statusColor}>⬤ </span>
               <span className="m-1"> Order {order['progress']}</span>
@@ -108,7 +95,8 @@ class orderStatus extends Component {
                 User ID: {order['userID']}
               </span>
             </div>
-            {onStatus()}
+            {onPlace()}
+            {onExec()}
           </div>
         </div>
       </div>

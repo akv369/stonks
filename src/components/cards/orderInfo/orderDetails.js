@@ -4,16 +4,11 @@ import { Card, Col, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class listCard extends Component {
-  componentDidMount() {
-    console.log('response.data');
-  }
   render() {
     const typeColor = this.props.order['type'] === 'Buy' ? 'success' : 'danger';
     const showTime = (dated) => {
       if (dated !== undefined) {
-        let dd = dated.slice(8, 10),
-          MM = dated.slice(5, 7),
-          yyyy = dated.slice(0, 4);
+        let MM = dated.slice(5, 7);
         const months = [
           'January',
           'February',
@@ -28,12 +23,35 @@ class listCard extends Component {
           'November',
           'December',
         ];
-        let time = dated.slice(11, 22);
-        const showDate =
-          dd + ' ' + months[MM - 1] + ' ' + yyyy + ' | ' + time + ' IST';
-        return showDate;
+        return `${dated.slice(8, 10)} ${months[MM - 1]} ${dated.slice(0, 4)} | ${dated.slice(11, 19)} IST`;
       }
     };
+    const details = [
+      {
+        name: 'Order',
+        data: 'order'
+      },
+      {
+        name: 'Sub-Type',
+        data: 'subType',
+      },
+      {
+        name: 'Code',
+        data: 'code'
+      },
+      {
+        name: 'Order Price',
+        data: 'orderPrice'
+      },
+      {
+        name: 'Order Price',
+        data: 'cmp'
+      },
+      {
+        name: 'Exchange',
+        data: 'exchange'
+      }
+    ]
     return (
       <div>
         <Card className="shadow-sm">
@@ -50,44 +68,18 @@ class listCard extends Component {
           <Card.Body>
             <Card.Text>
               <Row>
-                <Col sm={4}>
-                  <span className="ml-3 text-muted font-weight-bold">
-                    Order:{' '}
-                  </span>
-                  <span className="">{this.props.order['order']}</span>
-                </Col>
-                <Col sm={4}>
-                  <span className="ml-3 text-muted font-weight-bold">
-                    Sub-Type:{' '}
-                  </span>
-                  <span className="">{this.props.order['subType']}</span>
-                </Col>
-                <Col sm={4}>
-                  <span className="ml-3 text-muted font-weight-bold">
-                    Validity:{' '}
-                  </span>
-                  <span className="">Day</span>
-                </Col>
-              </Row>
-              <Row className="mt-2">
-                <Col sm={4}>
-                  <span className="ml-3 text-muted font-weight-bold">
-                    Order Price:{' '}
-                  </span>
-                  <span className="">${this.props.order['orderPrice']}</span>
-                </Col>
-                <Col sm={4}>
-                  <span className="ml-3 text-muted font-weight-bold">
-                    Market Price:{' '}
-                  </span>
-                  <span className="">${this.props.order['cmp']}</span>
-                </Col>
-                <Col sm={4}>
-                  <span className="ml-3 text-muted font-weight-bold">
-                    Exchange:{' '}
-                  </span>
-                  <span className="">{this.props.order['exchange']}</span>
-                </Col>
+                  {
+                    details.map((detail, index) => {
+                      return(
+                        <Col key={index} sm={4}>
+                          <span className="ml-3 text-muted font-weight-bold">
+                            {detail.name}:{' '}
+                          </span>
+                          <span className="">{this.props.order[detail.data]}</span>
+                        </Col>
+                      )
+                    })
+                  }
               </Row>
             </Card.Text>
           </Card.Body>

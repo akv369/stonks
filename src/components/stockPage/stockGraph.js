@@ -66,13 +66,12 @@ class stockGraph extends Component {
         });
       })
       .catch((err) => console.log(err));
-    if(this.props.userDetails.watchlist){
+    if (this.props.userDetails.watchlist) {
       for (let i = 0; i < watchlist.length; i++) {
         if (watchlist[i] === companyCode) {
           this.setState({ watchlisted: true });
         }
       }
-
     }
   }
   render() {
