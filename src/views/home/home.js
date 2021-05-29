@@ -88,7 +88,7 @@ class home extends Component {
       return(
         <div>
           <Container>
-            <h3 className="mt-sm-5 mb-sm-3">Hello Akash,<br/>Your portfolio is <span className={`text-${this.state.percent>0?'success':'danger'}`}>{this.state.percent}% up.</span></h3>
+            <h3 className="mt-sm-5 mb-sm-3">Hello {this.props.user.name},<br/>Your portfolio is <span className={`text-${this.state.percent>0?'success':'danger'}`}>{this.state.percent}% up.</span></h3>
             <h3 className="mt-sm-5 mb-sm-3">{this.state.gainer.name} emerged as your biggest gainer at {this.state.gainer.returnsPercent}%</h3>
             {renderExplore()}
             <Row>
