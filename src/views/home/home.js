@@ -7,6 +7,13 @@ import { CardDeck, Container, Badge, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class home extends Component {
+  state={
+    dow:{},
+    snp:{},
+    nasdaq:{},
+    gainer:{},
+    loser:{},
+  }
   render() {
     const sectors = [
       'All',
@@ -26,12 +33,8 @@ class home extends Component {
     return (
       <div>
         <Container>
-          <h4 className="mt-sm-4 mb-sm-3">Indices</h4>
-          <CardDeck>
-            <HomeCard category="index" />
-            <HomeCard category="index" />
-            <HomeCard category="index" />
-          </CardDeck>
+          <h3 className="mt-sm-4 mb-sm-3">Hello Akash, Your portfolio is 2% up.</h3>
+          <h3 className="mt-sm-3 mb-sm-3">Apple emerged as your biggest gainer at 23%</h3>
           <h4 className="mt-sm-4 mb-sm-3">Explore Stocks</h4>
           <Row>
             <Col className="d-inline">
@@ -59,12 +62,12 @@ class home extends Component {
           </Row>
           <Row>
             <Col>
-              <h4 className="mt-sm-4 mb-sm-3">Top Gainer</h4>
-              <HomeCard />
+              <h4 className="mt-sm-4 mb-sm-3">Best performer</h4>
+                <HomeCard category="stock" data={this.state.gainer} />
             </Col>
             <Col>
-              <h4 className="mt-sm-4 mb-sm-3">Top Loser</h4>
-              <HomeCard />
+              <h4 className="mt-sm-4 mb-sm-3">Worst performer</h4>
+                <HomeCard category="stock" data={this.state.loser} />
             </Col>
           </Row>
           <h4 className="mt-sm-5 mb-sm-3"> </h4>
