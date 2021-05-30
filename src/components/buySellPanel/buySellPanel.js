@@ -95,12 +95,12 @@ class buySellPanel extends Component {
             </Card.Title>
             <Card.Text>
               <hr className="text-muted" />
-              <div
+              <span
                 className="float-right mb-4 text-muted"
                 style={{ fontSize: '0.8rem' }}
               >
                 Balance: $0
-              </div>
+              </span>
             </Card.Text>
           </Card.Body>
         </div>

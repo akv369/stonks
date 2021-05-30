@@ -21,7 +21,6 @@ class dashboard extends Component {
   componentDidMount() {
     Axios.post('/dashboard', { _id: this.props.user._id })
       .then((res) => {
-        console.log(res.data);
         if (res.data !== 'Data Unavailable')
           this.setState({ portfolio: res.data, loading: false });
         else this.setState({ dataNull: true, loading: false });

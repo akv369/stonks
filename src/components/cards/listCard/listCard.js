@@ -103,7 +103,7 @@ class listCard extends Component {
         const graphColor = 'success',
           hrefLink = '/stock/' + stock.code;
         return (
-          <div>
+          <div key={stock.code}>
             <ListGroup.Item>
               <Row>
                 <Col sm={3}>
