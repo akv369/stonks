@@ -5,7 +5,12 @@
   top: 50px;
   background-color: rgb(255, 255, 255);
 }
-.Item {
-  margin-left: 10px;
-  margin-right: 10px;
+.suggestionButton {
+  background-color: white;
+  width: 100%;
+  margin: 0;
+  color: #138496;
+  border: none;
+  text-decoration: none;
+  display: inline-block;
 }

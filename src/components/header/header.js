@@ -14,8 +14,7 @@ import './header.css';
 class header extends Component {
   state = {
     query: '',
-    nameArr: [],
-    codeArr: [],
+    results: [],
     path: '/',
     navLinks: [
       {
@@ -37,26 +36,15 @@ class header extends Component {
       if (this.state.query && this.state.query.length > 2) {
         Axios.get('/search/' + this.state.query).then((response) => {
           this.setState({
-            nameArr: response.data.nameArr,
-            codeArr: response.data.codeArr,
+            results: response.data,
           });
         });
       } else this.setState({ nameArr: [], codeArr: [] });
     });
   };
-  handleSuggestionClick = (stockCode) => {
-    console.log(stockCode);
-    this.setState(
-      {
-        query: '',
-        nameArr: [],
-        codeArr: [],
-      },
-      () => {
-        <Redirect to={`/stock/${stockCode}`} />;
-      }
-    );
-  };
+  // handleSuggestionClick = (stockCode) => {
+  //   this.setState({});
+  // };
   googleLogout = () => {
     firebase
       .auth()
@@ -103,11 +91,7 @@ class header extends Component {
               style={{ width: '300px' }}
               onChange={this.handleSearch}
             />
-            <SearchSuggestions
-              codeArr={this.state.codeArr}
-              nameArr={this.state.nameArr}
-              clicked={(stockCode) => this.handleSuggestionClick(stockCode)}
-            />
+            <SearchSuggestions data={this.state.results} />
           </Form>
           {this.state.navLinks.map((navLink, index) => {
             return (

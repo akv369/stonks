@@ -2,39 +2,52 @@ import { React, Component } from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from './searchSuggestions.module.css';
-import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 class searchSuggestions extends Component {
   state = {
-    show: true,
+    redirect: false,
+    link: '',
   };
   render() {
-    let displayData = () => {
-      let nameArr = this.props.nameArr;
-      let codeArr = this.props.codeArr;
-      let j = 0;
+    const showSuggestions = () => {
+      const data = this.props.data;
       return (
-        <div className={styles.Item}>
-          {nameArr.map((stockName) => {
+        <div className="shadow">
+          {data.map((stock) => {
             return (
-              <Link
-                to={'/stock/' + codeArr[j]}
-                // onClick={() => this.props.clicked(codeArr[j+1])}
+              <button
+                key={stock.code}
+                className={styles.suggestionButton}
+                onClick={() => {
+                  this.setState({
+                    redirect: true,
+                    link: `/stock/${stock.code}`,
+                  });
+                }}
               >
-                <span className="float-left">{stockName}</span>
-                <span className="float-right">{codeArr[j++]}</span>
+                <span className="float-left">{stock.name}</span>
+                <span className="float-right">{stock.code}</span>
                 <br />
                 <hr className="text-muted" style={{ margin: '1px' }} />
-              </Link>
+              </button>
             );
           })}
         </div>
       );
     };
-    const showSuggestions = () => {
-      if (this.state.show) return <div className="shadow">{displayData()}</div>;
+    const redirectingToStock = () => {
+      if (this.state.link !== '' && this.state.redirect) {
+        this.setState({ redirect: false });
+        return <Redirect to={this.state.link} />;
+      }
     };
-    return <div className={styles.Box}>{showSuggestions()}</div>;
+    return (
+      <div className={styles.Box}>
+        {redirectingToStock()}
+        {showSuggestions()}
+      </div>
+    );
   }
 }
 
