@@ -30,7 +30,7 @@ class buySellPanel extends Component {
   placeOrder = () => {
     const price = this.state.price,
       shares = this.state.shares;
-    if (isNaN(price) || price <= 0 || isNaN(shares) || shares <= 0) {
+    if (isNaN(price) || Number(price) <= 0 || isNaN(shares) || Number(shares) <= 0) {
       alert('Invalid Input');
     } else {
       const sendData = {

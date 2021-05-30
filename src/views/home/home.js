@@ -80,11 +80,13 @@ class home extends Component {
       );
     };
     const renderNull = () => {
-      return <div>{renderExplore()}</div>;
+      return <Container>
+        <h1 style={{marginTop:"15%"}}>Welcome to amazing world of Stocks.<br/>Stonks is here to help you learn how stock market works...</h1>
+        {renderExplore()}
+        </Container>;
     };
     const renderHome = () => {
       return (
-        <div>
           <Container>
             <h3 className="mt-sm-5 mb-sm-3">
               Hello {this.props.user.name},<br />
@@ -114,7 +116,6 @@ class home extends Component {
             </Row>
             <h4 className="mt-sm-5 mb-sm-3"> </h4>
           </Container>
-        </div>
       );
     };
     return this.state.fetching ? (
