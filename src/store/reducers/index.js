@@ -1,5 +1,5 @@
 const initialState = {
-  currentUser: {
+  currentUsers: {
     _id: '6042f71d5e5b631c10fa3d6e',
     balance: 1377116.81,
     email: 'rockstarboy0103@gmail.com',
@@ -9,8 +9,8 @@ const initialState = {
     uid: 113414445289128080000,
     watchlist: ['AMZN', 'TSLA', 'GE', 'FB'],
   },
-  currentUsers: null,
-  isAuthenticated: true,
+  currentUser: null,
+  isAuthenticated: false,
   err: null,
   stockFilters: {
     cmpUl: 10000,

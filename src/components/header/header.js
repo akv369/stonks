@@ -1,15 +1,15 @@
 import { React, Component } from 'react';
 import firebase from '../../firebase';
 import Axios from '../../axios-base';
-import imgPath from '../../data/logo.png';
-
-import { Navbar, Form, Button, FormControl, Image } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import SearchSuggestions from './searchSuggestions';
-import { Link, Redirect } from 'react-router-dom';
+import imgPath from '../../data/logo.png';
 
 import './header.css';
+import { Navbar, Form, Button, FormControl, Image } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 class header extends Component {
   state = {
@@ -31,6 +31,9 @@ class header extends Component {
       },
     ],
   };
+  componentDidMount(){
+    this.setState({path:window.location.pathname})
+  }
   handleSearch = (event) => {
     this.setState({ query: event.target.value }, () => {
       if (this.state.query && this.state.query.length > 2) {
@@ -39,12 +42,13 @@ class header extends Component {
             results: response.data,
           });
         });
-      } else this.setState({ nameArr: [], codeArr: [] });
+      } else this.setState({ results: []});
     });
   };
-  // handleSuggestionClick = (stockCode) => {
-  //   this.setState({});
-  // };
+  logoutUser = () => {
+    if(this.props.user.provider==='google.com')this.googleLogout();
+    else window.location.replace('/login');
+  }
   googleLogout = () => {
     firebase
       .auth()
@@ -105,7 +109,7 @@ class header extends Component {
               </Link>
             );
           })}
-          <Button variant="outline-dark" onClick={() => this.googleLogout()}>
+          <Button variant="outline-dark" onClick={() => this.logoutUser()}>
             Log Out
           </Button>
         </Navbar>
@@ -114,4 +118,10 @@ class header extends Component {
   }
 }
 
-export default header;
+const mapStateToProps = (state) => {
+  return {
+    user: state.SET_USER.currentUser,
+  };
+};
+
+export default connect(mapStateToProps)(header);
