@@ -5,9 +5,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
 import Axios from '../../../axios-base';
 import ApexCharts from 'react-apexcharts';
+import Spinner from '../../spinner/spinner'
 
 class listCard extends Component {
   state = {
+    fetching: true,
     series: [
       {
         name: 'sales',
@@ -26,37 +28,55 @@ class listCard extends Component {
           enabled: false,
         },
       },
+      grid: {
+        show: false,
+      },
+      tooltip: {
+        enabled: false,
+      },
       dataLabels: {
         enabled: false,
       },
       stroke: {
         curve: 'straight',
+        width: 1,
       },
-      // labels: series.monthDataSeries1.dates,
       xaxis: {
         type: 'datetime',
+        labels: {
+          show: false
+        },
+        axisBorder: {
+            show: false,
+        },
+        axisTicks: {
+          show: false,
+        },
       },
       yaxis: {
-        opposite: true,
+        labels: {
+          show: false,
+        },
+        axisBorder: {
+            show: false,
+        },
+        axisTicks: {
+          show: false,
+      },
       },
       legend: {
-        horizontalAlign: 'left',
+        show: false
       },
     },
   };
   componentDidMount() {
-    // console.log(this.props.portfolio.stocks)
     const stocks = this.props.portfolio.stocks;
     stocks.map((stock) => {
-      console.log(stock.code);
       Axios.get(`/weekgraph/${stock.code}`)
         .then((res) => {
-          // console.log(res.data.coordinate)
           let newSeries = this.state.series;
           newSeries[0].data = res.data.coordinate;
-          console.log(newSeries);
-          // console.log()
-          this.setState({ series: newSeries });
+          this.setState({ series: newSeries,fetching:false });
         })
         .catch((err) => console.log(err));
     });
@@ -92,16 +112,19 @@ class listCard extends Component {
                     {quantity} shares @{avg}
                   </div>
                 </Col>
-                <Col sm={5}>
-                  <div className={'text-' + graphColor} id="chart">
-                    <ApexCharts
-                      options={this.state.options}
-                      series={this.state.series}
-                      type="area"
-                      height={35}
-                      width={255}
-                    />
-                  </div>
+                <Col sm={5}>{
+                  this.state.fetching ? <Spinner/> : (
+                    <div className={'text-' + graphColor} id="chart">
+                      <ApexCharts
+                        style={{height:'40px', position: 'absolute',top: '-40px'}}
+                        options={this.state.options}
+                        series={this.state.series}
+                        type="area"
+                        height={100}
+                        width={255}
+                      />
+                    </div>)
+                }
                 </Col>
                 <Col sm={2}>
                   ${investedValue}
