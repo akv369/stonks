@@ -47,7 +47,7 @@ class listCard extends Component {
         data: 'orderPrice',
       },
       {
-        name: 'Order Price',
+        name: 'Market Price',
         data: 'cmp',
       },
       {

@@ -31,8 +31,8 @@ class header extends Component {
       },
     ],
   };
-  componentDidMount(){
-    this.setState({path:window.location.pathname})
+  componentDidMount() {
+    this.setState({ path: window.location.pathname });
   }
   handleSearch = (event) => {
     this.setState({ query: event.target.value }, () => {
@@ -42,13 +42,13 @@ class header extends Component {
             results: response.data,
           });
         });
-      } else this.setState({ results: []});
+      } else this.setState({ results: [] });
     });
   };
   logoutUser = () => {
-    if(this.props.user.provider==='google.com')this.googleLogout();
+    if (this.props.user.provider === 'google.com') this.googleLogout();
     else window.location.replace('/login');
-  }
+  };
   googleLogout = () => {
     firebase
       .auth()

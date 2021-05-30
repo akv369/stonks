@@ -127,10 +127,6 @@ class loginForm extends Component {
       .auth()
       .signOut()
       .then(() => {
-        // Axios.post('/logout')
-        // .then(resp=>{
-        //     console.log(resp.data);
-        // })
         window.location.replace('/');
       })
       .catch((error) => {
@@ -164,11 +160,13 @@ class loginForm extends Component {
       .catch((err) => {
         console.log(err.code);
         alert(err.message);
+        this.setState({ buttonDisabled: false });
       });
   };
   classicLogin = () => {
     const email = this.state.fields.Email;
     const password = this.state.fields.Password;
+    this.setState({ buttonDisabled: true });
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
@@ -184,15 +182,17 @@ class loginForm extends Component {
       .catch((err) => {
         console.log(err.code);
         alert(err.message);
+        this.setState({ buttonDisabled: false });
       });
   };
   forgotPassword = () => {
     const email = this.state.fields.Email;
+    this.setState({ buttonDisabled: true });
     firebase
       .auth()
       .sendPasswordResetEmail(email)
       .then((result) => {
-        this.setState({ currentForm: 'forgotPassword' });
+        this.setState({ currentForm: 'login' });
         alert('We have sent a reset password link on your email.');
       })
       .catch((err) => {

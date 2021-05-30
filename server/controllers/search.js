@@ -4,9 +4,20 @@ exports.getSearch = (req, res) => {
   let path =
     'https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=' +
     req.params.searchID +
-    '&apikey=CJZEFRDYZ1YXGYTW';
+    '&apikey=BMCR4UT4WWSY40XY';
+  let path2 =
+    'https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=' +
+    req.params.searchID +
+    '&apikey=0Y422GSYV68OXAMN';
   axios.get(path).then((response) => {
-    let data = response.data.bestMatches;
+    if (response.data.bestMatches) sendResults(response.data.bestMatches);
+    else {
+      axios.get(path2).then((resp) => {
+        sendResults(resp.data.bestMatches);
+      });
+    }
+  });
+  function sendResults(data) {
     let arrLen,
       searchResults = [];
     arrLen = data ? data.length : 0;
@@ -24,5 +35,6 @@ exports.getSearch = (req, res) => {
       }
     }
     res.send(searchResults);
-  });
+    console.log(`${searchResults.length} stocks sent as search result`);
+  }
 };

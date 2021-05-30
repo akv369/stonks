@@ -80,42 +80,48 @@ class home extends Component {
       );
     };
     const renderNull = () => {
-      return <Container>
-        <h1 style={{marginTop:"15%"}}>Welcome to amazing world of Stocks.<br/>Stonks is here to help you learn how stock market works...</h1>
-        {renderExplore()}
-        </Container>;
+      return (
+        <Container>
+          <h1 style={{ marginTop: '15%' }}>
+            Welcome to amazing world of Stocks.
+            <br />
+            Stonks is here to help you learn how stock market works...
+          </h1>
+          {renderExplore()}
+        </Container>
+      );
     };
     const renderHome = () => {
       return (
-          <Container>
-            <h3 className="mt-sm-5 mb-sm-3">
-              Hello {this.props.user.name},<br />
-              Your portfolio is{' '}
-              <span
-                className={`text-${
-                  this.state.percent > 0 ? 'success' : 'danger'
-                }`}
-              >
-                {this.state.percent}% up.
-              </span>
-            </h3>
-            <h3 className="mt-sm-5 mb-sm-3">
-              {this.state.gainer.name} emerged as your biggest gainer at{' '}
-              {this.state.gainer.returnsPercent}%
-            </h3>
-            {renderExplore()}
-            <Row>
-              <Col>
-                <h4 className="mt-sm-5 mb-sm-3">Best performer</h4>
-                <HomeCard category="stock" data={this.state.gainer} />
-              </Col>
-              <Col>
-                <h4 className="mt-sm-5 mb-sm-3">Worst performer</h4>
-                <HomeCard category="stock" data={this.state.loser} />
-              </Col>
-            </Row>
-            <h4 className="mt-sm-5 mb-sm-3"> </h4>
-          </Container>
+        <Container>
+          <h3 className="mt-sm-5 mb-sm-3">
+            Hello {this.props.user.name},<br />
+            Your portfolio is{' '}
+            <span
+              className={`text-${
+                this.state.percent > 0 ? 'success' : 'danger'
+              }`}
+            >
+              {this.state.percent}% up.
+            </span>
+          </h3>
+          <h3 className="mt-sm-5 mb-sm-3">
+            {this.state.gainer.name} emerged as your biggest gainer at{' '}
+            {this.state.gainer.returnsPercent}%
+          </h3>
+          {renderExplore()}
+          <Row>
+            <Col>
+              <h4 className="mt-sm-5 mb-sm-3">Best performer</h4>
+              <HomeCard category="stock" data={this.state.gainer} />
+            </Col>
+            <Col>
+              <h4 className="mt-sm-5 mb-sm-3">Worst performer</h4>
+              <HomeCard category="stock" data={this.state.loser} />
+            </Col>
+          </Row>
+          <h4 className="mt-sm-5 mb-sm-3"> </h4>
+        </Container>
       );
     };
     return this.state.fetching ? (

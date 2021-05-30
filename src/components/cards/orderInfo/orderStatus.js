@@ -35,7 +35,7 @@ class orderStatus extends Component {
       }
     };
     function onPlace() {
-      if (order['progress'] === 'Placed') {
+      if (order['progress'] !== 'Verified') {
         return (
           <div>
             <div className="m-1">

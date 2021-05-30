@@ -27,10 +27,18 @@ class buySellPanel extends Component {
       .catch((err) => console.log(err));
     this.setState({ price: this.props.buySell.cmp });
   }
+  componentDidUpdate() {
+    if (!this.state.price && this.props.buySell.cmp)
+      this.setState({ price: this.props.buySell.cmp });
+  }
   placeOrder = () => {
     const price = this.state.price,
       shares = this.state.shares;
-    if (isNaN(price) || Number(price) <= 0 || isNaN(shares) || Number(shares) <= 0) {
+    if (isNaN(price) || price <= 0 || isNaN(shares) || shares <= 0) {
+      console.log(isNaN(price));
+      console.log(price);
+      console.log(isNaN(shares));
+      console.log(shares);
       alert('Invalid Input');
     } else {
       const sendData = {

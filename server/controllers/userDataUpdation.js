@@ -45,7 +45,7 @@ async function updatePortfolio(portfolioID) {
               (stock.averagePrice * stock.quantity)
             ).toFixed(2)
           );
-          returns += Number(stockReturn.toFixed(2));
+          returns += stock.returns;
           if (i === stocks.length) {
             returnsPercent = Number(
               ((returns * 100) / resp.investedValue).toFixed(2)
@@ -57,7 +57,7 @@ async function updatePortfolio(portfolioID) {
 
       function updatePortfolioNow() {
         Portfolio.findByIdAndUpdate(portfolioID, {
-          totalReturns: Number(returns.toFixed(2)),
+          totalReturns: returns,
           stocks: stocks,
           returnsPercent: returnsPercent,
         })

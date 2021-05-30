@@ -31,9 +31,11 @@ class dashboard extends Component {
     const portfolio = this.state.portfolio;
     let investedValue, returns, returnsPercent;
     if (portfolio.investedValue !== undefined) {
-      investedValue = portfolio.investedValue;
+      investedValue = Number(portfolio.investedValue.toFixed(2));
       returns = Number(portfolio.totalReturns.toFixed(2));
       returnsPercent = portfolio.returnsPercent;
+      console.log(investedValue);
+      console.log(returns);
     }
     const renderer = () => {
       if (this.state.loading === true) {
@@ -50,7 +52,7 @@ class dashboard extends Component {
                 <Card.Body>
                   <Card.Title>Portfolio Value</Card.Title>
                   <Card.Text>
-                    <h2>${investedValue + returns}</h2>
+                    <h2>${(investedValue + returns).toFixed(2)}</h2>
                   </Card.Text>
                 </Card.Body>
               </Col>

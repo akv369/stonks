@@ -95,7 +95,7 @@ async function placeOrders() {
   const now = new Date();
   const hour = Number(dateTime.format(now, 'HH'));
   const minute = Number(dateTime.format(now, 'mm'));
-  if (hour >= 12 || hour < 1 || (hour === 1 && minute <= 30)) {
+  if (hour >= 17 || hour < 1 || (hour === 1 && minute <= 30)) {
     Order.find({ progress: 'Verified' })
       .then((result) => {
         for (let i = 0; i < result.length; i++) {
@@ -200,25 +200,27 @@ async function executeOrders() {
                     } else {
                       let currentStock = stocksInPortfolio[index];
                       if (currentOrder.type === 'Buy') {
+                        currentStock.averagePrice = (
+                          (currentOrder.totalAmount + currentStock.value) /
+                          (currentStock.quantity + currentOrder.quantity)
+                        ).toFixed(2);
                         currentStock.value = (
                           currentStock.value + currentOrder.totalAmount
                         ).toFixed(2);
                         currentStock.quantity =
                           currentStock.quantity + currentOrder.quantity;
-                        currentStock.averagePrice = (
-                          currentStock.value / currentStock.quantity
-                        ).toFixed(2);
                         stocksInPortfolio[index] = currentStock;
                         investedValue += currentOrder.totalAmount;
                       } else {
+                        currentStock.averagePrice = (
+                          (currentOrder.totalAmount + currentStock.value) /
+                          (currentStock.quantity + currentOrder.quantity)
+                        ).toFixed(2);
                         currentStock.value = (
                           currentStock.value - currentOrder.totalAmount
                         ).toFixed(2);
                         currentStock.quantity =
                           currentStock.quantity - currentOrder.quantity;
-                        currentStock.averagePrice = (
-                          currentStock.value / currentStock.quantity
-                        ).toFixed(2);
                         stocksInPortfolio[index] = currentStock;
                         if (currentStock.quantity === 0) {
                           for (
@@ -282,7 +284,6 @@ exports.getHome = (req, res) => {
       if (resp === null) res.send('Data Unavailable');
       else {
         userUpdate.updatePortfolio(resp._id);
-        // console.log(resp);
         let stocks = resp.stocks;
         stocks.sort(function (a, b) {
           return a.returns - b.returns;
@@ -318,7 +319,6 @@ exports.getAvailableStocks = (req, res) => {
         for (let i = 0; i < stocks.length; i++) {
           const stock = stocks[i];
           if (stock.code === stockID) res.send(stock);
-          // else if (i === stocks.length - 1) res.send({ quantity: 0 });
         }
       }
     })
