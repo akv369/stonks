@@ -13,7 +13,6 @@ import Spinner from '../../components/spinner/spinner';
 
 import { Container, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Redirect } from 'react-router';
 
 class stock extends Component {
   state = {

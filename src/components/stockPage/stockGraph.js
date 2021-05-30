@@ -51,7 +51,9 @@ class stockGraph extends Component {
       companyCode = window.location.pathname.split('/')[2].toUpperCase();
     Axios.get(`/graph/${companyCode}`)
       .then((res) => {
-        res.data.map((item) => {
+        let i = 0;
+        while (i < res.data.length) {
+          const item = res.data[i++];
           const updateData = [{ data: item.coordinate }];
           if (item.interval === '1day')
             this.setState({
@@ -63,7 +65,7 @@ class stockGraph extends Component {
             this.setState({ _1w: updateData });
           else if (item.interval === '1month')
             this.setState({ _1m: updateData });
-        });
+        }
       })
       .catch((err) => console.log(err));
     if (this.props.userDetails.watchlist) {

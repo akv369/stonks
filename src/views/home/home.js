@@ -6,7 +6,7 @@ import HomeCard from '../../components/cards/homeCard/homeCard';
 import Spinner from '../../components/spinner/spinner';
 import Axios from '../../axios-base';
 
-import { CardDeck, Container, Badge, Row, Col } from 'react-bootstrap';
+import { Container, Badge, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class home extends Component {

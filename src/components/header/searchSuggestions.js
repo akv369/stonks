@@ -11,8 +11,7 @@ class searchSuggestions extends Component {
   };
   render() {
     const showSuggestions = () => {
-      let data = this.props.data,
-        name;
+      let data = this.props.data;
       return (
         <div className="shadow">
           {data.map((stock) => {

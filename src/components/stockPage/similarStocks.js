@@ -2,7 +2,6 @@ import { React, Component } from 'react';
 import Axios from '../../axios-base';
 
 import StockList from '../cards/stockList/listCard';
-import DataNull from '../dataNull/dataNull';
 
 import { Card, Row, Col, ListGroup } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';

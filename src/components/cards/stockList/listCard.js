@@ -19,15 +19,14 @@ class listCard extends Component {
       return filteredStocks.map((stock) => {
         i++;
         if (i >= start && i < end) {
-          const _200dma = stock['_200dma'],
-            _52wh = stock['_52wh'],
+          let _52wh = stock['_52wh'],
             _52wl = stock['_52wl'],
             cmp = stock['cmp'];
           let name = stock['name'],
             marketCap = stock['marketCap'],
             roe = stock['roe'],
             pe = stock['peRatio'];
-          const _200dmaColour =
+          const cmpColor =
             (Number(_52wh) + Number(_52wl)) / 2 > Number(cmp)
               ? 'danger'
               : 'success';
@@ -45,7 +44,7 @@ class listCard extends Component {
                   >
                     <Link to={refLink}>{name}</Link>
                   </Col>
-                  <Col sm={2} className={'text-' + _200dmaColour}>
+                  <Col sm={2} className={'text-' + cmpColor}>
                     ${cmp}
                   </Col>
                   <Col sm={2}>${_52wh}</Col>

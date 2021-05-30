@@ -1,11 +1,10 @@
 import { React, Component } from 'react';
 
-import { Card, Col, ListGroup, Row } from 'react-bootstrap';
+import { Col, ListGroup, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
 import Axios from '../../../axios-base';
 import ApexCharts from 'react-apexcharts';
-import Spinner from '../../spinner/spinner';
 
 class listItem extends Component {
   state = {
