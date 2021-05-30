@@ -11,10 +11,11 @@ class searchSuggestions extends Component {
   };
   render() {
     const showSuggestions = () => {
-      const data = this.props.data;
+      let data = this.props.data,name;
       return (
         <div className="shadow">
           {data.map((stock) => {
+            const name = stock.name.length>20 ? stock.name.slice(0,18)+'...' : stock.name;
             return (
               <button
                 key={stock.code}
@@ -26,7 +27,7 @@ class searchSuggestions extends Component {
                   });
                 }}
               >
-                <span className="float-left">{stock.name}</span>
+                <span className="float-left">{name}</span>
                 <span className="float-right">{stock.code}</span>
                 <br />
                 <hr className="text-muted" style={{ margin: '1px' }} />
