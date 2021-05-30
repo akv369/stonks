@@ -11,11 +11,15 @@ class searchSuggestions extends Component {
   };
   render() {
     const showSuggestions = () => {
-      let data = this.props.data,name;
+      let data = this.props.data,
+        name;
       return (
         <div className="shadow">
           {data.map((stock) => {
-            const name = stock.name.length>20 ? stock.name.slice(0,18)+'...' : stock.name;
+            const name =
+              stock.name.length > 20
+                ? stock.name.slice(0, 18) + '...'
+                : stock.name;
             return (
               <button
                 key={stock.code}

@@ -1,4 +1,5 @@
 import { React, Component } from 'react';
+import { Link } from 'react-router-dom';
 
 import { Card } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -21,7 +22,8 @@ class homeCard extends Component {
             <Card.Title>{name}</Card.Title>
             <Card.Subtitle className="mb-2 text-muted">{code}</Card.Subtitle>
             <Card.Text>
-              All the graph points fetched would make up a graph here.
+              <Link to={`/stock/${code}`}>Click here</Link> to visit {name} in
+              detail data
             </Card.Text>
             <Card.Text className={'mb-sm-0'}>Returns</Card.Text>
             <Card.Link href="#" className={`text-${color}`}>

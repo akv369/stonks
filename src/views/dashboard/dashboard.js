@@ -32,7 +32,7 @@ class dashboard extends Component {
     let investedValue, returns, returnsPercent;
     if (portfolio.investedValue !== undefined) {
       investedValue = portfolio.investedValue;
-      returns = Number((portfolio.totalReturns).toFixed(2));
+      returns = Number(portfolio.totalReturns.toFixed(2));
       returnsPercent = portfolio.returnsPercent;
     }
     const renderer = () => {
