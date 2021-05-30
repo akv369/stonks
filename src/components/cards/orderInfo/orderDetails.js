@@ -23,13 +23,16 @@ class listCard extends Component {
           'November',
           'December',
         ];
-        return `${dated.slice(8, 10)} ${months[MM - 1]} ${dated.slice(0, 4)} | ${dated.slice(11, 19)} IST`;
+        return `${dated.slice(8, 10)} ${months[MM - 1]} ${dated.slice(
+          0,
+          4
+        )} | ${dated.slice(11, 19)} IST`;
       }
     };
     const details = [
       {
         name: 'Order',
-        data: 'order'
+        data: 'order',
       },
       {
         name: 'Sub-Type',
@@ -37,21 +40,21 @@ class listCard extends Component {
       },
       {
         name: 'Code',
-        data: 'code'
+        data: 'code',
       },
       {
         name: 'Order Price',
-        data: 'orderPrice'
+        data: 'orderPrice',
       },
       {
         name: 'Order Price',
-        data: 'cmp'
+        data: 'cmp',
       },
       {
         name: 'Exchange',
-        data: 'exchange'
-      }
-    ]
+        data: 'exchange',
+      },
+    ];
     return (
       <div>
         <Card className="shadow-sm">
@@ -68,18 +71,16 @@ class listCard extends Component {
           <Card.Body>
             <Card.Text>
               <Row>
-                  {
-                    details.map((detail, index) => {
-                      return(
-                        <Col key={index} sm={4}>
-                          <span className="ml-3 text-muted font-weight-bold">
-                            {detail.name}:{' '}
-                          </span>
-                          <span className="">{this.props.order[detail.data]}</span>
-                        </Col>
-                      )
-                    })
-                  }
+                {details.map((detail, index) => {
+                  return (
+                    <Col key={index} sm={4}>
+                      <span className="ml-3 text-muted font-weight-bold">
+                        {detail.name}:{' '}
+                      </span>
+                      <span className="">{this.props.order[detail.data]}</span>
+                    </Col>
+                  );
+                })}
               </Row>
             </Card.Text>
           </Card.Body>

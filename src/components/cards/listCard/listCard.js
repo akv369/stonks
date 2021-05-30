@@ -7,59 +7,61 @@ import Axios from '../../../axios-base';
 import ApexCharts from 'react-apexcharts';
 
 class listCard extends Component {
-  state={
-    series: [{
-      name: 'sales',
-      data: [
-        {
-          x: '',
-          y: 0,
-        },
-      ],
-    }],
+  state = {
+    series: [
+      {
+        name: 'sales',
+        data: [
+          {
+            x: '',
+            y: 0,
+          },
+        ],
+      },
+    ],
     options: {
       chart: {
         type: 'area',
         zoom: {
-          enabled: false
-        }
+          enabled: false,
+        },
       },
       dataLabels: {
-        enabled: false
+        enabled: false,
       },
       stroke: {
-        curve: 'straight'
+        curve: 'straight',
       },
       // labels: series.monthDataSeries1.dates,
       xaxis: {
         type: 'datetime',
       },
       yaxis: {
-        opposite: true
+        opposite: true,
       },
       legend: {
-        horizontalAlign: 'left'
-      }
+        horizontalAlign: 'left',
+      },
     },
-  }
-  componentDidMount(){
+  };
+  componentDidMount() {
     // console.log(this.props.portfolio.stocks)
     const stocks = this.props.portfolio.stocks;
-    stocks.map(stock => {
-      console.log(stock.code)
+    stocks.map((stock) => {
+      console.log(stock.code);
       Axios.get(`/weekgraph/${stock.code}`)
-      .then(res=>{
-        // console.log(res.data.coordinate)
-        let newSeries = this.state.series;
-        newSeries[0].data = res.data.coordinate;
-        console.log(newSeries);
-        // console.log()
-        this.setState({series: newSeries})
-      })
-      .catch(err=>console.log(err))
-    })
+        .then((res) => {
+          // console.log(res.data.coordinate)
+          let newSeries = this.state.series;
+          newSeries[0].data = res.data.coordinate;
+          console.log(newSeries);
+          // console.log()
+          this.setState({ series: newSeries });
+        })
+        .catch((err) => console.log(err));
+    });
   }
-  
+
   render() {
     const portfolio = this.props.portfolio;
     const renderer = () => {
@@ -75,7 +77,8 @@ class listCard extends Component {
         const investedValue = stock.value;
         let investedPercent = (investedValue / portfolio.investedValue) * 100;
         investedPercent = investedPercent.toFixed(2);
-        const returns = stock.returns, returnsPercent = stock.returnsPercent;
+        const returns = stock.returns,
+          returnsPercent = stock.returnsPercent;
         const returnsColor = returns <= 0 ? 'danger' : 'success';
         const graphColor = 'success',
           hrefLink = '/stock/' + stock.code;
@@ -91,13 +94,13 @@ class listCard extends Component {
                 </Col>
                 <Col sm={5}>
                   <div className={'text-' + graphColor} id="chart">
-              <ApexCharts
-                options={this.state.options}
-                series={this.state.series}
-                type="area"
-                height={35}
-                width={255}
-              />
+                    <ApexCharts
+                      options={this.state.options}
+                      series={this.state.series}
+                      type="area"
+                      height={35}
+                      width={255}
+                    />
                   </div>
                 </Col>
                 <Col sm={2}>

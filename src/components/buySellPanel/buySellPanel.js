@@ -25,14 +25,14 @@ class buySellPanel extends Component {
     Axios.post('/portfolio/' + this.props.code, { _id: this.props.userID })
       .then((res) => this.setState({ sharesAvailable: res.data.quantity }))
       .catch((err) => console.log(err));
-    this.setState({price: this.props.buySell.cmp})
+    this.setState({ price: this.props.buySell.cmp });
   }
   placeOrder = () => {
-    const price = this.state.price, shares= this.state.shares
-    if(isNaN(price)||price<=0 || isNaN(shares)||shares<=0){
+    const price = this.state.price,
+      shares = this.state.shares;
+    if (isNaN(price) || price <= 0 || isNaN(shares) || shares <= 0) {
       alert('Invalid Input');
-    }
-    else{
+    } else {
       const sendData = {
         userID: this.props.userID,
         code: this.props.code,

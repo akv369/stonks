@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import OrderDetails from '../../components/cards/orderInfo/orderDetails';
 import OrderStatus from '../../components/cards/orderInfo/orderStatus';
 import Spinner from '../../components/spinner/spinner';
-import DataNull from '../../components/dataNull/dataNull'
+import DataNull from '../../components/dataNull/dataNull';
 
 import { Col, Container, Row, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -22,13 +22,14 @@ class order extends Component {
   };
 
   componentDidMount() {
-    const sendData = {_id : this.props.user._id}
-    Axios.post('/order/' + this.props.match.params.orderID, sendData)
-    .then((response) => {
-      if (response.data === 'Data Unavailable')
-        this.setState({ dataNull: true, fetching: false });
-      else this.setState({ orderDetails: response.data, fetching: false });
-    });
+    const sendData = { _id: this.props.user._id };
+    Axios.post('/order/' + this.props.match.params.orderID, sendData).then(
+      (response) => {
+        if (response.data === 'Data Unavailable')
+          this.setState({ dataNull: true, fetching: false });
+        else this.setState({ orderDetails: response.data, fetching: false });
+      }
+    );
   }
 
   render() {

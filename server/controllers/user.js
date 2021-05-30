@@ -290,9 +290,9 @@ exports.getHome = (req, res) => {
         const sendData = {
           gainer: stocks[stocks.length - 1],
           loser: stocks[0],
-          returnsPercent: resp.returnsPercent
-        }
-        res.send(sendData)
+          returnsPercent: resp.returnsPercent,
+        };
+        res.send(sendData);
       }
     })
     .catch((err) => console.log(err));

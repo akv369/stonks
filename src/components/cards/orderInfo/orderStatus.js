@@ -28,7 +28,10 @@ class orderStatus extends Component {
           'November',
           'December',
         ];
-        return `${dated.slice(8, 10)} ${months[MM - 1]} ${dated.slice(0, 4)} | ${dated.slice(11, 19)} IST`;
+        return `${dated.slice(8, 10)} ${months[MM - 1]} ${dated.slice(
+          0,
+          4
+        )} | ${dated.slice(11, 19)} IST`;
       }
     };
     function onPlace() {
@@ -49,7 +52,7 @@ class orderStatus extends Component {
           </div>
         );
       }
-    };
+    }
     function onExec() {
       if (order['progress'] === 'Executed') {
         return (

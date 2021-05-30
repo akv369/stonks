@@ -27,7 +27,8 @@ async function updatePortfolio(portfolioID) {
   Portfolio.findOne({ _id: portfolioID })
     .then((resp) => {
       let stocks = resp.stocks;
-      let returns = 0, i = 0;
+      let returns = 0,
+        i = 0;
       let returnsPercent = 0;
       stocks.map((stock) => {
         Stock.findOne({ code: stock.code }).then((respo) => {
@@ -38,10 +39,17 @@ async function updatePortfolio(portfolioID) {
           ).toFixed(2);
           stock.value = Number((respo.cmp * stock.quantity).toFixed(2));
           stock.returns = Number(stockReturn);
-          stock.returnsPercent = Number(((stock.returns*100)/(stock.averagePrice*stock.quantity)).toFixed(2));
+          stock.returnsPercent = Number(
+            (
+              (stock.returns * 100) /
+              (stock.averagePrice * stock.quantity)
+            ).toFixed(2)
+          );
           returns += Number(stockReturn);
           if (i === stocks.length) {
-            returnsPercent = Number(((returns*100)/resp.investedValue).toFixed(2))
+            returnsPercent = Number(
+              ((returns * 100) / resp.investedValue).toFixed(2)
+            );
             updatePortfolioNow();
           }
         });
@@ -51,7 +59,7 @@ async function updatePortfolio(portfolioID) {
         Portfolio.findByIdAndUpdate(portfolioID, {
           totalReturns: returns,
           stocks: stocks,
-          returnsPercent: returnsPercent
+          returnsPercent: returnsPercent,
         })
           .then((respo) => console.log(`${portfolioID} portfolio updated`))
           .catch((err) => console.log(err));
