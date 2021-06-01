@@ -1,0 +1,12 @@
+.red-bar{        
+    margin-top: 7px;
+    width: 90%;
+    background-color: #ff2a30;
+    height: 9px;
+    content: ' ';
+}
+.green-bar{
+    background-color: #289945;
+    height: 100%;
+    content: ' ';
+}

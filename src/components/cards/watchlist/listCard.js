@@ -9,6 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
 import Spinner from '../../spinner/spinner';
 import DataNull from '../../dataNull/dataNull';
+import './listCard.css'
 
 class listCard extends Component {
   state = {
@@ -28,6 +29,22 @@ class listCard extends Component {
       });
   }
   render() {
+    function generateRating(userScore, newsScore){
+      const rating = newsScore*70 + userScore*10;
+      const greenWidth = (100+rating)/2;
+      let comment = rating<0 ? 'Sell' : 'Buy';
+      const commentColor = rating<0 ? '#ff2a30' : '#289945';
+      return(
+        <div style={{display:'flex'}}>
+          <div className="font-weight-bold" style={{color:commentColor, width:'20%'}}>{rating.toFixed(0)}</div>
+          <div style={{width:'50%'}}>
+          <div className="red-bar">
+            <div className="green-bar" style={{width:`${greenWidth}%`}}></div>
+          </div></div>
+          <div className="font-weight-bold" style={{color:commentColor, width:'30%'}}>{comment}</div>
+        </div>
+      )
+    }
     let handleChange = (stock) => {
       this.props.buySell({
         cmp: stock['cmp'],
@@ -39,7 +56,7 @@ class listCard extends Component {
       let filteredStocks = this.state.filteredStocks;
       return filteredStocks.map((stock) => {
         let name =
-          stock['name'].length > 20
+          stock['name'].length > 21
             ? `${stock['name'].slice(0, 18)}...`
             : stock['name'];
         const cmpColor = stock['_200dma'] < stock['cmp'] ? 'danger' : 'success';
@@ -62,7 +79,7 @@ class listCard extends Component {
                 >
                   <Link to={`/stock/${stock['code']}`}>{name}</Link>
                 </Col>
-                <Col sm={3}>Recommendation Rating</Col>
+                <Col sm={3}>{generateRating(stock['userScore'],stock['newsScore'])}</Col>
                 <Col sm={2}>${stock['_200dma']}</Col>
                 <Col sm={2} className={`text-${cmpColor}`}>
                   ${stock['cmp']}
