@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const session = require('express-session');
-const mongoDbStore = require('connect-mongodb-session')(session);
+// const session = require('express-session');
+// const mongoDbStore = require('connect-mongodb-session')(session);
 const cors = require('cors');
 
 const marketRoutes = require('./routes/market');
@@ -13,21 +13,21 @@ const mongoDbUri =
 
 const app = express();
 
-const store = new mongoDbStore({
-  uri: mongoDbUri,
-  collection: 'sessions',
-});
+// const store = new mongoDbStore({
+//   uri: mongoDbUri,
+//   collection: 'sessions',
+// });
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(
-  session({
-    secret: 'loginPlease',
-    resave: false,
-    saveUninitialized: false,
-    store: store,
-  })
-);
+// app.use(
+//   session({
+//     secret: 'JccEy11nQWbtu3TiJccEy11nQWbtu3Ti',
+//     resave: false,
+//     saveUninitialized: false,
+//     store: store,
+//   })
+// );
 
 app.use(cors());
 app.use(authRoutes);

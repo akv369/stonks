@@ -2,8 +2,6 @@ import { React, Component } from 'react';
 import Axios from '../../axios-base';
 import { connect } from 'react-redux';
 
-import * as actionTypes from '../../store/actions';
-
 import Spinner from '../../components/spinner/spinner';
 import ListCard from '../../components/cards/listCard/listCard';
 import BuySellPanel from '../../components/buySellPanel/buySellPanel';
@@ -130,10 +128,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    buySell: (stock) => dispatch({ type: actionTypes.BUY_SELL, stock: stock }),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(dashboard);
+export default connect(mapStateToProps, null)(dashboard);

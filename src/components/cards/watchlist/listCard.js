@@ -13,7 +13,6 @@ import DataNull from '../../dataNull/dataNull';
 class listCard extends Component {
   state = {
     filteredStocks: [],
-    activeButton: '',
     fetching: true,
     dataNull: false,
   };
@@ -30,7 +29,6 @@ class listCard extends Component {
   }
   render() {
     let handleChange = (stock) => {
-      this.setState({ activeButton: stock['name'] });
       this.props.buySell({
         cmp: stock['cmp'],
         companyName: stock['name'],
@@ -40,64 +38,41 @@ class listCard extends Component {
     let displayCard = () => {
       let filteredStocks = this.state.filteredStocks;
       return filteredStocks.map((stock) => {
-        const _200dma = stock['cmp'],
-          _52wh = stock['_52wh'],
-          _52wl = stock['_52wl'];
-        let name = stock['name'],
-          marketCap = stock['marketCap'],
-          roe = stock['roe'],
-          pe = stock['peRatio'];
-        const _200dmaColour =
-          (Number(_52wh) + Number(_52wl)) / 2 > Number(_200dma)
-            ? 'danger'
-            : 'success';
-        const roeColour = Number(roe) < 5 ? 'danger' : 'success';
-        const refLink = '/stock/' + stock['code'];
+        let name =
+          stock['name'].length > 20
+            ? `${stock['name'].slice(0, 18)}...`
+            : stock['name'];
+        const cmpColor = stock['_200dma'] < stock['cmp'] ? 'danger' : 'success';
         return (
-          <div>
-            <Button
-              variant="white"
-              style={{
-                width: '100%',
-                padding: '0px',
-                border: 'none',
-                textAlign: 'left',
-              }}
-            >
-              <ListGroup.Item
-                variant="white"
-                onClick={() => handleChange(stock)}
-              >
-                <Row>
-                  <Col
-                    sm={4}
-                    className="text-info"
-                    style={{ fontSize: '0.85rem' }}
-                  >
-                    <Link to={refLink}>{name}</Link>
-                  </Col>
-                  <Col sm={2} className={'text-' + _200dmaColour}>
-                    ${_200dma}
-                  </Col>
-                  <Col sm={3}>${marketCap}</Col>
-                  <Col sm={3}>
-                    <Row>
-                      <Col
-                        sm={6}
-                        className={'text-' + roeColour + ' font-weight-bold'}
-                        style={{ fontSize: '0.85rem' }}
-                      >
-                        {roe}
-                      </Col>
-                      <Col sm={6} style={{ fontSize: '0.85rem' }}>
-                        {pe}
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
-              </ListGroup.Item>
-            </Button>
-          </div>
+          <Button
+            variant="white"
+            style={{
+              width: '100%',
+              padding: '0px',
+              border: 'none',
+              textAlign: 'left',
+            }}
+          >
+            <ListGroup.Item variant="white" onClick={() => handleChange(stock)}>
+              <Row>
+                <Col
+                  sm={3}
+                  className="text-info"
+                  style={{ fontSize: '0.85rem' }}
+                >
+                  <Link to={`/stock/${stock['code']}`}>{name}</Link>
+                </Col>
+                <Col sm={3}>Recommendation Rating</Col>
+                <Col sm={2}>${stock['_200dma']}</Col>
+                <Col sm={2} className={`text-${cmpColor}`}>
+                  ${stock['cmp']}
+                </Col>
+                <Col sm={2} style={{ fontSize: '0.85rem' }}>
+                  {stock['peRatio']}
+                </Col>
+              </Row>
+            </ListGroup.Item>
+          </Button>
         );
       });
     };

@@ -5,7 +5,7 @@ const Stock = require('../models/stock');
 const Order = require('../models/order');
 const Portfolio = require('../models/portfolio');
 const Graph = require('../models/graph');
-const Updation = require('../models/updation');
+const Watch = require('../models/watch');
 
 exports.updateStock = (stockName) => updateStock(stockName);
 exports.updateGraph = (stockName) => updateGraph(stockName);
@@ -13,47 +13,52 @@ exports.updateGraph = (stockName) => updateGraph(stockName);
 exports.updateStocksData = (req, res) => {
   res.send('Started');
   console.log('Lets Start :)');
-  setInterval(intervalFunc, 65000);
-  function intervalFunc() {
-    let stockList = [];
-    Stock.find()
-      .sort({ lastUpdated: 1 })
-      .limit(5)
-      .then((resp) => {
-        resp.map((item) => {
-          console.log(item.code);
-          stockList.push(item.code);
-        });
-        console.log(stockList);
-        startUpdate();
-      })
-      .catch((err) => console.log(err));
-    function startUpdate() {
-      for (let i = 0; i < 5; i++) {
-        updateGraph(stockList[i]);
-        updateStock(stockList[i]);
-      }
-    }
-  }
+  // setInterval(intervalFunc, 65000);
+  // function intervalFunc() {
+  //   let stockList = [];
+  //   Stock.find()
+  //     .sort({ lastUpdated: 1 })
+  //     .limit(5)
+  //     .then((resp) => {
+  //       resp.map((item) => {
+  //         console.log(item.code);
+  //         stockList.push(item.code);
+  //       });
+  //       console.log(stockList);
+  //       startUpdate();
+  //     })
+  //     .catch((err) => console.log(err));
+  //   function startUpdate() {
+  //     for (let i = 0; i < 5; i++) {
+  //       updateGraph(stockList[i]);
+  //       updateStock(stockList[i]);
+  //     }
+  //   }
+  // }
+
+  // Watch.find()
+  //   .then(res => {
+  //     res.map(stock => {
+  //       const newsScore = stock.newsScore ? stock.newsScore : 0;
+  //       const userScore = stock.userScore ? stock.userScore : 0;
+  //       Watch.findByIdAndUpdate(stock._id,{userScore:userScore, newsScore: newsScore})
+  //         .then((result) => {
+  //           console.log(`${stock.code} done`);
+  //         })
+  //         .catch((err) => {
+  //           console.log(err);
+  //         });  
+  //     })
+  //   })
+
   // Stock.find()
   //   .sort({ lastUpdated: 1 })
   //   .then((resp) => {
   //     resp.map((item) => {
-  //       // console.log(item.code)
   //         stockList.push(item.code)
   //     });
-  //     // console.log(stockList);
-  //     // Updation.updateOne(
-  //     //   { _id: '60ae0375e743773684a93255' },
-  //     //   { lastUpdated: Date.now(), codes: stockList }
-  //     // )
-  //     //   .then((respo) => console.log(respo))
-  //     //   .catch((err) => console.log(err));
   //   })
   //   .catch((err) => console.log(err));
-  // // Updation.findOne({ _id: '60ae0375e743773684a93255' }).then((resp) => {
-  // //   stockList = resp.codes;
-  // // });
 };
 
 async function updateStock(stockName) {

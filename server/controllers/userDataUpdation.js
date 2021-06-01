@@ -5,7 +5,6 @@ const Stock = require('../models/stock');
 const Order = require('../models/order');
 const Portfolio = require('../models/portfolio');
 const Graph = require('../models/graph');
-const Updation = require('../models/updation');
 
 // exports.updateOrder = (stockName) => updateOrder(stockName);
 exports.updatePortfolio = (_id) => updatePortfolio(_id);

@@ -20,19 +20,34 @@ class buySellPanel extends Component {
     loading: false,
     status: '',
     sharesAvailable: 0,
+    code: '',
   };
   componentDidMount() {
-    Axios.post('/portfolio/' + this.props.buySell.companySymbol, { _id: this.props.userID })
-      .then((res) => this.setState({ sharesAvailable: res.data.quantity }))
+    Axios.post('/portfolio/' + this.props.buySell.companySymbol, {
+      _id: this.props.userID,
+    })
+      .then((res) =>
+        this.setState({
+          sharesAvailable: res.data.quantity,
+          price: res.data.cmp,
+        })
+      )
       .catch((err) => console.log(err));
-    this.setState({ price: this.props.buySell.cmp });
+    this.setState({ code: this.props.buySell.companySymbol });
   }
   componentDidUpdate() {
-    if (this.state.price!=this.props.buySell.cmp){
-      Axios.post('/portfolio/' + this.props.buySell.companySymbol, { _id: this.props.userID })
-        .then((res) => this.setState({ sharesAvailable: res.data.quantity }))
+    if (this.state.code != this.props.buySell.companySymbol) {
+      Axios.post('/portfolio/' + this.props.buySell.companySymbol, {
+        _id: this.props.userID,
+      })
+        .then((res) =>
+          this.setState({
+            sharesAvailable: res.data.quantity,
+            price: res.data.cmp,
+          })
+        )
         .catch((err) => console.log(err));
-      this.setState({ price: this.props.buySell.cmp });
+      this.setState({ code: this.props.buySell.companySymbol });
     }
   }
   placeOrder = () => {
@@ -71,9 +86,7 @@ class buySellPanel extends Component {
     };
     const formPrice = () => {
       if (this.state.order === 'Market')
-        return (
-          <span style={{ fontSize: '1.30rem' }}>${this.props.buySell.cmp}</span>
-        );
+        return <span style={{ fontSize: '1.30rem' }}>${this.state.price}</span>;
       else
         return (
           <Form.Control
@@ -333,8 +346,8 @@ class buySellPanel extends Component {
       ) : this.state.status === 'Executed' ? (
         orderExecuted()
       ) : this.state.loading === true ? (
-          <Spinner />
-      ) : this.props.buySell.cmp === undefined ? (
+        <Spinner />
+      ) : this.state.price === 0 ? (
         selectAStock()
       ) : (
         orderForm()

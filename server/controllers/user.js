@@ -4,10 +4,12 @@ const User = require('../models/user');
 const Stock = require('../models/stock');
 const Order = require('../models/order');
 const Portfolio = require('../models/portfolio');
+const Watch = require('../models/watch');
 const userUpdate = require('./userDataUpdation');
 
 exports.placeOrders = () => placeOrders();
 exports.executeOrders = () => executeOrders();
+exports.getAvailableStocks = (req, res) => getAvailableStocks(req, res);
 
 exports.getOrderDetails = (req, res) => {
   Order.findOne({ _id: req.params.orderID })
@@ -201,7 +203,8 @@ async function executeOrders() {
                       let currentStock = stocksInPortfolio[index];
                       if (currentOrder.type === 'Buy') {
                         currentStock.averagePrice = (
-                          (currentOrder.totalAmount + (currentStock.averagePrice*currentStock.quantity)) /
+                          (currentOrder.totalAmount +
+                            currentStock.averagePrice * currentStock.quantity) /
                           (currentStock.quantity + currentOrder.quantity)
                         ).toFixed(2);
                         currentStock.value = (
@@ -238,7 +241,9 @@ async function executeOrders() {
                         stocks: stocksInPortfolio,
                       }
                     )
-                      .then(console.log(`Added order to ${respo._id} portfolio`))
+                      .then(
+                        console.log(`Added order to ${respo._id} portfolio`)
+                      )
                       .catch((err) => console.log(err));
                   }
                 })
@@ -305,23 +310,25 @@ exports.getDashboard = (req, res) => {
     .catch((err) => console.log(err));
 };
 
-exports.getAvailableStocks = (req, res) => {
+async function getAvailableStocks(req, res) {
   const stockID = req.params.stockID;
-  Portfolio.findOne({ userID: req.body._id })
+  let cmp = 0,
+    quantity = 0;
+  await Portfolio.findOne({ userID: req.body._id })
     .then((resp) => {
-      let sent=0;
-      if (resp === null){ res.send({ quantity: 0 });sent=1;}
-      else {
-        const stocks = resp.stocks;
-        for (let i = 0; i < stocks.length; i++) {
-          const stock = stocks[i];
-          if (stock.code === stockID){res.send({quantity:stock.quantity});sent=1;}
-        }
+      if (resp !== null) {
+        for (let i = 0; i < resp.stocks.length; i++)
+          if (resp.stocks[i].code === stockID)
+            quantity = resp.stocks[i].quantity;
       }
-      if(sent===0)res.send({ quantity: 0 });
     })
     .catch((err) => console.log(err));
-};
+  await Stock.findOne({ code: stockID })
+    .then((respo) => (cmp = respo.cmp))
+    .catch((err) => console.log(err));
+  res.send({ quantity: quantity, cmp: cmp });
+  console.log(`${stockID} stocks available sent`);
+}
 
 exports.getWatchlist = (req, res) => {
   let sendList = [],
@@ -339,7 +346,7 @@ exports.getWatchlist = (req, res) => {
 
   async function getData() {
     for (let i = 0; i < watchList.length; i++) {
-      await Stock.findOne({ code: watchList[i] })
+      await Watch.findOne({ code: watchList[i] })
         .then((stock) => sendList.push(stock))
         .catch((err) => console.log(err));
     }
