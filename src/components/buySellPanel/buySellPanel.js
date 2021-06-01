@@ -22,36 +22,34 @@ class buySellPanel extends Component {
     sharesAvailable: 0,
   };
   componentDidMount() {
-    Axios.post('/portfolio/' + this.props.code, { _id: this.props.userID })
+    Axios.post('/portfolio/' + this.props.buySell.companySymbol, { _id: this.props.userID })
       .then((res) => this.setState({ sharesAvailable: res.data.quantity }))
       .catch((err) => console.log(err));
     this.setState({ price: this.props.buySell.cmp });
   }
   componentDidUpdate() {
-    if (!this.state.price && this.props.buySell.cmp)
+    if (this.state.price!=this.props.buySell.cmp){
+      Axios.post('/portfolio/' + this.props.buySell.companySymbol, { _id: this.props.userID })
+        .then((res) => this.setState({ sharesAvailable: res.data.quantity }))
+        .catch((err) => console.log(err));
       this.setState({ price: this.props.buySell.cmp });
+    }
   }
   placeOrder = () => {
     const price = this.state.price,
       shares = this.state.shares;
     if (isNaN(price) || price <= 0 || isNaN(shares) || shares <= 0) {
-      console.log(isNaN(price));
-      console.log(price);
-      console.log(isNaN(shares));
-      console.log(shares);
       alert('Invalid Input');
     } else {
       const sendData = {
         userID: this.props.userID,
-        code: this.props.code,
+        code: this.props.buySell.companySymbol,
         orderPrice: Number(price),
         quantity: Number(shares),
         type: this.state.hash,
         order: this.state.order,
         subType: this.state.type,
-        balanceBeforeTransaction: this.props.userBalance,
       };
-      console.log(sendData);
       Axios.post('/order', sendData)
         .then((response) => {
           this.setState({ loading: false, status: response.data });
@@ -335,9 +333,7 @@ class buySellPanel extends Component {
       ) : this.state.status === 'Executed' ? (
         orderExecuted()
       ) : this.state.loading === true ? (
-        <div style={{ height: '491px' }}>
           <Spinner />
-        </div>
       ) : this.props.buySell.cmp === undefined ? (
         selectAStock()
       ) : (
@@ -354,7 +350,6 @@ class buySellPanel extends Component {
 const mapStateToProps = (state) => {
   return {
     buySell: state.BUY_SELL.stock,
-    code: state.BUY_SELL.stock.companySymbol,
     userBalance: state.SET_USER.currentUser.balance,
     userID: state.SET_USER.currentUser._id,
   };

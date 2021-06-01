@@ -56,20 +56,4 @@ class pageNumbers extends Component {
   }
 }
 
-// const mapStateToProps = (state) => {
-//   return {
-//     pageDetails: state.SET_PAGE_DETAILS.pageDetails,
-//   };
-// };
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     setPagination: (pageDetails) =>
-//       dispatch({
-//         type: actionTypes.SET_PAGE_DETAILS,
-//         pageDetails: pageDetails,
-//       }),
-//   };
-// };
-
-export default connect(null, null)(pageNumbers);
+export default pageNumbers;

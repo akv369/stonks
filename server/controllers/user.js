@@ -85,7 +85,7 @@ exports.postOrder = (req, res) => {
         if (hour >= 17 || hour < 1 || (hour === 1 && minute <= 30)) {
           if (order === 'Market') res.send('Executed');
           else res.send('Placed');
-        } else res.send('Placed');
+        } else res.send('Verified');
       })
       .catch((err) => console.log(err));
   }
@@ -201,7 +201,7 @@ async function executeOrders() {
                       let currentStock = stocksInPortfolio[index];
                       if (currentOrder.type === 'Buy') {
                         currentStock.averagePrice = (
-                          (currentOrder.totalAmount + currentStock.value) /
+                          (currentOrder.totalAmount + (currentStock.averagePrice*currentStock.quantity)) /
                           (currentStock.quantity + currentOrder.quantity)
                         ).toFixed(2);
                         currentStock.value = (
@@ -212,10 +212,6 @@ async function executeOrders() {
                         stocksInPortfolio[index] = currentStock;
                         investedValue += currentOrder.totalAmount;
                       } else {
-                        currentStock.averagePrice = (
-                          (currentOrder.totalAmount + currentStock.value) /
-                          (currentStock.quantity + currentOrder.quantity)
-                        ).toFixed(2);
                         currentStock.value = (
                           currentStock.value - currentOrder.totalAmount
                         ).toFixed(2);
@@ -242,7 +238,7 @@ async function executeOrders() {
                         stocks: stocksInPortfolio,
                       }
                     )
-                      .then(console.log(`${respo._id} portfolio updated`))
+                      .then(console.log(`Added order to ${respo._id} portfolio`))
                       .catch((err) => console.log(err));
                   }
                 })
@@ -313,14 +309,16 @@ exports.getAvailableStocks = (req, res) => {
   const stockID = req.params.stockID;
   Portfolio.findOne({ userID: req.body._id })
     .then((resp) => {
-      if (resp === null) res.send({ quantity: 0 });
+      let sent=0;
+      if (resp === null){ res.send({ quantity: 0 });sent=1;}
       else {
         const stocks = resp.stocks;
         for (let i = 0; i < stocks.length; i++) {
           const stock = stocks[i];
-          if (stock.code === stockID) res.send(stock);
+          if (stock.code === stockID){res.send({quantity:stock.quantity});sent=1;}
         }
       }
+      if(sent===0)res.send({ quantity: 0 });
     })
     .catch((err) => console.log(err));
 };

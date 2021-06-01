@@ -79,7 +79,7 @@ class stockGraph extends Component {
   render() {
     const timeItems = ['1D', '1W', '1M'];
     const handleEye = () => {
-      let companyCode = this.props.stock.companySymbol;
+      let companyCode = this.props.companyCode;
       let newState = this.state.watchlisted;
       newState = !newState;
       this.setState({ watchlisted: newState });
@@ -155,7 +155,6 @@ class stockGraph extends Component {
 const mapStateToProps = (state) => {
   return {
     userDetails: state.SET_USER.currentUser,
-    stock: state.BUY_SELL.stock,
   };
 };
 

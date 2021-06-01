@@ -1,7 +1,4 @@
 import { React, Component } from 'react';
-import { connect } from 'react-redux';
-
-import * as actionTypes from '../../store/actions';
 
 import { Card, ListGroup, Form, Col, Button, Badge } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -178,18 +175,4 @@ class stocksFilter extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return null;
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setFilters: (stockFilters) =>
-      dispatch({
-        type: actionTypes.SET_STOCK_FILTERS,
-        stockFilters: stockFilters,
-      }),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(stocksFilter);
+export default stocksFilter;
