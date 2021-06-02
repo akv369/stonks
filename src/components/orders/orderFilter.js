@@ -74,6 +74,7 @@ class orderFilter extends Component {
                       name="status"
                       type={'radio'}
                       id={box.name}
+                      key={box}
                       defaultChecked={
                         this.state.status === box.name ? true : false
                       }

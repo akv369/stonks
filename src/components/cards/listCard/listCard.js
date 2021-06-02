@@ -24,6 +24,7 @@ class listCard extends Component {
           {this.props.portfolio.stocks.map((stock) => {
             return (
               <Button
+                key={stock.code}
                 variant="white"
                 style={{
                   width: '100%',

@@ -57,7 +57,7 @@ class orderList extends Component {
           if (equal !== 0) dates.push(s1);
         }
         dates.push(s2);
-        return dates.map((date) => {
+        return dates.map((date,index) => {
           let datewiseOrders = [];
           for (let i = 0; i < orders.length; i++) {
             order = orders[i];
@@ -85,7 +85,7 @@ class orderList extends Component {
           ];
           const showDate = dd + ' ' + months[mm - 1] + ' ' + yyyy;
           return (
-            <div>
+            <div key={index}>
               <h5 className="text-secondary my-4">{showDate}</h5>
               <DateList orders={datewiseOrders} />
             </div>

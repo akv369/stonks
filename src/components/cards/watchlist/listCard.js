@@ -76,6 +76,7 @@ class listCard extends Component {
         const cmpColor = stock['_200dma'] < stock['cmp'] ? 'danger' : 'success';
         return (
           <Button
+            key={stock.code}
             variant="white"
             style={{
               width: '100%',

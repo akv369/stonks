@@ -36,7 +36,7 @@ class buySellPanel extends Component {
     this.setState({ code: this.props.buySell.companySymbol });
   }
   componentDidUpdate() {
-    if (this.state.code != this.props.buySell.companySymbol) {
+    if (this.state.code !== this.props.buySell.companySymbol) {
       Axios.post('/portfolio/' + this.props.buySell.companySymbol, {
         _id: this.props.userID,
       })

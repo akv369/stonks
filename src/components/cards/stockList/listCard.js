@@ -34,8 +34,7 @@ class listCard extends Component {
           const refLink = '/stock/' + stock['code'];
           if (name.length > 25) name = name.slice(0, 19) + '...';
           return (
-            <div>
-              <ListGroup.Item>
+              <ListGroup.Item key={i}>
                 <Row>
                   <Col
                     sm={2}
@@ -62,7 +61,6 @@ class listCard extends Component {
                   </Col>
                 </Row>
               </ListGroup.Item>
-            </div>
           );
         }
       });

@@ -77,7 +77,7 @@ class loginForm extends Component {
           !(
             lastAtPos < lastDotPos &&
             lastAtPos > 0 &&
-            fields['Email'].indexOf('@@') == -1 &&
+            fields['Email'].indexOf('@@') === -1 &&
             lastDotPos > 2 &&
             fields['Email'].length - lastDotPos > 2
           )
