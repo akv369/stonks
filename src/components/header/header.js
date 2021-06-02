@@ -3,6 +3,8 @@ import firebase from '../../firebase';
 import Axios from '../../axios-base';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
+import * as actionTypes from '../../store/actions';
 
 import SearchSuggestions from './searchSuggestions';
 import imgPath from '../../data/logo.png';
@@ -46,23 +48,19 @@ class header extends Component {
     });
   };
   logoutUser = () => {
-    if (this.props.user.provider === 'google.com') this.googleLogout();
-    else window.location.replace('/login');
-  };
-  googleLogout = () => {
-    firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        Axios.post('/logout').then((resp) => {
-          console.log(resp.data);
+    this.props.setUser(null);
+    const cookies = new Cookies();
+    cookies.set('currentUser', null, { path: '/' });
+    if (this.props.user.provider === 'google.com') {
+      firebase
+        .auth()
+        .signOut()
+        .catch((error) => {
+          console.log(error.code);
+          console.log(error.message);
         });
-        window.location.replace('/login');
-      })
-      .catch((error) => {
-        console.log(error.code);
-        console.log(error.message);
-      });
+    }
+    window.location.replace('/login');
   };
   render() {
     const path = this.state.path;
@@ -124,4 +122,11 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(header);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setUser: (user) =>
+      dispatch({ type: actionTypes.SET_USER, currentUser: user }),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(header);

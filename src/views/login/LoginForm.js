@@ -1,6 +1,7 @@
 import { React, Component } from 'react';
 import firebase from '../../firebase';
 import { connect } from 'react-redux';
+import { Cookies } from 'react-cookie';
 import Axios from '../../axios-base';
 
 import * as actionTypes from '../../store/actions';
@@ -19,7 +20,11 @@ class loginForm extends Component {
     error: { Name: false, Email: false },
     formIsValid: false,
   };
-  componentDidUpdate() {}
+  postLogin(data) {
+    this.props.setUser(data);
+    const cookies = new Cookies();
+    cookies.set('currentUser', data, { path: '/' });
+  }
   handleValidation() {
     let fields = this.state.fields;
     let errors = {};
@@ -113,25 +118,11 @@ class loginForm extends Component {
       .signInWithPopup(provider)
       .then((result) => {
         Axios.post('/login', result.user.providerData[0])
-          .then((response) => {
-            this.props.setUser(response.data);
-          })
+          .then((res) => this.postLogin(res.data))
           .catch((err) => console.log(err));
       })
       .catch((e) => {
         console.log(e.message);
-      });
-  };
-  googleLogout = () => {
-    firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        window.location.replace('/');
-      })
-      .catch((error) => {
-        console.log(error.code);
-        console.log(error.message);
       });
   };
   classicSignup = () => {
@@ -151,7 +142,7 @@ class loginForm extends Component {
           providerId: userData.providerId,
         };
         Axios.post('/login', sendData)
-          .then((res) => this.props.setUser(res.data))
+          .then((res) => this.postLogin(res.data))
           .catch((err) => console.log(err));
         return result.user.updateProfile({
           displayName: this.state.fields.Name,
@@ -176,7 +167,9 @@ class loginForm extends Component {
           email: userData.email,
         };
         Axios.post('/login', sendData)
-          .then((res) => this.props.setUser(res.data))
+          .then((res) => {
+            this.postLogin(res.data);
+          })
           .catch((err) => console.log(err));
       })
       .catch((err) => {

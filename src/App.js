@@ -2,43 +2,43 @@ import { React, Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import './App.css';
-
-import loginScreen from './views/login/loginScreen';
-import watchList from './views/watchList/watchList';
-import dashboard from './views/dashboard/dashboard';
-import allStocks from './views/allStocks/allStocks';
-import orders from './views/orders/orders';
-import stock from './views/stock/stock';
-import order from './views/order/order';
-import lost from './views/lost/lost';
-import home from './views/home/home';
-import updation from './views/updation/updation';
+import LoginScreen from './views/login/loginScreen';
+import WatchList from './views/watchList/watchList';
+import Dashboard from './views/dashboard/dashboard';
+import AllStocks from './views/allStocks/allStocks';
+import Orders from './views/orders/orders';
+import Stock from './views/stock/stock';
+import Order from './views/order/order';
+import Lost from './views/lost/lost';
+import Home from './views/home/home';
+import Updation from './views/updation/updation';
 import Navbar from './components/header/header';
+
+import './App.css';
 
 class App extends Component {
   render() {
-    let renderer = this.props.isAuthenticated ? (
-      <div>
-        <Navbar />
+    let renderer =
+      this.props.currentUser !== 'null' || this.props.currentUser !== null ? (
+        <div>
+          <Navbar />
+          <Switch>
+            <Route path="/orders" exact component={Orders} />
+            <Route path="/dashboard" exact component={Dashboard} />
+            <Route path="/stocks" exact component={AllStocks} />
+            <Route path="/watchlist" exact component={WatchList} />
+            <Route path="/stock/:stockID" exact component={Stock} />
+            <Route path="/order/:orderID" exact component={Order} />
+            <Route path="/update" component={Updation} />
+            <Route path="/" exact component={Home} />
+            <Route path="/" component={Lost} />
+          </Switch>
+        </div>
+      ) : (
         <Switch>
-          <Route path="/orders" exact component={orders} />
-          <Route path="/dashboard" exact component={dashboard} />
-          <Route path="/stocks" exact component={allStocks} />
-          <Route path="/watchlist" exact component={watchList} />
-          <Route path="/stock/:stockID" exact component={stock} />
-          <Route path="/order/:orderID" exact component={order} />
-          <Route path="/update" component={updation} />
-          <Route path="/404" component={lost} />
-          <Route path="/" exact component={home} />
-          <Route path="/" component={lost} />
+          <Route path="/" component={LoginScreen} />
         </Switch>
-      </div>
-    ) : (
-      <Switch>
-        <Route path="/" component={loginScreen} />
-      </Switch>
-    );
+      );
 
     return <div className="app">{renderer}</div>;
   }
@@ -46,7 +46,7 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    isAuthenticated: state.SET_USER.isAuthenticated,
+    currentUser: state.SET_USER.currentUser,
   };
 };
 
