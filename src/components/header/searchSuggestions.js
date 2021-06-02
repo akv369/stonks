@@ -1,8 +1,8 @@
 import { React, Component } from 'react';
+import { Redirect } from 'react-router-dom';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from './searchSuggestions.module.css';
-import { Link } from 'react-router-dom';
 
 class searchSuggestions extends Component {
   state = {
@@ -20,13 +20,13 @@ class searchSuggestions extends Component {
                 ? stock.name.slice(0, 18) + '...'
                 : stock.name;
             return (
-              <Link to={this.state.link} key={stock.code}>
                 <button
                   className={styles.suggestionButton}
+                  key={stock.code}
                   onClick={() => {
                     this.setState({
-                      redirect: true,
                       link: `/stock/${stock.code}`,
+                      redirect: true,
                     });
                   }}
                 >
@@ -35,17 +35,16 @@ class searchSuggestions extends Component {
                   <br />
                   <hr className="text-muted" style={{ margin: '1px' }} />
                 </button>
-              </Link>
             );
           })}
         </div>
       );
     };
     const redirectingToStock = () => {
-      // if (this.state.link !== '' && this.state.redirect) {
-      //   this.setState({ redirect: false });
-      //   return <Link to={this.state.link} />;
-      // }
+      if (this.state.link !== '' && this.state.redirect) {
+        this.setState({ redirect: false });
+        return <Redirect to={this.state.link} />;
+      }
     };
     return (
       <div className={styles.Box}>
