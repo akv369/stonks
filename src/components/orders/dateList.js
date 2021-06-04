@@ -8,13 +8,17 @@ class orderList extends Component {
   render() {
     let displayCard = () => {
       let orders = this.props.orders;
-      return orders.map((order,index) => {
+      return orders.map((order, index) => {
         const dotColor =
-          order['status'] === 'In Progress' ? 'warning' : 'success';
-        const refLink = '/order/' + order['_id'];
-        let time =
-          order['verifiedTimestamp'].slice(11, 16) +
-          order['verifiedTimestamp'].slice(19, 22);
+          order.status === 'In Progress'
+            ? 'warning'
+            : order.status === 'Successful'
+            ? 'success'
+            : 'danger';
+        const refLink = '/order/' + order._id;
+        let time = order.verifiedTimestamp;
+        const timeZ = time.slice(-3) === '530' ? 'IST' : 'GMT';
+        time = `${time.slice(11, 16)} ${timeZ}`;
         return (
           <div key={index}>
             <Link to={refLink}>

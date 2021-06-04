@@ -13,7 +13,10 @@ import { Redirect } from 'react-router';
 class loginScreen extends Component {
   render() {
     const renderLogin = () => {
-      if (this.props.currentUser !== null) {
+      if (
+        this.props.currentUser === null ||
+        this.props.currentUser === 'null'
+      ) {
         if (window.location.pathname !== '/') return <Redirect to="/" />;
         return (
           <div className="loginScreen">

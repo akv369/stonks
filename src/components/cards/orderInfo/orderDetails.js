@@ -23,10 +23,12 @@ class listCard extends Component {
           'November',
           'December',
         ];
-        return `${dated.slice(8, 10)} ${months[MM - 1]} ${dated.slice(
-          0,
-          4
-        )} | ${dated.slice(11, 19)} IST`;
+        const time = dated.slice(11, 19);
+        const year = dated.slice(0, 4);
+        const month = months[MM - 1];
+        const date = dated.slice(8, 10);
+        const timeZ = dated.slice(-3) === '000' ? 'GMT' : 'IST';
+        return `${date} ${month} ${year} | ${time} ${timeZ}`;
       }
     };
     const details = [

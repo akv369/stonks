@@ -57,7 +57,7 @@ class orderList extends Component {
           if (equal !== 0) dates.push(s1);
         }
         dates.push(s2);
-        return dates.map((date,index) => {
+        return dates.map((date, index) => {
           let datewiseOrders = [];
           for (let i = 0; i < orders.length; i++) {
             order = orders[i];

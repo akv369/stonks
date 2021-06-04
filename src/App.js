@@ -19,7 +19,7 @@ import './App.css';
 class App extends Component {
   render() {
     let renderer =
-      this.props.currentUser !== 'null' || this.props.currentUser !== null ? (
+      this.props.currentUser !== 'null' && this.props.currentUser !== null ? (
         <div>
           <Navbar />
           <Switch>

@@ -20,21 +20,21 @@ class searchSuggestions extends Component {
                 ? stock.name.slice(0, 18) + '...'
                 : stock.name;
             return (
-                <button
-                  className={styles.suggestionButton}
-                  key={stock.code}
-                  onClick={() => {
-                    this.setState({
-                      link: `/stock/${stock.code}`,
-                      redirect: true,
-                    });
-                  }}
-                >
-                  <span className="float-left">{name}</span>
-                  <span className="float-right">{stock.code}</span>
-                  <br />
-                  <hr className="text-muted" style={{ margin: '1px' }} />
-                </button>
+              <button
+                className={styles.suggestionButton}
+                key={stock.code}
+                onClick={() => {
+                  this.setState({
+                    link: `/stock/${stock.code}`,
+                    redirect: true,
+                  });
+                }}
+              >
+                <span className="float-left">{name}</span>
+                <span className="float-right">{stock.code}</span>
+                <br />
+                <hr className="text-muted" style={{ margin: '1px' }} />
+              </button>
             );
           })}
         </div>

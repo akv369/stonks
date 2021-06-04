@@ -346,7 +346,9 @@ class buySellPanel extends Component {
       ) : this.state.status === 'Executed' ? (
         orderExecuted()
       ) : this.state.loading === true ? (
-        <Spinner />
+        <div style={{ height: '491px' }}>
+          <Spinner />
+        </div>
       ) : this.state.price === 0 ? (
         selectAStock()
       ) : (
