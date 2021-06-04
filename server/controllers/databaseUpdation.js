@@ -12,7 +12,7 @@ exports.updateGraph = (stockName) => updateGraph(stockName);
 
 exports.updateStocksData = (req, res) => {
   res.send('Started');
-  console.log('Lets Start :)');
+  console.log('Started :)');
   // setInterval(intervalFunc, 65000);
   // function intervalFunc() {
   //   let stockList = [];
@@ -47,7 +47,7 @@ exports.updateStocksData = (req, res) => {
   //         })
   //         .catch((err) => {
   //           console.log(err);
-  //         });  
+  //         });
   //     })
   //   })
 

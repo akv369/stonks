@@ -84,7 +84,7 @@ exports.postOrder = (req, res) => {
         const now = new Date();
         const hour = Number(dateTime.format(now, 'HH'));
         const minute = Number(dateTime.format(now, 'mm'));
-        if (hour >= 17 || hour < 1 || (hour === 1 && minute <= 30)) {
+        if ((hour >= 14 && hour < 20) || (hour === 13 && minute >= 30)) {
           if (order === 'Market') res.send('Executed');
           else res.send('Placed');
         } else res.send('Verified');
@@ -97,7 +97,7 @@ async function placeOrders() {
   const now = new Date();
   const hour = Number(dateTime.format(now, 'HH'));
   const minute = Number(dateTime.format(now, 'mm'));
-  if (hour >= 17 || hour < 1 || (hour === 1 && minute <= 30)) {
+  if ((hour >= 14 && hour < 20) || (hour === 13 && minute >= 30)) {
     Order.find({ progress: 'Verified' })
       .then((result) => {
         for (let i = 0; i < result.length; i++) {
