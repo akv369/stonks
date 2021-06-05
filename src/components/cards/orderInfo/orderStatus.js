@@ -33,7 +33,6 @@ class orderStatus extends Component {
         const month = months[MM - 1];
         const date = dated.slice(8, 10);
         const timeZ = dated.slice(-3) === '000' ? 'GMT' : 'IST';
-        console.log(dated.slice(-3));
         return `${date} ${month} ${year} | ${time} ${timeZ}`;
       }
     };

@@ -23,20 +23,7 @@ class buySellPanel extends Component {
     code: '',
   };
   componentDidMount() {
-    Axios.post('/portfolio/' + this.props.buySell.companySymbol, {
-      _id: this.props.userID,
-    })
-      .then((res) =>
-        this.setState({
-          sharesAvailable: res.data.quantity,
-          price: res.data.cmp,
-        })
-      )
-      .catch((err) => console.log(err));
-    this.setState({ code: this.props.buySell.companySymbol });
-  }
-  componentDidUpdate() {
-    if (this.state.code !== this.props.buySell.companySymbol) {
+    if (this.props.buySell.companySymbol)
       Axios.post('/portfolio/' + this.props.buySell.companySymbol, {
         _id: this.props.userID,
       })
@@ -44,6 +31,24 @@ class buySellPanel extends Component {
           this.setState({
             sharesAvailable: res.data.quantity,
             price: res.data.cmp,
+            buttonDisabled: false,
+          })
+        )
+        .catch((err) => console.log(err));
+    this.setState({ code: this.props.buySell.companySymbol });
+  }
+  componentDidUpdate() {
+    if (this.state.code !== this.props.buySell.companySymbol) {
+      this.setState({ buttonDisabled: true });
+      Axios.post('/portfolio/' + this.props.buySell.companySymbol, {
+        _id: this.props.userID,
+      })
+        .then((res) =>
+          this.setState({
+            sharesAvailable: res.data.quantity,
+            price: res.data.cmp,
+            status: '',
+            buttonDisabled: false,
           })
         )
         .catch((err) => console.log(err));
@@ -243,6 +248,7 @@ class buySellPanel extends Component {
             </Card.Text>
             <Button
               variant="info"
+              disabled={this.state.buttonDisabled}
               style={{ width: '100%' }}
               onClick={() => this.placeOrder()}
             >
@@ -349,7 +355,7 @@ class buySellPanel extends Component {
         <div style={{ height: '491px' }}>
           <Spinner />
         </div>
-      ) : this.state.price === 0 ? (
+      ) : this.props.buySell.cmp === undefined ? (
         selectAStock()
       ) : (
         orderForm()

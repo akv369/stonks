@@ -9,7 +9,6 @@ class Updation extends Component {
   };
   componentDidMount() {
     const item = window.location.pathname.split('/')[2];
-    console.log(item);
     if (item === 'site')
       Axios.get('/updatestocks')
         .then((res) => this.setState({ message: res.data }))
