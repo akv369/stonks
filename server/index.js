@@ -5,6 +5,7 @@ require('dotenv').config();
 const marketRoutes = require('./routes/market');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
+const updationRoutes = require('./routes/updation');
 
 const mongoDbUri =
   'mongodb+srv://akash:JccEy11nQWbtu3Ti@stonks.hsaa7.mongodb.net/market';
@@ -16,8 +17,9 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(cors());
 app.use(authRoutes);
-app.use(marketRoutes);
 app.use(userRoutes);
+app.use(marketRoutes);
+app.use(updationRoutes);
 
 mongoose
   .connect(mongoDbUri, {

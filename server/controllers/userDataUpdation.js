@@ -1,18 +1,14 @@
-const axios = require('axios');
-const dateTime = require('date-and-time');
 const User = require('../models/user');
 const Stock = require('../models/stock');
 const Order = require('../models/order');
 const Portfolio = require('../models/portfolio');
 const Graph = require('../models/graph');
 
-// exports.updateOrder = (stockName) => updateOrder(stockName);
 exports.updatePortfolio = (_id) => updatePortfolio(_id);
 
 exports.updateUserData = (req, res) => {
   res.send('Started');
   console.log('Lets Start :)');
-  let stockList = [];
   Portfolio.find()
     .then((resp) => {
       resp.map((item) => {
