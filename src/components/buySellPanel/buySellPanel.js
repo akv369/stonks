@@ -355,7 +355,7 @@ class buySellPanel extends Component {
         <div style={{ height: '491px' }}>
           <Spinner />
         </div>
-      ) : this.props.buySell.cmp === undefined ? (
+      ) : this.state.price === 0 ? (
         selectAStock()
       ) : (
         orderForm()

@@ -4,7 +4,7 @@ const productionHost = 'https://stonks369.herokuapp.com/';
 const localHost = 'http://localhost:1111/';
 
 const instance = axios.create({
-  baseURL: productionHost,
+  baseURL: localHost,
 });
 
 export default instance;

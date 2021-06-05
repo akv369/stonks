@@ -27,13 +27,12 @@ class dashboard extends Component {
   }
   render() {
     const portfolio = this.state.portfolio;
-    let investedValue, returns, returnsPercent;
+    let investedValue, returns, returnsPercent,returnsColor
     if (portfolio.investedValue !== undefined) {
       investedValue = Number(portfolio.investedValue.toFixed(2));
       returns = Number(portfolio.totalReturns.toFixed(2));
+      returnsColor = returns<=0 ? 'danger' : 'success';
       returnsPercent = portfolio.returnsPercent;
-      console.log(investedValue);
-      console.log(returns);
     }
     const renderer = () => {
       if (this.state.loading === true) {
@@ -66,7 +65,7 @@ class dashboard extends Component {
                 <Card.Body className="mt-3">
                   <Card.Text>
                     ${investedValue} <br />
-                    <span className="text-success">
+                    <span className={`text-${returnsColor}`}>
                       ${returns} ({returnsPercent}%)
                     </span>{' '}
                     <br />
